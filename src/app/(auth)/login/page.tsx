@@ -1,18 +1,24 @@
 'use client'
 
+import useKakaoLogin from "@/hooks/useKakaoLogin"
 import { useState } from "react"
-import KakaoLogin from 'react-kakao-login'
+import dynamic from "next/dynamic"
+import { useUserStore } from "@/store/userStore"
+const KakaoLogin = dynamic(() => import('react-kakao-login'), { ssr: false })
+
 
 
 export default function LoginPage() {
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [remember, setRemember] = useState<boolean>(false)
+    
+    const { kakaoOnSuccess, kakaoOnFailure} = useKakaoLogin()
 
-    const handleLogin = (e: React.InputEvent) => {
-        e.preventDefault()
+    const handleRegularLogin = () => {
         console.log('email', email, password)
     }
+
 
     return (
         <div className="h-full flex flex-col justify-center items-center bg-gray-100">
@@ -51,16 +57,15 @@ export default function LoginPage() {
                     </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                    <button type="submit"
-                        className="bg-green-500 text-white px-6 py-3 rounded font-bold hover:bg-green-600 transition"
-                    >
+                    <button onClick={() =>handleRegularLogin()}
+                        className="bg-green-500 text-white px-6 py-3 rounded font-bold hover:bg-green-600 transition">
                         로그인
                     </button>
                     <KakaoLogin
-                    // token={process.env.REACT_APP_KAKAO_CLIENT_ID as string}
-                    // onSuccess={}
-                    // onFail={}
-                        style={{width: '100%', backgroundColor: 'yellow', padding: '12px 30px', borderRadius: '3px'}}
+                        token={process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID as string}
+                        onSuccess={kakaoOnSuccess}
+                        onFail={kakaoOnFailure}
+                        style={{width: '100%', backgroundColor: 'yellow', padding: '12px 30px', borderRadius: '3px', cursor: 'pointer'}}
                     />
                 </div>
             </div>
