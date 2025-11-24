@@ -9,7 +9,6 @@ interface KakaoToken {
     }
 }
 
-
 const useKakaoLogin = () => {
     const setUser = useUserStore(props => props.setUser)
     const router = useRouter()
@@ -18,7 +17,7 @@ const useKakaoLogin = () => {
         try {
             const res = await axios.post('/api/kakao-login',{
                kakaoAccessToken
-            },{withCredentials: true})
+            })
             console.log('res', res)
             if(res.data.success){
                 const newUser = ({

@@ -1,10 +1,10 @@
 import mongoose, {Schema, Document} from "mongoose";
 
 export interface IUser extends Document{
-    email?: string; //일반회원일 때
+    nickName?: string; //일반회원일 때
     password?: string; //일반회원일 때
     kakaoId?: string; //카카오일때
-    name: string;
+    name?: string; //카카오 일때
     height?: number;
     weight?: number;
     goal?: 'bulk' | 'diet';
@@ -12,7 +12,7 @@ export interface IUser extends Document{
 }
 
 const UserSchema: Schema = new Schema({
-    email: {
+    nickName: {
         type: String,
         unique: true,
         sparse: true
@@ -27,7 +27,6 @@ const UserSchema: Schema = new Schema({
     },
     name: {
         type: String,
-        required: true
     },
     height: {
         type: Number

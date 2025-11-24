@@ -4,6 +4,7 @@ import useKakaoLogin from "@/hooks/useKakaoLogin"
 import { useState } from "react"
 import dynamic from "next/dynamic"
 import { useUserStore } from "@/store/userStore"
+import useRegularLogin from "@/hooks/useRegularLogin"
 const KakaoLogin = dynamic(() => import('react-kakao-login'), { ssr: false })
 
 
@@ -13,10 +14,11 @@ export default function LoginPage() {
     const [password, setPassword] = useState<string>('')
     const [remember, setRemember] = useState<boolean>(false)
     
+    const { login } = useRegularLogin()
     const { kakaoOnSuccess, kakaoOnFailure} = useKakaoLogin()
 
     const handleRegularLogin = () => {
-        console.log('email', email, password)
+        login({nickName: email, password})
     }
 
 
