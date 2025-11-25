@@ -23,11 +23,11 @@ export async function POST(req: NextRequest) {
         const accessToken = jwt.sign({
             objectId: user._id,
             nickName: user.nickName
-        }, process.env.JWT_SECRET!, { expiresIn: '1h' })
+        }, process.env.JWT_SECRET!, { expiresIn: '1m' })
 
         const refreshToken = jwt.sign({
             objectId: user._id,
-        }, process.env.JWT_SECRET!, { expiresIn: '1h' })
+        }, process.env.JWT_SECRET!, { expiresIn: '1d' })
 
         const res = NextResponse.json({ success: true, user, accessToken })
         const isProduction = process.env.NODE_ENV === 'production'

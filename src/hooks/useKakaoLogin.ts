@@ -1,6 +1,6 @@
 'use client'
+import { axiosInstance } from '@/lib/axios'
 import { useUserStore } from '@/store/userStore'
-import axios from 'axios'
 import { useRouter } from 'next/navigation'
 
 interface KakaoToken {
@@ -15,7 +15,7 @@ const useKakaoLogin = () => {
     const kakaoOnSuccess = async (data: KakaoToken) => {
         const kakaoAccessToken = data.response.access_token
         try {
-            const res = await axios.post('/api/kakao-login',{
+            const res = await axiosInstance.post('/kakao-login',{
                kakaoAccessToken
             })
             console.log('res', res)

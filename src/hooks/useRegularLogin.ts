@@ -1,8 +1,7 @@
 'use client'
 
-import { saveAccessTokenToLocal } from "@/lib/accessToken";
+import { axiosInstance } from "@/lib/axios";
 import { useUserStore } from "@/store/userStore";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 
 
@@ -18,7 +17,7 @@ const useRegularLogin = () => {
 
     const login = async ({ nickName, password }: LoginInfo) => {
         try {
-            const res = await axios.post('/api/regular-login', { nickName, password })
+            const res = await axiosInstance.post('/regular-login', { nickName, password })
             if (res.data.success) {
                 const newUser = {
                     nickName: res.data.user.nickName,
