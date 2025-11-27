@@ -14,6 +14,8 @@ export default function LoginPage() {
     const [password, setPassword] = useState<string>('')
     const [remember, setRemember] = useState<boolean>(false)
     
+    
+    
     const { login } = useRegularLogin()
     const { kakaoOnSuccess, kakaoOnFailure} = useKakaoLogin()
 

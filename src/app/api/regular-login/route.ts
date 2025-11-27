@@ -2,7 +2,11 @@ import bcryptjs from "bcryptjs";
 import dbConnect from "@/lib/mongoose";
 import userModel from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
-import jwt from 'jsonwebtoken'
+import { SignJWT } from 'jose'
+
+const JWT_SECRET = new TextEncoder().encode(
+    process.env.JWT_SECRET 
+  );
 
 export async function POST(req: NextRequest) {
     try {
@@ -20,14 +24,23 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, message: '비밀번호를 확인해주세요' })
         }
 
-        const accessToken = jwt.sign({
-            objectId: user._id,
+        const accessToken = await new SignJWT({
+            objectId: user._id.toString(),
             nickName: user.nickName
-        }, process.env.JWT_SECRET!, { expiresIn: '1m' })
+        })
+            .setProtectedHeader({ alg: 'HS256'})
+            .setExpirationTime('5m')
+            .setIssuedAt()
+            .sign(JWT_SECRET)
 
-        const refreshToken = jwt.sign({
-            objectId: user._id,
-        }, process.env.JWT_SECRET!, { expiresIn: '1d' })
+        const refreshToken = await new SignJWT({
+                objectId: user._id.toString(),
+                nickName: user.nickName
+            })
+                .setProtectedHeader({ alg: 'HS256' })
+                .setExpirationTime('1d')
+                .setIssuedAt()
+                .sign(JWT_SECRET);
 
         const res = NextResponse.json({ success: true, user, accessToken })
         const isProduction = process.env.NODE_ENV === 'production'
