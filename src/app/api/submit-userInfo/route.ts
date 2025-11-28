@@ -5,11 +5,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest){
     try {
-        const {data} = await req.json()
-        dbConnect()
-        console.log('datga', data)
+        const {weight, height, goal} = await req.json()
+  
+        await dbConnect()
         const userInfo = await userInfoFromToken(req)
 
+        console.log('userInfo', userInfo)
+
+    
+        
         if(!userInfo){
             return NextResponse.json({error: '인증 불통'}, {status:401})
         }
@@ -20,9 +24,10 @@ export async function POST(req: NextRequest){
             return NextResponse.json({message: 'not found user'}, {status:404})
         }
 
-        user.weight = data.weight
-        user.height = data.height
-        user.goal = data.goal
+
+        user.weight = weight
+        user.height = height
+        user.goal = goal
 
         await user.save()
         
@@ -31,7 +36,7 @@ export async function POST(req: NextRequest){
         return NextResponse.json(
             { message: "Success", user }, 
             { status: 200 }
-        );
+        )
 
     } catch (error) {
         console.log(error)

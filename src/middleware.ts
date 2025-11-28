@@ -1,7 +1,11 @@
 
 import { NextRequest, NextResponse } from "next/server";
-import jwt from 'jsonwebtoken'
+import { jwtVerify} from 'jose'
 
+
+const JWT_SECRET = new TextEncoder().encode(
+  process.env.JWT_SECRET 
+)
 
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname
@@ -25,17 +29,18 @@ if(!refreshToken){
 
 if(!accessToken) {
   try{
-    jwt.verify(refreshToken, process.env.JWT_SECRET!)
+    await jwtVerify(refreshToken, JWT_SECRET)
+    console.log('엑세스토큰 검중 ')
     return NextResponse.next()
   }catch(err){
+    console.log('err', err)
     return NextResponse.redirect(new URL('/login', req.url))
   }
 }
   // !엑세스토큰 검증
   try{
-    jwt.verify(accessToken, process.env.JWT_SECRET!, (err, user)=> {
-      console.log('userfdasf', user)
-    });
+    await jwtVerify(accessToken, JWT_SECRET);
+    console.log('엑세스토큰 검증 성공')
     return NextResponse.next();
     
   }catch{

@@ -15,8 +15,8 @@ interface UserInfo{
 
 
 const postUserInfo = async (data: UserInfo) => {
-    const res = await axiosInstance.post('/submit-userInfo',{data})
-    console.log('res from usePostUserInfo Hooks', res.data)
+    const res = await axiosInstance.post('/submit-userInfo',data)
+    // console.log('res from usePostUserInfo Hooks', res.data.user)
     return res.data
 }
 
@@ -28,12 +28,12 @@ const usePostUserInfo = () => {
         mutationFn: (data:UserInfo) => postUserInfo(data),
         onSuccess: (data) => {
             if (typeof data === 'object' && data !== null) {
-              setUser(prev => ({ ...(prev ?? {}), ...data }));
-              router.push('/home');
+              setUser(data.user)
+              router.push('/home')
             } else {
                 console.log(typeof data)
-              console.error('서버 응답이 올바른 객체가 아닙니다:', data);
-              alert('서버 응답 오류');
+              console.error('서버 응답이 올바른 객체가 아닙니다:', data)
+              alert('서버 응답 오류')
             }
           },
         onError: (err) => {

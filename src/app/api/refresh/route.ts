@@ -26,7 +26,7 @@ export default async function POST(req: NextRequest) {
         .setExpirationTime('5m')
         .setIssuedAt()  
         .sign(JWT_SECRET)
-        
+        console.log('리프레시토큰 검중 ')
             return NextResponse.json({success: true, accessToken: newAccessToken, message:'엑세스토큰 발급'})
     }catch(err){
         console.log('refreshtoken error', err)
@@ -36,6 +36,7 @@ export default async function POST(req: NextRequest) {
             {status: 401}
         )
         res.cookies.delete('refreshToken')
+        console.log('리프레시토큰 검중 실패')
         return res
     }
 }
