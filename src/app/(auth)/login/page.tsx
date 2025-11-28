@@ -1,7 +1,7 @@
 'use client'
 
 import useKakaoLogin from "@/hooks/useKakaoLogin"
-import { useState } from "react"
+import { useEffect,useState } from "react"
 import dynamic from "next/dynamic"
 import { useUserStore } from "@/store/userStore"
 import useRegularLogin from "@/hooks/useRegularLogin"
@@ -14,14 +14,30 @@ export default function LoginPage() {
     const [password, setPassword] = useState<string>('')
     const [remember, setRemember] = useState<boolean>(false)
     
-    
+
     
     const { login } = useRegularLogin()
     const { kakaoOnSuccess, kakaoOnFailure} = useKakaoLogin()
+    
+    useEffect(() => {
+        const getEmailFromLocal = localStorage.getItem('email')
+        if(getEmailFromLocal){
+            setRemember(true)
+            setEmail(getEmailFromLocal)
+        }
+    },[])
 
-    const handleRegularLogin = () => {
-        login({nickName: email, password})
+    const handleRegularLogin = async () => {
+        await login({nickName: email, password})
+        
+        if(remember){
+            localStorage.setItem('email', email)
+        }else{
+            localStorage.removeItem('email')
+        }
     }
+
+
 
 
     return (

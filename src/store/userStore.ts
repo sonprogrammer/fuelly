@@ -17,6 +17,7 @@ interface UserState{
     clearUser: () => void;
     userAccessToken: string | null;
     setUserAccessToken: (token: string | null ) => void
+
 }
 
 export const useUserStore = create<UserState>()(
@@ -32,9 +33,12 @@ export const useUserStore = create<UserState>()(
             ),
             clearUser: () => set({user:null, userAccessToken: null}),
             userAccessToken: null,
-            setUserAccessToken: (token: string | null) => set({userAccessToken: token})
+            setUserAccessToken: (token: string | null) => set({userAccessToken: token}),
         }),{
             name: 'user',
-            partialize: (state) => ({user: state.user})
-        }
+            partialize: (state) => ({
+                user: state.user,
+            }),
+        },
+    
 ))
