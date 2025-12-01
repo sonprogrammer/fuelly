@@ -3,7 +3,8 @@ export default function ManualMenu() {
     return(
         <div className="flex flex-col gap-2 bg-white p-5 rounded-md border border-gray-300">
             <h1 className="font-bold ">AI로 음식 분석하기</h1>
-            <p className='text-gray-500'>{`"피자 3조각", "치킨 1마리" 등 자세히 입력하면 AI가 영양 정보를 계산합니다.`}</p>
+            <p className='text-gray-500'>{`"피자 3조각", "치킨 1마리" 등 자세히 입력하면 AI가 영양 정보를 계산합니다.`}
+            </p>
 
             <section className="flex gap-5 w-full">
                 <input 
@@ -14,7 +15,7 @@ export default function ManualMenu() {
                 </button>
             </section>
 
-            <h2 className="text-gray-500">💡 GPT API 연동 시 정확한 영양 정보를 제공합니다.</h2>
+            <h2 className="text-gray-400 text-sm">*본 서비스의 영양 정보는 AI 분석 결과로, 실제 값과 차이가 있을 수 있습니다.</h2>
         </div>    
     )
 }

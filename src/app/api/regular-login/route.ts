@@ -23,6 +23,8 @@ export async function POST(req: NextRequest) {
         if (!isMatchPW) {
             return NextResponse.json({ success: false, message: '비밀번호를 확인해주세요' })
         }
+        const { password:_password, ...userWithoutSensitive } = user.toObject()
+
 
         const accessToken = await new SignJWT({
             objectId: user._id.toString(),
@@ -42,7 +44,7 @@ export async function POST(req: NextRequest) {
                 .setIssuedAt()
                 .sign(JWT_SECRET);
 
-        const res = NextResponse.json({ success: true, user, accessToken })
+        const res = NextResponse.json({ success: true, user: userWithoutSensitive, accessToken })
         const isProduction = process.env.NODE_ENV === 'production'
         
         res.cookies.set('refreshToken', refreshToken, {

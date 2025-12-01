@@ -37,7 +37,7 @@ export default function AiMenu() {
             <section className='ai추천메뉴 mt-5'>
                 <AiRecommandMenu />
             </section>
-                <h2 className="text-gray-500">💡 실제 환경에서는 OpenAI GPT API를 통해 개인 맞춤형 식단을 추천합니다</h2>
+                <h2 className="text-gray-400 text-sm">*본 서비스의 영양 정보는 AI 분석 결과로, 실제 값과 차이가 있을 수 있습니다.</h2>
             </div>
         </div>
     )

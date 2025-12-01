@@ -2,7 +2,7 @@
 
 interface GoalProps{
     goal: string
-    weight: string
+    weight: number
 }
 
 export default function GoalComponent({goal, weight} : GoalProps){

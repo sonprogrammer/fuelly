@@ -30,7 +30,7 @@ if(!refreshToken){
 if(!accessToken) {
   try{
     await jwtVerify(refreshToken, JWT_SECRET)
-    console.log('엑세스토큰 검중 ')
+    console.log('엑세스토큰 검중~~~ From middleware ')
     return NextResponse.next()
   }catch(err){
     console.log('err', err)
@@ -40,7 +40,7 @@ if(!accessToken) {
   // !엑세스토큰 검증
   try{
     await jwtVerify(accessToken, JWT_SECRET);
-    console.log('엑세스토큰 검증 성공')
+    console.log('엑세스토큰 검증 성공 From middleware')
     return NextResponse.next();
     
   }catch{

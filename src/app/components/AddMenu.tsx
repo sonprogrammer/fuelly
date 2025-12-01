@@ -13,10 +13,13 @@ export default function AddMenu() {
 
     const handleChange = (
         event: React.MouseEvent<HTMLElement>,
-        newChoice: 'manual' | 'ai' 
+        newChoice: 'manual' | 'ai' | null 
     ) => {
-        setChoice(newChoice);
-    };
+        if (newChoice !== null) {
+            setChoice(newChoice)
+          }
+    }
+    
     return (
         <div>
             <Box display="flex" justifyContent="center" my={2}>
@@ -36,7 +39,6 @@ export default function AddMenu() {
             </Box>
             {choice == 'manual' ? 
             <div>
-
             <ManualMenue />
             <AddNomalMenu />
             </div>

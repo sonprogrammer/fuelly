@@ -10,7 +10,7 @@ export async function POST(req: NextRequest){
         await dbConnect()
         const userInfo = await userInfoFromToken(req)
 
-        console.log('userInfo', userInfo)
+        console.log('userInfo from submit-userinfo', userInfo)
 
     
         
@@ -24,6 +24,7 @@ export async function POST(req: NextRequest){
             return NextResponse.json({message: 'not found user'}, {status:404})
         }
 
+        const { password:_password, ...userWithoutSensitive } = user.toObject()
 
         user.weight = weight
         user.height = height
@@ -34,7 +35,7 @@ export async function POST(req: NextRequest){
 
 
         return NextResponse.json(
-            { message: "Success", user }, 
+            { message: "Success", user: userWithoutSensitive }, 
             { status: 200 }
         )
 

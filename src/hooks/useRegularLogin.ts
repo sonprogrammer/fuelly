@@ -22,7 +22,6 @@ const useRegularLogin = () => {
             if (res.data.success) {
                 const newUser = {
                     nickName: res.data.user.nickName,
-                    objectId: res.data.user._id,
                     //!이번엔 토큰 상태에 넣어서 관리해보기
                 }
                 const accessToken = res.data.accessToken 

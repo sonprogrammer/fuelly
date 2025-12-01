@@ -30,14 +30,13 @@ export default function RootLayout({
         // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         className="h-screen flex flex-col w-full"
       >
-        <header className="text-center p-5 bg-amber-50"><Link href='/'>FUELLY</Link></header>
+        <header className="text-center p-5 bg-amber-50 fixed w-full top-0 z-10"><Link href='/'>FUELLY</Link></header>
         <QueryProviderWrapper>
-          <section className="flex-1 bg-blue-50">
-
+          <section className="flex-1 mt-16 mb-16 overflow-auto bg-blue-50">
             {children}
           </section>
         </QueryProviderWrapper>
-        <nav className="p-5 bg-orange-50 text-center">go here</nav>
+        <nav className="fixed bottom-0 w-full p-5 bg-orange-50 text-center">go here</nav>
       </body>
     </html>
   );
