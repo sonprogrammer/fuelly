@@ -8,6 +8,8 @@ interface User{
     kakaoId?: string; //카카오
     nickName?: string;//일반
     objectId: string;
+    weight: number;
+    height: number;
     goal?: 'bulk' | 'diet' | 'maintain'
 }
 
@@ -41,7 +43,12 @@ export const useUserStore = create<UserState>()(
             //     ? { user: user(prev.user ?? null) } as Partial<UserState>
             //     : { user: { ...(prev.user ?? {}), ...user } } as Partial<UserState>
             // ),
-            clearUser: () => set({user:null, userAccessToken: null}),
+            clearUser: () => {
+                set({user:null, userAccessToken: null})
+                if(typeof window !== 'undefined'){
+                    localStorage.removeItem('user')
+                }
+            },
             userAccessToken: null,
             setUserAccessToken: (token: string | null) => set({userAccessToken: token}),
         }),{

@@ -18,7 +18,7 @@ export default function HomePage() {
                 <section className="mb-3 pt-6">
                     <h1 className="font-bold text-xl text-green-600 mb-2">fuelly</h1>
                     <h1 className='font-semibold'>
-                        <span>{user?.nickName}</span>
+                        <span>{user?.nickName ? user?.nickName : user?.name}</span>
                         <span>님 환영합니다. 당신의 목표를 달성하세요</span>
                     </h1>
                 </section>

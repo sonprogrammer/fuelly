@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import QueryProviderWrapper from './components/QueryProviderWrapper'
+import LogoutComponent from './components/LogoutComponent'
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,10 @@ export default function RootLayout({
         // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         className="h-screen flex flex-col w-full"
       >
-        <header className="text-center p-5 bg-amber-50 fixed w-full top-0 z-10"><Link href='/'>FUELLY</Link></header>
+        <header className="text-center p-5 bg-amber-50 fixed w-full top-0 z-10">
+          <Link href='/'>FUELLY</Link>
+            <LogoutComponent></LogoutComponent>
+        </header>
         <QueryProviderWrapper>
           <section className="flex-1 mt-16 mb-16 overflow-auto bg-blue-50">
             {children}

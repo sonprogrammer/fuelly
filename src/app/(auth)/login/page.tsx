@@ -13,7 +13,9 @@ export default function LoginPage() {
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [remember, setRemember] = useState<boolean>(false)
-    
+    const user = useUserStore(state => state.user)
+
+    console.log('user from loginpage', user)
 
     
     const { login } = useRegularLogin()
@@ -29,6 +31,7 @@ export default function LoginPage() {
 
     const handleRegularLogin = async () => {
         await login({nickName: email, password})
+
         
         if(remember){
             localStorage.setItem('email', email)
@@ -62,7 +65,6 @@ export default function LoginPage() {
                 </div>
                 <div className="flex mb-3 justify-between">
                     <label className="flex gap-2 items-center">
-                        {/* TODO 로컬스토리지에 저장 */}
                         <input type="checkbox"
                             checked={remember}
                             onChange={(e) => setRemember(e.target.checked)}

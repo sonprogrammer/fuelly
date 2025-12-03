@@ -16,7 +16,6 @@ interface UserInfo{
 
 const postUserInfo = async (data: UserInfo) => {
     const res = await axiosInstance.post('/submit-userInfo',data)
-    // console.log('res from usePostUserInfo Hooks', res.data.user)
     return res.data
 }
 
@@ -28,6 +27,7 @@ const usePostUserInfo = () => {
         mutationFn: (data:UserInfo) => postUserInfo(data),
         onSuccess: (data) => {
             if (typeof data === 'object' && data !== null) {
+              console.log('user data from usepostinfo', data)
               setUser(data.user)
               router.push('/home')
             } else {
