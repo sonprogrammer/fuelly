@@ -32,7 +32,6 @@ const useKakaoLogin = () => {
                     _id: res.data.user._id
                 })
                 const accessToken = res.data.accessToken
-console.log('accesssss', accessToken)
                 setUserAccessToken(accessToken)
                 setUser(newUser)
                 // TODO 서버로 부터 토큰이랑 리프레시토큰은Httponly쿠키로 받아서 처리로직 작성해야함

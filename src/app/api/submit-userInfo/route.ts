@@ -24,14 +24,14 @@ export async function POST(req: NextRequest){
             return NextResponse.json({message: 'not found user'}, {status:404})
         }
 
-        const { password:_password, ...userWithoutSensitive } = user.toObject()
-
+        
         user.weight = weight
         user.height = height
         user.goal = goal
-
+        
         await user.save()
         
+        const { password:_password, ...userWithoutSensitive } = user.toObject()
 
 
         return NextResponse.json(

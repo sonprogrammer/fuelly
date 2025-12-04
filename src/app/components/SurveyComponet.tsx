@@ -21,11 +21,11 @@ export default function SurveyComponent() {
     const [weight, setWeight] = useState<number | null>(null)
     const router = useRouter()
     const user = useUserStore(state => state.user)
-    const setUser = useUserStore(state => state.setUser)
-    const accessToken = useUserStore(state => state.userAccessToken)
+    // const setUser = useUserStore(state => state.setUser)
+    // const accessToken = useUserStore(state => state.userAccessToken)
     // console.log('token', accessToken)
 
-    const token = useUserStore.getState().userAccessToken
+    // const token = useUserStore.getState().userAccessToken
     // console.log('tad', token)
 
     const {mutate, isPending} = usePostUserInfo()

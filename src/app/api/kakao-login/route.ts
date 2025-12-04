@@ -58,7 +58,10 @@ export async function POST(req: NextRequest) {
             user: {
                 kakaoId: user.kakaoId,
                 name: user.name,
-                objectId: user._id
+                objectId: user._id,
+                goal: user.goal,
+                weight: user.weight,
+                height: user.height
             }, accessToken
         })
         const isProduction = process.env.NODE_ENV === 'production'

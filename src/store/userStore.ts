@@ -7,9 +7,9 @@ interface User{
     name?: string; //카카오
     kakaoId?: string; //카카오
     nickName?: string;//일반
-    objectId: string;
-    weight: number;
-    height: number;
+    objectId?: string;
+    weight?: number;
+    height?: number;
     goal?: 'bulk' | 'diet' | 'maintain'
 }
 
@@ -27,26 +27,25 @@ export const useUserStore = create<UserState>()(
         (set) => 
             ({
                 user: null,
-                setUser: (user) => 
-                    set((state: UserState) => {
-                        if (typeof user === 'function') {
-                            const newUser = user(state.user ?? null); // User 타입 반환
-                            return { user: newUser } as Partial<UserState>; // 타입 단언
-                        } else {
-                            return { user: { ...user } } as Partial<UserState>; // 타입 단언
+                setUser: (user) =>
+                    set((state) => {
+                        const prev = state.user ?? {};
+                
+                        if (typeof user === "function") {
+                            return { user: user(prev) };
                         }
+                
+                        return {
+                            user: {
+                                ...prev,
+                                ...user
+                            }
+                        };
                     }),
-            //     setUser: 
-            //     (user) =>
-            //         set((prev) =>
-            //             typeof user === 'function'
-            //     ? { user: user(prev.user ?? null) } as Partial<UserState>
-            //     : { user: { ...(prev.user ?? {}), ...user } } as Partial<UserState>
-            // ),
             clearUser: () => {
                 set({user:null, userAccessToken: null})
-                if(typeof window !== 'undefined'){
-                    localStorage.removeItem('user')
+                if (typeof window !== 'undefined') {
+                    localStorage.removeItem('user'); 
                 }
             },
             userAccessToken: null,
