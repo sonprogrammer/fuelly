@@ -28,7 +28,7 @@ export default function AddCustomMenuModal({ open, onClose }: ModalProps) {
                         exit={{ opacity: 0, scale: 0.7 }}
                         transition={{
                             duration: 0.25,
-                            ease: [0.22, 1, 0.36, 1], // 맥북 느낌의 cubic-bezier
+                            ease: [0.22, 1, 0.36, 1], 
                         }}
                         className="relative flex flex-col bg-white rounded-xl p-5 shadow-xl sm:w-[90%] md:w-[80%] lg:w-[60%]"
                     >

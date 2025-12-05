@@ -1,8 +1,8 @@
 
 
 interface GoalProps{
-    goal: string
-    weight: number
+    goal?: string
+    weight?: number
 }
 
 export default function GoalComponent({goal, weight} : GoalProps){
@@ -11,7 +11,7 @@ export default function GoalComponent({goal, weight} : GoalProps){
         diet: '다이어트(체지방 감소)',
         maintain: '유지'
       }
-      const goalName = goalMap[goal] || goal
+      const goalName = goalMap[goal!] || goal
     return(
         <div className='border border-green-400 p-5 rounded-md flex justify-between'>
             <section>

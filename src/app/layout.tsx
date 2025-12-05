@@ -40,7 +40,7 @@ export default function RootLayout({
             <HomeComponent />
         </header>
         <QueryProviderWrapper>
-          <section className="flex-1 mt-16 mb-16 overflow-auto p-5 bg-linear-to-br from-green-50 to-blue-50">
+          <section className="flex-1 mt-16 mb-16 overflow-auto bg-linear-to-br from-green-50 to-blue-50">
             {children}
           </section>
         </QueryProviderWrapper>

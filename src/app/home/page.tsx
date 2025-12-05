@@ -13,7 +13,7 @@ export default function HomePage() {
     console.log('userd From home page', user)
 
     return (
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5 p-5">
             <div className="flex gap-3 w-full">
                 <section className="mb-3 pt-6 flex-1">
                     <h1 className="font-bold text-xl text-green-600 mb-2">fuelly</h1>
@@ -31,10 +31,10 @@ export default function HomePage() {
                 <AmountComponent />
                 <AmountComponent />
             </div>
-            <TodayMenuComponent />
             
-            <AddMenu />
-            <AddCustomMenu />
+            <section>
+                지피티가 말해줄 세 문장
+            </section>
         </div>
     )
 }
