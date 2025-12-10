@@ -13,7 +13,7 @@ export default function HomePage() {
     console.log('userd From home page', user)
 
     return (
-        <div className="flex flex-col gap-5 p-5">
+        <div className="flex flex-col gap-5 p-5 h-full">
             <div className="flex gap-3 w-full">
                 <section className="mb-3 pt-6 flex-1">
                     <h1 className="font-bold text-xl text-green-600 mb-2">fuelly</h1>
@@ -32,8 +32,9 @@ export default function HomePage() {
                 <AmountComponent />
             </div>
             
-            <section>
-                지피티가 말해줄 세 문장
+            <section className="backdrop-blur-lg bg-white/60 text-center flex flex-col justify-center shadow-md flex-1 rounded-xl p-5 overflow-y-auto">
+                <h2>ChatGPT의 말: 응원할 말이 들어갈곳 </h2>
+                <p>오늘도 힘내시고 화이팅</p>
             </section>
         </div>
     )
