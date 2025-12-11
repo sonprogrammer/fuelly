@@ -2,16 +2,40 @@
 
 import { useUserStore } from "@/store/userStore"
 import AmountComponent from '@/app/components/AmountComponent'
-import TodayMenuComponent from '@/app/components/TodayMenuComponent'
 import GoalComponent from '@/app/components/GoalComponent'
-import AddMenu from '@/app/components/AddMenu'
-import AddCustomMenu from '@/app/components/AddCustomMenu'
+import { useMemo } from "react";
+import amountCalculate from '@/utils/amountCalculate'
+import { Flame, Beef } from 'lucide-react'
 
 export default function HomePage() {
     const user = useUserStore(state => state.user)
-    const token = useUserStore.getState().userAccessToken
+    // const token = useUserStore.getState().userAccessToken
     console.log('userd From home page', user)
 
+    const target = useMemo(() => {
+        if (
+            !user ||
+            user.height == null ||
+            user.weight == null ||
+            user.gender == null ||
+            user.goal == null ||
+            user.age == null ||
+            user.activity == null
+        ) {
+            return null;
+        }
+    
+        return amountCalculate({
+            height: user.height,
+            weight: user.weight,
+            gender: user.gender,
+            activity: user.activity,
+            goal: user.goal,
+            age: user.age,
+        });
+    }, [user])
+
+    
     return (
         <div className="flex flex-col gap-5 p-5 h-full">
             <div className="flex gap-3 w-full">
@@ -28,8 +52,18 @@ export default function HomePage() {
             </div>
             <div className="flex w-full gap-5">
 
-                <AmountComponent />
-                <AmountComponent />
+                <AmountComponent 
+                    name='칼로리'
+                    targetGrams={target?.recommendedCalroies ?? 0}
+                    icon={<Flame className="h-4 w-4 text-orange-500" />}
+                    currentGrams={0}
+                    />
+                <AmountComponent 
+                    name='단백질' 
+                    targetGrams={target?.recommendedProteins ?? 0}
+                    icon={<Beef className="h-4 w-4 text-red-500" />}
+                    currentGrams={0}
+                />
             </div>
             
             <section className="backdrop-blur-lg bg-white/60 text-center flex flex-col justify-center shadow-md flex-1 rounded-xl p-5 overflow-y-auto">

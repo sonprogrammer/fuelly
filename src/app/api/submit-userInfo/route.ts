@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest){
     try {
-        const {weight, height, goal} = await req.json()
+        const {weight, height, goal, gender, activity, age} = await req.json()
   
         await dbConnect()
         const userInfo = await userInfoFromToken(req)
@@ -28,6 +28,9 @@ export async function POST(req: NextRequest){
         user.weight = weight
         user.height = height
         user.goal = goal
+        user.gender = gender
+        user.activity = activity
+        user.age = age
         
         await user.save()
         

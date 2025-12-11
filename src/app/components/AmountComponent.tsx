@@ -1,22 +1,25 @@
 
 import { Box, Typography, LinearProgress, Tooltip } from "@mui/material";
-import { Flame, Beef } from 'lucide-react'
+import React from "react";
+
 interface Props {
+    name: string;
     currentGrams: number; 
-    targetGrams?: number; 
+    targetGrams: number; 
+    icon: React.ReactNode
 }
 
 // TODO currentGrams, targetGrams는 유저의 몸무게와 키를 계산해서 대강적인것 목표로 하기
-export default function AmountComponent({ currentGrams= 2500, targetGrams = 3000 }: Props) {
+ function AmountComponent({ currentGrams= 2500, targetGrams, name, icon }: Props) {
+
 
     const clamped = Math.max(0, currentGrams);
     const percent = Math.min(100, Math.round((clamped / targetGrams) * 100));
     return (
         <div className="border border-gray-300 rounded-lg flex-1 p-5 bg-white flex flex-col gap-3">
             <section className='flex justify-between'>
-                <h1>칼로리/단백질</h1>
-                <Flame className="h-4 w-4 text-orange-500" />
-                <Beef className="h-4 w-4 text-red-500" />
+                <h1>{name}</h1>
+                {icon}
             </section>
 
           
@@ -50,9 +53,11 @@ export default function AmountComponent({ currentGrams= 2500, targetGrams = 3000
                     />
                 </Tooltip>
             </Box>
-            <h2 className="text-sm">남은 칼로리/단백질 : 
+            <h2 className="text-sm">남은 {name} : 
                 <span className="text-green-500 font-bold">{targetGrams - currentGrams}kcal/g</span>
             </h2>
         </div>
     )
 }
+
+export default React.memo(AmountComponent);

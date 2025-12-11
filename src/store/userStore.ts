@@ -10,6 +10,9 @@ interface User{
     objectId?: string;
     weight?: number;
     height?: number;
+    age?: number;
+    gender?: 'male' | 'female';
+    activity?: 'sedentary' | 'light' | 'moderate' | 'active';
     goal?: 'bulk' | 'diet' | 'maintain'
 }
 

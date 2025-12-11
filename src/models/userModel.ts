@@ -7,6 +7,8 @@ export interface IUser extends Document{
     name?: string; //카카오 일때
     height?: number;
     weight?: number;
+    gender?: 'male' | 'female';
+    activity?: 'sedentary' | 'light' | 'moderate' | 'active';
     goal?: 'bulk' | 'diet' | 'maintain';
     createdAt: Date;
 }
@@ -34,9 +36,20 @@ const UserSchema: Schema = new Schema({
     weight: {
         type: Number
     },
+    age: {
+        type: Number
+    },
+    gender: {
+        type: String,
+        enum: ['male' , 'female']
+    },
     goal: {
         type: String,
         enum: ['bulk', 'diet'],
+    },
+    activity: {
+        type: String,
+        enum: ['sedentary', 'light', 'moderate', 'active'],
     },
     createdAt: {
         type: Date,

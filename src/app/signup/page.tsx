@@ -11,13 +11,18 @@ const SignUpPage = () => {
     const [password, setPassword] = useState<string>('')
     const [checkPassword, setCheckPassword] = useState<string>('')
     const [emailValid, setEmailValid] = useState<boolean | null>(null)
+    const [isChecking, setIsChecking] = useState<boolean>(false)
+
     
     const {register } = usePostRegister()
 
     const handleEmailCheckClick = async () => {
         if (!email) return
+
+        setIsChecking(true)
         const res = await checkEmail(email)
         setEmailValid(res)
+        setIsChecking(false)
     }
 
     const passwordMatched = password && checkPassword ?
@@ -57,7 +62,8 @@ const SignUpPage = () => {
                             className="absolute right-3 cursor-pointer top-2 bg-amber-500 rounded-lg text-sm px-2 py-2">
                             중복 확인
                         </button>
-                        {emailValid === null ? null : emailValid ? 
+                        {isChecking ? '확인 중...' :
+                        emailValid === null ? null : emailValid ? 
                             (<p className='text-green-600 font-bold mt-2'>사용가능한 이메일 입니다</p>)
                             : (<p className='text-red-600 font-bold mt-2'>이미 존재하는 아이디입니다</p>)
                         }
