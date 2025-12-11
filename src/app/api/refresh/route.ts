@@ -4,12 +4,13 @@ import { SignJWT, jwtVerify } from 'jose'
 
 const JWT_SECRET = new TextEncoder().encode(
     process.env.JWT_SECRET
-  );
+  )
 
 
-export default async function POST(req: NextRequest) {
+export async function POST(req: NextRequest) {
     try{
     const refreshToken = req.cookies.get('refreshToken')?.value
+    // console.log('refresh', refreshToken)
 
     if(!refreshToken){
         return NextResponse.json({message: 'no refrsh token'},{status:401})
@@ -26,7 +27,7 @@ export default async function POST(req: NextRequest) {
         .setExpirationTime('5m')
         .setIssuedAt()  
         .sign(JWT_SECRET)
-        console.log('리프레시토큰 검중 ')
+        console.log('리프레시토큰 검중중 ', newAccessToken)
             return NextResponse.json({success: true, accessToken: newAccessToken, message:'엑세스토큰 발급'})
     }catch(err){
         console.log('refreshtoken error', err)

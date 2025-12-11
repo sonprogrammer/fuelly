@@ -9,9 +9,32 @@ export const axiosInstance = axios.create({
 })
 
 axiosInstance.interceptors.request.use(
-    config => {
+    async config => {
         //!요청시마다 토큰을 넣음
         const token = useUserStore.getState().userAccessToken
+        console.log('cofing', config)
+        if(!token){
+            if(!isRefreshing){
+                isRefreshing = true
+                try{
+                    const res = await axios.post('/api/refresh')
+                    const newToken = res.data.accessToken
+
+                    if(newToken){
+                        useUserStore.getState().setUserAccessToken(newToken)
+                        config.headers = config.headers ?? {}
+                        config.headers.Authorization = `Bearer ${newToken}`
+                        processQueue(null, newToken)
+                    }
+                }catch(err){
+                    processQueue(err as Error, null)
+                    useUserStore.getState().setUserAccessToken(null)
+                    
+                }finally {
+                    isRefreshing = false
+                  }
+            }
+        }
         if(token && config.headers){
             config.headers.Authorization =`Bearer ${token}`
         }
@@ -45,11 +68,7 @@ axiosInstance.interceptors.response.use(
         const originalRequest = err.config
         console.log('err', err)
 
-        if(err.response?.status !== 401 || !originalRequest.url?.includes('/refresh')){
-            return Promise.reject(err)
-        }
-
-        if(originalRequest._retry){
+        if(err.response?.status !== 401 || originalRequest._retry){
             return Promise.reject(err)
         }
 
@@ -60,7 +79,7 @@ axiosInstance.interceptors.response.use(
                 originalRequest.headers.Authorization = `Bearer ${token}`
                 return axiosInstance(originalRequest)
             })
-              .catch(err => Promise.reject(err));
+            
         }
 
         originalRequest._retry = true
@@ -68,7 +87,7 @@ axiosInstance.interceptors.response.use(
 
         const setUserAccessToken = useUserStore.getState().setUserAccessToken
         try{
-            const res = await axios.post('/api/refresh', {})
+            const res = await axios.post('/api/refresh')
             
             const newAccessToken = res.data.accessToken
 
@@ -76,7 +95,7 @@ axiosInstance.interceptors.response.use(
             if(newAccessToken){
                 setUserAccessToken(newAccessToken)
 
-                originalRequest.header.Authorization = `Bearer ${newAccessToken}`
+                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
 
                 processQueue(null, newAccessToken)
 
@@ -87,7 +106,7 @@ axiosInstance.interceptors.response.use(
         }catch(err){
             processQueue(err as Error, null)
             setUserAccessToken(null)
-
+            useUserStore.getState().clearUser()
             if(typeof window !== 'undefined'){
                 window.location.href = '/login'
             }

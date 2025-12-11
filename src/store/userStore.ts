@@ -48,7 +48,9 @@ export const useUserStore = create<UserState>()(
             clearUser: () => {
                 set({user:null, userAccessToken: null})
                 if (typeof window !== 'undefined') {
-                    localStorage.removeItem('user'); 
+                    localStorage.removeItem('user')
+                    localStorage.removeItem('message')
+                    localStorage.removeItem('message_date')
                 }
             },
             userAccessToken: null,

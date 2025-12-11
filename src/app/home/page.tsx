@@ -6,12 +6,19 @@ import GoalComponent from '@/app/components/GoalComponent'
 import { useMemo } from "react";
 import amountCalculate from '@/utils/amountCalculate'
 import { Flame, Beef } from 'lucide-react'
+import useGetDailyMessage from '@/hooks/useGetDailyMessage'
 
 export default function HomePage() {
     const user = useUserStore(state => state.user)
-    // const token = useUserStore.getState().userAccessToken
-    console.log('userd From home page', user)
 
+    const message = useGetDailyMessage()
+    
+    const messages = message
+        .split(/(?<=[.!?])\s+/)  
+        .filter(Boolean)          
+        .map(m => m.trim())
+
+    
     const target = useMemo(() => {
         if (
             !user ||
@@ -67,8 +74,21 @@ export default function HomePage() {
             </div>
             
             <section className="backdrop-blur-lg bg-white/60 text-center flex flex-col justify-center shadow-md flex-1 rounded-xl p-5 overflow-y-auto">
-                <h2>ChatGPT의 말: 응원할 말이 들어갈곳 </h2>
-                <p>오늘도 힘내시고 화이팅</p>
+                <h1 
+                    className='text-xl font-bold mb-10'
+                >
+                    GROK(일론 머스크)의 응원
+                </h1>
+                {messages.map((m,i) => (
+                    <p 
+                        className="mb-2 animate-fade-in bg-clip-text text-transparent bg-linear-to-r from-red-500 via-yellow-500 to-amber-800"
+                        style={{ animationDelay: `${i * 0.3}s` }}
+                        key={`${m}-${i}`}
+                    >
+                        {m}
+                    </p>
+
+                ))}
             </section>
         </div>
     )

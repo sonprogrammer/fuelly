@@ -1,1 +1,0 @@
-import OpenAi from 'openai'

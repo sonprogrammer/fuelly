@@ -30,7 +30,7 @@ if(!refreshToken){
 if(!accessToken) {
   try{
     await jwtVerify(refreshToken, JWT_SECRET)
-    console.log('엑세스토큰 검중~~~ From middleware ')
+    console.log('Access token 없음 → Refresh token 검증 성공')
     return NextResponse.next()
   }catch(err){
     console.log('err', err)
@@ -44,7 +44,8 @@ if(!accessToken) {
     return NextResponse.next();
     
   }catch{
-    return NextResponse.redirect(new URL('/login', req.url))
+    console.log("Access token 만료 → 브라우저에서 refresh 요청 필요")
+    return NextResponse.next()
   }
 }
 export const config = {

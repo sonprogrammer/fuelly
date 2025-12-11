@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/app/components/ui/button";
 import { Card } from "@/app/components/ui/card";
 import { Trash2, Plus } from "lucide-react";
+import {useUserStore} from '@/store/userStore'
 
 interface Food {
     id: number;
@@ -19,6 +20,7 @@ export default function FoodTable() {
         { id: 2, food: "고구마", amount: "100g", protein: 2, calorie: 86 },
         { id: 3, food: "닭가슴살", amount: "100g", protein: 23, calorie: 165 },
     ]);
+
 
     // TODO 저장목록에서 삭제
     const deleteFood = (id: number) => {
