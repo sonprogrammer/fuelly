@@ -24,8 +24,8 @@ export default function LoginPage() {
     useEffect(() => {
         const getEmailFromLocal = localStorage.getItem('email')
         if(getEmailFromLocal){
-            setRemember(true)
-            setEmail(getEmailFromLocal)
+            Promise.resolve().then(() => setRemember(true))
+            Promise.resolve().then(() => setEmail(getEmailFromLocal))
         }
     },[])
 

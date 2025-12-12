@@ -28,6 +28,7 @@ const usePostUserInfo = () => {
         onSuccess: (data) => {
             if (typeof data === 'object' && data !== null) {
               console.log('user data from usepostinfo', data)
+              console.log('data', data.user)
               setUser(data.user)
               router.push('/home')
             } else {

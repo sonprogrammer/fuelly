@@ -28,6 +28,9 @@ const useKakaoLogin = () => {
                     height: res.data.user.height,
                     weight: res.data.user.weight,
                     goal : res.data.user.goal,
+                    gender: res.data.user.gender,
+                    activity: res.data.user.activity,
+                    age: res.data.user.age,
                     _id: res.data.user._id
                 })
                 const accessToken = res.data.accessToken

@@ -15,10 +15,10 @@ export default function useGetDailyMessage() {
         const savedDate = localStorage.getItem('message_date')
         const savedMessage = localStorage.getItem('message')
 
-        // if(savedDate === today && savedMessage){
-        //     Promise.resolve().then(() => setMessage(savedMessage))
-        //     return
-        // }
+        if(savedDate === today && savedMessage){
+            Promise.resolve().then(() => setMessage(savedMessage))
+            return
+        }
 
         const fetchMessage = async () => {
             try {

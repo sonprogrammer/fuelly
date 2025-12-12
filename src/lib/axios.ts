@@ -12,7 +12,7 @@ axiosInstance.interceptors.request.use(
     async config => {
         //!요청시마다 토큰을 넣음
         const token = useUserStore.getState().userAccessToken
-        console.log('cofing', config)
+        // console.log('cofing', config)
         if(!token){
             if(!isRefreshing){
                 isRefreshing = true
@@ -66,7 +66,7 @@ axiosInstance.interceptors.response.use(
     res => res,
     async(err) => {
         const originalRequest = err.config
-        console.log('err', err)
+        // console.log('err', err)
 
         if(err.response?.status !== 401 || originalRequest._retry){
             return Promise.reject(err)

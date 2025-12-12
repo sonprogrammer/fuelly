@@ -1,5 +1,6 @@
 import mongoose, {Schema, Document} from "mongoose";
 
+// !오늘 먹은 음식으로 들어갈 모델
 export interface IDaily extends Document{
     userId: string; //유저 오브젝트id
     date: string;
@@ -8,7 +9,7 @@ export interface IDaily extends Document{
         name: string;
         protein: number;
         calories: number;
-        quantity: number; //그램 당
+        // quantity: number; 
     }[];
     totalProtein: number;
     totalCalories: number;

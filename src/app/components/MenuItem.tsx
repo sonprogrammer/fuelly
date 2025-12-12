@@ -1,14 +1,9 @@
 import { Plus, Trash2 } from 'lucide-react'
-
+import { Food } from '../../types/food'
 
 
 interface MenuItemProps {
-    food: {
-        name: string;
-        unit: string;
-        calories: number;
-        protein: number;
-    },
+    food: Food
     type: 'add' | 'delete',
 }
 

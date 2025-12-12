@@ -7,6 +7,7 @@ export interface IUser extends Document{
     name?: string; //카카오 일때
     height?: number;
     weight?: number;
+    age?: number;
     gender?: 'male' | 'female';
     activity?: 'sedentary' | 'light' | 'moderate' | 'active';
     goal?: 'bulk' | 'diet' | 'maintain';

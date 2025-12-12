@@ -11,8 +11,9 @@ import useGetDailyMessage from '@/hooks/useGetDailyMessage'
 export default function HomePage() {
     const user = useUserStore(state => state.user)
 
-    const token = useUserStore(state=> state.userAccessToken)
-    console.log('token', token)
+    // const token = useUserStore(state=> state.userAccessToken)
+    // console.log('token', token)
+    // console.log('token', token)
 
     const message = useGetDailyMessage()
     

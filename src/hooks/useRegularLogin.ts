@@ -26,6 +26,9 @@ const useRegularLogin = () => {
                     height: res.data.user.height,
                     weight: res.data.user.weight,
                     goal : res.data.user.goal,
+                    gender: res.data.user.gender,
+                    activity: res.data.user.activity,
+                    age: res.data.user.age,
                     _id: res.data.user._id
                     //!이번엔 토큰 상태에 넣어서 관리해보기
                 }

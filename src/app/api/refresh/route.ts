@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
         .setExpirationTime('5m')
         .setIssuedAt()  
         .sign(JWT_SECRET)
-        console.log('리프레시토큰 검중중 ', newAccessToken)
+        console.log('리프레시토큰 검중중 ')
             return NextResponse.json({success: true, accessToken: newAccessToken, message:'엑세스토큰 발급'})
     }catch(err){
         console.log('refreshtoken error', err)

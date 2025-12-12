@@ -1,5 +1,8 @@
 import mongoose, {Schema, Document} from "mongoose";
 
+
+//TODO 이건 foodModel에서 가져와도 될것 같아 피룡없어 보임 추후에 확인해보기
+
 export interface ISaved extends Document{
     name: string; //음식이름
     protein: number; //단백질량 우선은 
