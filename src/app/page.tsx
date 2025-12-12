@@ -1,13 +1,13 @@
-import LoginSection from "@/app/components/LoginSection";
 
 
-export default function LandingPage() {
+import LandingComponent from './components/LandingComponent'
+import {cookies} from 'next/headers'
 
+export default async function LandingPage() {
+    const cookie = await cookies()
+    const refreshToken = cookie.get('refreshToken')
 
   return (
-    <div className="h-full">
-      <LoginSection />
-    
-    </div>
-  );
+    <LandingComponent hasRefreshToken={!!refreshToken}/>  
+  )
 }

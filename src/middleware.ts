@@ -24,7 +24,8 @@ const refreshToken = req.cookies.get('refreshToken')?.value
 
 
 if(!refreshToken){
-  return NextResponse.redirect(new URL('/login', req.url))
+  console.log('리프레시토큰 없음 - 미들웨어 ')
+  return NextResponse.json({message: 'no refreshtoken'}, {status: 401})
 }
 
 if(!accessToken) {

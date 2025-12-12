@@ -1,5 +1,5 @@
-import TodayMenuComponent from '../components/TodayMenuComponent'
-import AddMenu from '../components/AddMenu'
+import TodayMenuComponent from '../../components/TodayMenuComponent'
+import AddMenu from '../../components/AddMenu'
 
 export default function MealsPage() {
 

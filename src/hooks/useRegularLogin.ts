@@ -1,9 +1,9 @@
 'use client'
 
-import { axiosInstance } from "@/lib/axios";
+
 import { useUserStore } from "@/store/userStore";
 import { useRouter } from "next/navigation";
-
+import axios from 'axios'
 
 interface LoginInfo {
     nickName: string;
@@ -19,7 +19,7 @@ const useRegularLogin = () => {
 
     const login = async ({ nickName, password }: LoginInfo) => {
         try {
-            const res = await axiosInstance.post('/regular-login', { nickName, password })
+            const res = await axios.post('api/regular-login', { nickName, password })
             if (res.data.success) {
                 const newUser = {
                     nickName: res.data.user.nickName,

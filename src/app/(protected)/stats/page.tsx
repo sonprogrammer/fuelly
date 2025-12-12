@@ -10,7 +10,7 @@ import {
     ReferenceLine,
     ResponsiveContainer,
 } from "recharts";
-import FoodRecordComponent from '../components/FoodRecordComponent'
+import FoodRecordComponent from '../../components/FoodRecordComponent'
 import dayjs from "dayjs";
 
 import { useState } from 'react'

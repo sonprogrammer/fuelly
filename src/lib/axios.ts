@@ -108,6 +108,7 @@ axiosInstance.interceptors.response.use(
             setUserAccessToken(null)
             useUserStore.getState().clearUser()
             if(typeof window !== 'undefined'){
+                alert('세션 만료 재로그인하세요')
                 window.location.href = '/login'
             }
             return Promise.reject(err)
