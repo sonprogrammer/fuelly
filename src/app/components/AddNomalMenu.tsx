@@ -5,6 +5,7 @@ import { useState } from 'react';
 import MenuItem from './MenuItem'
 import AddCustomMenuModal from './AddCustomMenuModal'
 import useGetNomalFoods from '../../hooks/useGetNomalFoods'
+import usePostFoodToDailyMeal from '../../hooks/usePostFoodToDailyMeal'
 import { Food } from '../../types/food'
 
 export default function AddNomalMenu() {
@@ -12,7 +13,7 @@ export default function AddNomalMenu() {
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   
   const {data} = useGetNomalFoods()
-
+  const { mutate } = usePostFoodToDailyMeal()
 
   const filteredFoods = data?.filter((food: Food) =>
     food.name.includes(searchQuery)
@@ -24,6 +25,11 @@ export default function AddNomalMenu() {
 
   const handleModalClose = () => {
     setModalOpen(false)
+  }
+
+  // TODO 여기서 오늘 식사에 추가 props로 보내주기
+  const handleAddbtnClick = (food: Food) => {
+    mutate(food)
   }
 
   return (
@@ -56,7 +62,7 @@ export default function AddNomalMenu() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-96 overflow-y-auto mt-5">
         {filteredFoods?.map((food: Food) => (
-          <MenuItem food={food} type="add" key={food.name} />
+          <MenuItem food={food} type="add" key={food.name} add={handleAddbtnClick}/>
         ))}
       </div>
 

@@ -5,9 +5,10 @@ import { Food } from '../../types/food'
 interface MenuItemProps {
     food: Food
     type: 'add' | 'delete',
+    add?: (food: Food) => void
 }
 
-export default function MenuItem({ food, type }: MenuItemProps) {
+export default function MenuItem({ food, type, add }: MenuItemProps) {
     return (
         <div
             key={food.name}
@@ -35,16 +36,14 @@ export default function MenuItem({ food, type }: MenuItemProps) {
 
             {type === 'add' ?
                 <button
-                    //   size="sm"
-                    //   onClick={() => handleAddCommonFood(food)}
+                    onClick={() => add?.(food)}
                     className=' p-2 px-3 h-full cursor-pointer rounded-xl bg-linear-to-br from-purple-400 to-orange-400 text-white'
                 >
                     <Plus className="h-4 w-4" />
                 </button>
                 :
                 <button
-                    //   size="sm"
-                    //   onClick={() => handleAddCommonFood(food)}
+
                     className=' p-2 px-3 cursor-pointer rounded-xl text-white hover:bg-gray-200'
                 >
                     <Trash2 className="text-red-500 bg-" />
