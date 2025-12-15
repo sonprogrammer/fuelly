@@ -9,7 +9,7 @@ export interface IDaily extends Document{
         name: string;
         protein: number;
         calories: number;
-        // quantity: number; 
+        unit: string;
     }[];
     totalProtein: number;
     totalCalories: number;
@@ -44,8 +44,8 @@ const DailySchema: Schema = new Schema({
                 type: Number,
                 required: true
             },
-            quantity: {
-                type: Number,
+            unit: {
+                type: String,
                 required: true
             },
         }

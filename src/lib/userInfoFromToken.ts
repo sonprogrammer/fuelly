@@ -8,9 +8,15 @@ export async function userInfoFromToken(req: NextRequest){
     const header = req.headers.get('Authorization')
     if(!header || !header?.startsWith('Bearer ')) return null
 
-    const token = header.split(' ')[1]
-    const verified = await jwtVerify(token, JWT_SECRET)
-    return verified.payload 
+    try{
+
+      const token = header.split(' ')[1]
+      const verified = await jwtVerify(token, JWT_SECRET)
+      return verified.payload 
+    }catch(err){
+      console.log('userInfoFromToken.ts error', err)
+        return null
+    }
 }
 
 

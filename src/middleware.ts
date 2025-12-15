@@ -35,7 +35,7 @@ if(!accessToken) {
     return NextResponse.next()
   }catch(err){
     console.log('err', err)
-    return NextResponse.redirect(new URL('/login', req.url))
+    return NextResponse.json({message:'no erreerr'},{ status: 401})
   }
 }
   // !엑세스토큰 검증

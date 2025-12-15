@@ -4,7 +4,7 @@ import mongoose, {Schema, Document} from "mongoose";
 export interface IFood extends Document{
     name: string; //음식이름
     protein: number; 
-    calories: number; 
+    calorie: number; 
     createdBy?: string; //*gpt추천이면 Null, 유저가 추가 하면 userId  -> 이게 필요가 있나 싶음 우선 keep해놓자
     unit: string;
     //TODO createdBy는 나중에 삭제할지 보기
@@ -21,7 +21,7 @@ const FoodSchema: Schema = new Schema({
         type: Number,
         required: true
     },
-    calories: {
+    calorie: {
         type: Number,
         required: true
     },

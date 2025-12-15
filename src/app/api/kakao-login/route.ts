@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
             nickName: user.nickName
         })
             .setProtectedHeader({ alg: 'HS256' })
-            .setExpirationTime('1d')
+            .setExpirationTime('7d')
             .setIssuedAt()
             .sign(JWT_SECRET);
 

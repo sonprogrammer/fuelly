@@ -39,7 +39,7 @@ export default function AddMenu() {
             </Box>
             {choice == 'manual' ? 
             <div>
-            <ManualMenue />
+            {/* <ManualMenue /> */}
             <AddNomalMenu />
             </div>
             :

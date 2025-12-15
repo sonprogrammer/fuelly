@@ -1,4 +1,14 @@
+// TODO이거 그냥 ai search페이지에서 사용해도 됨 굳이 today's meal페이지서 사용할 필요없음
+'use client'
+
+import {useState} from 'react'
+
 export default function ManualMenu() {
+    const [search, setSearch] = useState<string>('')
+
+    const handleAiClick = () => {
+
+    }
 
     return(
         <div className="flex flex-col gap-2 bg-white p-5 rounded-md border border-gray-300">
@@ -9,8 +19,15 @@ export default function ManualMenu() {
             <section className="flex gap-5 w-full">
                 <input 
                     className="flex-1 bg-gray-100 p-2 border border-gray-200 rounded-md"
-                    type="text" placeholder="예: 김치찌개 1인분, 피자 3조각"/>
-                <button className="bg-black text-white px-5 rounded-lg cursor-pointer">
+                    type="text"
+                    placeholder="예: 김치찌개 1인분, 피자 3조각"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    />
+                <button 
+                    className="bg-black text-white px-5 rounded-lg cursor-pointer"
+
+                >
                     AI분석
                 </button>
             </section>

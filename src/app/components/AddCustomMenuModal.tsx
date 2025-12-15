@@ -1,14 +1,48 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-
+import { useState} from 'react'
+import usePostAddCustomFood from '@/hooks/usePostAddCustomFood'
+import { useUserStore } from "@/store/userStore"
 interface ModalProps {
     open: boolean,
     onClose: () => void
 }
 
 export default function AddCustomMenuModal({ open, onClose }: ModalProps) {
+    const user = useUserStore(state => state.userAccessToken)
+    console.log('user from loginpage', user)
+
+    const [foodName, setFoodName] = useState<string>('')
+    const [calorie, setCalorie] = useState<string>('')
+    const [protein, setProtein] = useState<string>('')
+    const [unit, setUnit] = useState<string>('')
+
+    
+    const {mutate, isPending} = usePostAddCustomFood()
     if (!open) return null;
+
+    
+    const handleSubmit = () => {
+        if(!foodName || !calorie || !protein || !unit) {
+            alert('작성 내용을 확인해주세요')
+            return
+        }
+
+        mutate(
+            {
+              name: foodName,
+              calorie: Number(calorie),
+              protein: Number(protein),
+              unit,
+            },
+            {
+              onSuccess: () => {
+                onClose()
+              },
+            }
+          )
+    }
 
     const handleOverlayClick = (e: React.MouseEvent) => {
         if (e.target === e.currentTarget) {
@@ -41,22 +75,41 @@ export default function AddCustomMenuModal({ open, onClose }: ModalProps) {
                         <h1 className="text-lg font-bold text-center">영양 정보를 직접 입력해주세요</h1>
                         <input
                             className="flex-1 bg-gray-100 p-2 rounded-xl w-full mb-3  mt-5"
-                            type="text" placeholder='음식 이름' />
+                            type="text" placeholder='음식 이름' 
+                            value={foodName}
+                            onChange={(e)=> setFoodName(e.target.value)}
+                            />
                         <section className="flex w-full gap-3">
                             <input
                                 className='flex-1 bg-gray-100 p-2 rounded-xl '
-                                type="text" placeholder='칼로리' />
+                                type="number" placeholder='칼로리' 
+                                value={calorie}
+                                onChange={(e)=> setCalorie(e.target.value)}
+                                />
                             <input
                                 className='flex-1 bg-gray-100 p-2 rounded-xl'
-                                type="text" placeholder='단백질(g)' />
+                                type="number" placeholder='단백질(g)' 
+                                value={protein}
+                                onChange={(e) => setProtein(e.target.value)}
+                                />
                             <input
                                 className='flex-1 bg-gray-100 p-2 rounded-xl'
-                                type="text" placeholder='양 (예: 100g)' />
+                                type="text" placeholder='양 (예: 100g)'
+                                value={unit}
+                                onChange={(e) => setUnit(e.target.value)}
+                                 />
                         </section>
 
-                        {/*TODO 아이콘으로 해놓기  */}
+                        
                         <section className="mt-5 flex gap-2">
-                            <button className='flex-1 bg-teal-500 px-3 py-2 rounded-lg cursor-pointer text-white hover:bg-teal-600'>일반 음식에 추가하기</button>
+                            <button 
+                            className={`flex-1 px-3 py-2 rounded-lg text-white
+                                ${isPending ? 'bg-gray-400 cursor-not-allowed' : 'bg-teal-500 hover:bg-teal-600'}
+                              `}
+                                onClick={handleSubmit}
+                            >
+                                {isPending ? '저장 중...' : '일반 음식에 추가하기'}
+                            </button>
                             <button className="flex-1 bg-blue-200 px-3 py-2 rounded-lg cursor-pointer hover:bg-blue-300">오늘 먹은 음식에 바로 추가하기</button>
                         </section>
 

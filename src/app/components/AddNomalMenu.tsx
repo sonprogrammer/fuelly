@@ -1,6 +1,6 @@
 'use client'
 // TODO여기서 플러스 버튼 클릭하면 오늘 먹은 음식으로 이동 상태로 만들고 디비로 보내버리기 나중에 공유도 해야하니깐
-import { Search, Plus, Sparkles } from 'lucide-react'
+import { Search } from 'lucide-react'
 import { useState } from 'react';
 import MenuItem from './MenuItem'
 import AddCustomMenuModal from './AddCustomMenuModal'

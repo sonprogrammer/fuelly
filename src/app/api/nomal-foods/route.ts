@@ -1,18 +1,30 @@
 import dbConnect from "@/lib/mongoose";
 import Food from '@/models/foodModel'
-import {  NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { basicFoods } from '../../store/basicFoods'
+import {userInfoFromToken} from '@/lib/userInfoFromToken'
 
 
-export async function GET(){
+export async function GET(req: NextRequest){
     try{
         dbConnect()
         const count = await Food.countDocuments()
-        console.log('countda ', count)
+        const userInfo = await userInfoFromToken(req)
+
+        if(!userInfo){
+            return NextResponse.json({message: 'user token invalid'},{status:401})
+        }
+        
         if(count === 0){
             await Food.insertMany(basicFoods)
         }
-        const foods = await Food.find()
+
+        const foods = await Food.find({
+            $or:[
+                {createdBy: 'system'},
+                {createdBt: userInfo.objectId}
+            ]
+        })
 
         return NextResponse.json({message: 'here you are', foods}, {status: 200})
         

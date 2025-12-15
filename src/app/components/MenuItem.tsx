@@ -19,7 +19,7 @@ export default function MenuItem({ food, type }: MenuItemProps) {
                     <p >{food.unit}</p>
                 </div>
                 <div className="flex gap-3 mt-1">
-                    <span className="text-gray-600">{food.calories} kcal</span>
+                    <span className="text-gray-600">{food.calorie} kcal</span>
                     <span className="text-gray-600">단백질 {food.protein}g</span>
                 </div>
             </div>
