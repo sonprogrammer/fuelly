@@ -39,6 +39,7 @@ export default function AddMenu() {
             </Box>
             {choice == 'manual' ? 
             <div>
+                {/* TODO 밑에 컴포넌트는 ai 검색하는 컴포넌트임 */}
             {/* <ManualMenue /> */}
             <AddNomalMenu />
             </div>

@@ -8,7 +8,7 @@ export interface IDaily extends Document{
         foodId?: string; //food모델 참조 
         name: string;
         protein: number;
-        calories: number;
+        calorie: number;
         unit: string;
     }[];
     totalProtein: number;
@@ -40,7 +40,7 @@ const DailySchema: Schema = new Schema({
                 type: Number,
                 required: true
             },
-            calories: {
+            calorie: {
                 type: Number,
                 required: true
             },
@@ -54,7 +54,7 @@ const DailySchema: Schema = new Schema({
         type: Number,
         required: true
     },
-    totalCalories: {
+    totalCalorie: {
         type: Number,
         required: true
     },

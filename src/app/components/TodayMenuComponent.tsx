@@ -4,8 +4,8 @@ export default function TodayMenuComponent () {
     const data = []
 
     const foods = [
-        { name: '아몬드', calories: 579, protein: 21, unit: '100g' },
-        { name: '프로틴 쉐이크', calories: 120, protein: 24, unit: '1스쿱' },
+        { name: '아몬드', calorie: 579, protein: 21, unit: '100g' },
+        { name: '프로틴 쉐이크', calorie: 120, protein: 24, unit: '1스쿱' },
     ]
     return(
         <div className="rounded-md border border-gray-300 p-5 bg-white">
