@@ -1,19 +1,20 @@
-import mongoose, {Schema, Document} from "mongoose";
+import mongoose, {Schema, Types, Document} from "mongoose";
 
 // !오늘 먹은 음식으로 들어갈 모델
 export interface IDaily extends Document{
-    userId: string; //유저 오브젝트id
-    date: string;
+    userId: Types.ObjectId //유저 오브젝트id
+    date: string
     meals: {
-        foodId?: string; //food모델 참조 
-        name: string;
-        protein: number;
-        calorie: number;
-        unit: string;
-    }[];
-    totalProtein: number;
-    totalCalorie: number;
-    createdAt: Date;
+        foodId?: Types.ObjectId //food모델 참조 
+        name: string
+        protein: number
+        calorie: number
+        unit: string
+    }[]
+    totalProtein: number
+    totalCalorie: number
+    createdAt: Date
+    updatedAt: Date
 }
 
 const DailySchema: Schema = new Schema({
@@ -58,11 +59,11 @@ const DailySchema: Schema = new Schema({
         type: Number,
         default: 0
     },
-    createdAt: {
-        type: Date,
-        default: Date.now
-    }
-})
+    
+}, { timestamps: true })
+
+DailySchema.index({ userId: 1, date: 1 }, { unique: true })
+
 
 
 export default mongoose.models.Daily || mongoose.model<IDaily>('Daily', DailySchema)

@@ -27,10 +27,12 @@ export default function AddNomalMenu() {
     setModalOpen(false)
   }
 
-  // TODO 여기서 오늘 식사에 추가 props로 보내주기
+  
   const handleAddbtnClick = (food: Food) => {
     mutate(food)
   }
+
+
 
   return (
     <div className="bg-white rounded-md mt-3 border border-gray-300 p-5">

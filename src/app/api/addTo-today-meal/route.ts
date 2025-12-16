@@ -5,29 +5,61 @@ import dailyMeal from '@/models/dailyModel'
 import { userInfoFromToken } from "@/lib/userInfoFromToken"
 import dayjs from 'dayjs'
 
-export async function POST(req:NextRequest){
-    try{
+export async function POST(req: NextRequest) {
+    try {
 
-        const food = await req.json()
-        
         await dbConnect()
-
         const userInfo = await userInfoFromToken(req)
-        if(!userInfo){
-            return NextResponse.json({message: 'user token invalid'}, {status: 401})
+        const food = await req.json()
+
+
+        if (!userInfo) {
+            return NextResponse.json({ message: 'user token invalid' }, { status: 401 })
         }
 
-        if(!food){
-            return NextResponse.json({message: 'info is not proviede'}, {status: 400})
+        if (!food) {
+            return NextResponse.json({ message: 'info is not proviede' }, { status: 400 })
         }
 
-        const today = dayjs().format('YY-MM-DD')
+        const today = dayjs().format('YYYY-MM-DD')
 
-        const todayMeal = await dailyMeal.findOne({
-            
+        let todayMeal = await dailyMeal.findOne({
+            userId: userInfo.objectId,
+            date: today
         })
-        
-    }catch(err){
-        console.log('err',err) 
+
+        if (todayMeal) {
+            todayMeal.meals.push({
+                foodId: food._id,
+                name: food.name,
+                protein: food.protein,
+                calorie: food.calorie,
+                unit: food.unit
+            })
+            todayMeal.totalProtein += food.protein
+            todayMeal.totalCalorie += food.calorie
+        }else{
+            todayMeal = await dailyMeal.create({
+                userId:userInfo.objectId,
+                date: today,
+                meals:[{
+                    foodId: food._id,
+                    name: food.name,
+                    protein: food.protein,
+                    calorie: food.calorie,
+                    unit: food.unit
+                }],
+                totalProtein: food.protein,
+                totalCalorie: food.calorie
+            })
+        }
+
+        await todayMeal.save()
+
+        return NextResponse.json({messag: 'success'},{status: 200})
+
+    } catch (err) {
+        console.log('err', err)
+        return NextResponse.json({message: 'internal sever error'},{status:500})
     }
 }

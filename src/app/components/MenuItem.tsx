@@ -4,11 +4,12 @@ import { Food } from '../../types/food'
 
 interface MenuItemProps {
     food: Food
-    type: 'add' | 'delete',
+    type: 'add' | 'delete'
     add?: (food: Food) => void
+    onDelete?: (food:Food) => void
 }
 
-export default function MenuItem({ food, type, add }: MenuItemProps) {
+export default function MenuItem({ food, type, add, onDelete }: MenuItemProps) {
     return (
         <div
             key={food.name}
@@ -43,7 +44,7 @@ export default function MenuItem({ food, type, add }: MenuItemProps) {
                 </button>
                 :
                 <button
-
+                    onClick={() => onDelete?.(food)}
                     className=' p-2 px-3 cursor-pointer rounded-xl text-white hover:bg-gray-200'
                 >
                     <Trash2 className="text-red-500 bg-" />
