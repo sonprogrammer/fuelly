@@ -9,12 +9,12 @@ interface Props {
     icon: React.ReactNode
 }
 
-// TODO currentGrams, targetGrams는 유저의 몸무게와 키를 계산해서 대강적인것 목표로 하기
- function AmountComponent({ currentGrams= 2500, targetGrams, name, icon }: Props) {
+
+ function AmountComponent({ currentGrams= 50000, targetGrams, name, icon }: Props) {
 
 
-    const clamped = Math.max(0, currentGrams);
-    const percent = Math.min(100, Math.round((clamped / targetGrams) * 100));
+    const current = Math.max(0, currentGrams);
+    const percent = Math.min(100, Math.round((current / targetGrams) * 100));
     return (
         <div className="border border-gray-300 rounded-lg flex-1 p-5 bg-white flex flex-col gap-3">
             <section className='flex justify-between'>
@@ -27,10 +27,10 @@ interface Props {
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
                     <Typography variant="subtitle2"></Typography>
                     <Typography variant="subtitle2" color="text.">
-                        {clamped.toLocaleString()}g / {targetGrams.toLocaleString()}g ({percent}%)
+                        {current.toLocaleString()}g / {targetGrams.toLocaleString()}g ({percent}%)
                     </Typography>
                 </Box>
-                <Tooltip title={`${clamped}g / ${targetGrams}g`} arrow>
+                <Tooltip title={`${current}g / ${targetGrams}g`} arrow>
                     <LinearProgress
                         variant="determinate"
                         value={percent}

@@ -3,7 +3,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import axiosInstance from '@/lib/axios'
+import {axiosInstance} from '@/lib/axios'
 
 export default function usePostAiAnalyzeFood(){
     

@@ -1,25 +1,17 @@
-type Goal = 'bulk' | 'diet' | 'maintain';
-type Activity = 'sedentary' | 'light' | 'moderate' | 'active';
-type Gender = 'male' | 'female';
+import {FixedUser, ActivityLevel} from '@/types/user'
 
-interface UserInfo {
-    height: number;
-    weight: number;
-    gender: Gender;
-    activity: Activity;
-    goal: Goal;
-    age: number;
-  }
-const amountCalculate = (data: UserInfo) => {
+
+const amountCalculate = (data: FixedUser) => {
     const { height, weight, gender, activity, goal, age} = data
 
+    // console.log('data from amount ', data)
     // 남성 BMR=10W+6.25H−5A+5, 
     // 여성 BMR=10W+6.25H−5A−161(W=체중, H=키, A=나이)
     const BMR = gender === 'male' 
     ? 10 * weight + 6.25 * height - 5 * age + 5
     : 10 * weight + 6.25 * height - 5 * age - 161
 
-    const activityFactorMap: Record<Activity, number> ={
+    const activityFactorMap: Record<ActivityLevel, number> ={
         sedentary: 1.2,
         light: 1.37,
         moderate: 1.55,
@@ -30,9 +22,9 @@ const amountCalculate = (data: UserInfo) => {
 
     const TDEE = BMR * activityFactor
 
-    let recommendedCalroies = TDEE
-    if(goal === 'diet') recommendedCalroies -= 300
-    if(goal ==='bulk') recommendedCalroies += 300
+    let recommendedCalories = TDEE
+    if(goal === 'diet') recommendedCalories -= 300
+    if(goal ==='bulk') recommendedCalories += 300
 
     let proteinPerKg = 1.2
     if(goal === 'diet') proteinPerKg = 1.8
@@ -43,7 +35,7 @@ const amountCalculate = (data: UserInfo) => {
     return {
         BMR: Math.round(BMR),
         TDEE: Math.round(TDEE),
-        recommendedCalroies: Math.round(recommendedCalroies),
+        recommendedCalories: Math.round(recommendedCalories),
         recommendedProteins: Math.round(recommendedProteins)
     }
 }

@@ -4,10 +4,15 @@ import { useState } from 'react'
 import { Sparkles } from 'lucide-react';
 import AiRecommandMenu from './AiRecommandMenu'
 import Image from 'next/image'
+import useRemainNutrition from '@/hooks/useRemainNutrition'
+import {useUserStore} from '@/store/userStore'
+
 
 export default function AiMenu() {
     const [loading, setLoading] = useState<boolean>(false)
+    const user = useUserStore(state=> state.user)
 
+    const {isPending, recommended, consumed, remain, exceed} = useRemainNutrition(user)
     return (
         <div>
 
@@ -27,13 +32,13 @@ export default function AiMenu() {
                 </section>
 
                 <section className="flex bg-linear-to-br from-blue-50 to-green-50 p-4 rounded-lg mb-4">
-                    <section className="flex-1">
+                    <section className="flex-1 text-center">
                         <h2 className="text-gray-700 font-semibold">남은 칼로리</h2>
-                        <h2 className="text-blue-600">~~~ kcal</h2>
+                        <h2 className="text-blue-600">{(remain.calorie).toLocaleString()}kcal</h2>
                     </section>
-                    <section className='flex-1'>
+                    <section className='flex-1 text-center'>
                         <h2 className="text-gray-700 font-semibold">남은 단백질</h2>
-                        <h2 className="text-green-600">~~~ g</h2>
+                        <h2 className="text-green-600 ">{(remain.protein).toLocaleString()} g</h2>
                     </section>
                 </section>
                 <button className='flex gap-2 items-center bg-black text-white p-3 w-full justify-center rounded-lg hover:bg-black/80'>

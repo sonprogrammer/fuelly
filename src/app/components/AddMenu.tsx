@@ -9,7 +9,7 @@ import AiMenu from './AiMenu'
 import AddNomalMenu from './AddNomalMenu'
 
 export default function AddMenu() {
-    const [choice, setChoice] = useState<'manual' | 'ai' >('manual');
+    const [choice, setChoice] = useState<'manual' | 'ai' >('ai');
 
     const handleChange = (
         event: React.MouseEvent<HTMLElement>,
@@ -39,8 +39,8 @@ export default function AddMenu() {
             </Box>
             {choice == 'manual' ? 
             <div>
-                {/* TODO 밑에 컴포넌트는 ai 검색하는 컴포넌트임 */}
-            <ManualMenue />
+                {/* TODO 밑에 컴포넌트는 ai 검색하는 컴포넌트임 이 페이지에서 사용할지 아님 ai 검색 페이지에서만 쓸지 고민*/}
+            {/* <ManualMenue /> */}
             <AddNomalMenu />
             </div>
             :

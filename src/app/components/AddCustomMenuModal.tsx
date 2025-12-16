@@ -3,15 +3,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState} from 'react'
 import usePostAddCustomFood from '@/hooks/usePostAddCustomFood'
-import { useUserStore } from "@/store/userStore"
+import usePostFoodToDailyMeal from '@/hooks/usePostFoodToDailyMeal'
 interface ModalProps {
     open: boolean,
     onClose: () => void
 }
 
 export default function AddCustomMenuModal({ open, onClose }: ModalProps) {
-    const user = useUserStore(state => state.userAccessToken)
-    console.log('user from loginpage', user)
 
     const [foodName, setFoodName] = useState<string>('')
     const [calorie, setCalorie] = useState<string>('')
@@ -20,16 +18,37 @@ export default function AddCustomMenuModal({ open, onClose }: ModalProps) {
 
     
     const {mutate, isPending} = usePostAddCustomFood()
+    const { mutate: dailyMutate, isPending: dailyPending} =usePostFoodToDailyMeal()
     if (!open) return null;
 
     
-    const handleSubmit = () => {
+    const handleNomalFoodSubmit = () => {
         if(!foodName || !calorie || !protein || !unit) {
             alert('작성 내용을 확인해주세요')
             return
         }
 
         mutate(
+            {
+              name: foodName,
+              calorie: Number(calorie),
+              protein: Number(protein),
+              unit,
+            },
+            {
+              onSuccess: () => {
+                onClose()
+              },
+            }
+          )
+    }
+
+    const handleDailyFoodSubmit = () => {
+        if(!foodName || !calorie || !protein || !unit) {
+            alert('작성 내용을 확인해주세요')
+            return
+        }
+        dailyMutate(
             {
               name: foodName,
               calorie: Number(calorie),
@@ -106,11 +125,16 @@ export default function AddCustomMenuModal({ open, onClose }: ModalProps) {
                             className={`flex-1 px-3 py-2 rounded-lg text-white
                                 ${isPending ? 'bg-gray-400 cursor-not-allowed' : 'bg-teal-500 hover:bg-teal-600'}
                               `}
-                                onClick={handleSubmit}
+                                onClick={handleNomalFoodSubmit}
                             >
                                 {isPending ? '저장 중...' : '일반 음식에 추가하기'}
                             </button>
-                            <button className="flex-1 bg-blue-200 px-3 py-2 rounded-lg cursor-pointer hover:bg-blue-300">오늘 먹은 음식에 바로 추가하기</button>
+                            <button 
+                                onClick={handleDailyFoodSubmit}
+                                className="flex-1 bg-blue-200 px-3 py-2 rounded-lg cursor-pointer hover:bg-blue-300"
+                            >
+                                {dailyPending ? '내보내는 중...' : '오늘 먹은 음식에 바로 추가하기'}
+                            </button>
                         </section>
 
 

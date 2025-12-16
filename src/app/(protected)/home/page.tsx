@@ -12,7 +12,7 @@ export default function HomePage() {
     const user = useUserStore(state => state.user)
 
     // const token = useUserStore(state=> state.userAccessToken)
-    // console.log('token', token)
+    // console.log('user', user)
     // console.log('token', token)
 
     const message = useGetDailyMessage()
@@ -33,7 +33,7 @@ export default function HomePage() {
             user.age == null ||
             user.activity == null
         ) {
-            return null;
+            return null
         }
     
         return amountCalculate({
@@ -43,7 +43,7 @@ export default function HomePage() {
             activity: user.activity,
             goal: user.goal,
             age: user.age,
-        });
+        })
     }, [user])
 
     
@@ -65,7 +65,7 @@ export default function HomePage() {
 
                 <AmountComponent 
                     name='칼로리'
-                    targetGrams={target?.recommendedCalroies ?? 0}
+                    targetGrams={target?.recommendedCalories ?? 0}
                     icon={<Flame className="h-4 w-4 text-orange-500" />}
                     currentGrams={0}
                     />

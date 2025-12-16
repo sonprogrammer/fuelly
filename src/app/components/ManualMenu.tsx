@@ -7,7 +7,7 @@ export default function ManualMenu() {
     const [search, setSearch] = useState<string>('')
 
     const handleAiClick = () => {
-
+        
     }
 
     return(
