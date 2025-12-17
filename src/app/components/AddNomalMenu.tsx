@@ -1,23 +1,33 @@
 'use client'
-// TODO여기서 플러스 버튼 클릭하면 오늘 먹은 음식으로 이동 상태로 만들고 디비로 보내버리기 나중에 공유도 해야하니깐
+
 import { Search } from 'lucide-react'
 import { useState } from 'react';
 import MenuItem from './MenuItem'
 import AddCustomMenuModal from './AddCustomMenuModal'
 import useGetNomalFoods from '../../hooks/useGetNomalFoods'
 import usePostFoodToDailyMeal from '../../hooks/usePostFoodToDailyMeal'
+import useToggleSaveFood from '@/hooks/useToggleSaveFood'
+import useGetSavedFood from '@/hooks/useGetSavedFood'
 import { Food } from '../../types/food'
 
 export default function AddNomalMenu() {
   const [searchQuery, setSearchQuery] = useState('');
   const [modalOpen, setModalOpen] = useState<boolean>(false)
-  
-  const {data} = useGetNomalFoods()
+
+  const { data, isPending, isError } = useGetNomalFoods()
   const { mutate } = usePostFoodToDailyMeal()
+  const { mutate: toggleSave } = useToggleSaveFood()
+  const { data: savedFoods } = useGetSavedFood()
 
   const filteredFoods = data?.filter((food: Food) =>
     food.name.includes(searchQuery)
   )
+
+
+  const savedFoodIdSet = new Set(
+    savedFoods?.map((item: any) => item.foodId._id)
+  )
+  console.log('savedfoood', savedFoods)
 
   const handleModalOpenClick = () => {
     setModalOpen(true)
@@ -27,11 +37,14 @@ export default function AddNomalMenu() {
     setModalOpen(false)
   }
 
-  
+
   const handleAddbtnClick = (food: Food) => {
     mutate(food)
   }
 
+  const handleSaveToggle = (foodId: string) => {
+    toggleSave(foodId)
+  }
 
 
   return (
@@ -43,12 +56,12 @@ export default function AddNomalMenu() {
         </div>
 
         <div>
-          <button 
+          <button
             className="font-bold border p-2 rounded-2xl bg-linear-to-br from-green-50 to-blue-100
             hover:cursor-pointer
             "
             onClick={handleModalOpenClick}
-            >직접입력하기</button>
+          >직접입력하기</button>
 
         </div>
       </section>
@@ -62,14 +75,31 @@ export default function AddNomalMenu() {
         />
       </section>
 
+      {isPending &&
+        <div className='w-full flex justify-center '>
+          <img src='/spinner.gif' alt='spinner' className='w-10' />
+        </div>
+      }
+      {isError &&
+        <div>
+          <h1>데이터 받아오는 중 에러가 발생하였습니다.</h1>
+        </div>
+      }
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-96 overflow-y-auto mt-5">
         {filteredFoods?.map((food: Food) => (
-          <MenuItem food={food} type="add" key={food.name} add={handleAddbtnClick}/>
+          <MenuItem 
+          food={food}
+           type="add"
+            key={food.name}
+             add={handleAddbtnClick} 
+             handleSaveToggle={handleSaveToggle} 
+             isSaved={savedFoodIdSet.has(food._id!)}
+             />
         ))}
       </div>
 
       {modalOpen && (
-      <AddCustomMenuModal open={modalOpen} onClose={handleModalClose} />
+        <AddCustomMenuModal open={modalOpen} onClose={handleModalClose} />
       )}
 
     </div>

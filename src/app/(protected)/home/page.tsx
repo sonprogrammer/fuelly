@@ -3,17 +3,16 @@
 import { useUserStore } from "@/store/userStore"
 import AmountComponent from '@/app/components/AmountComponent'
 import GoalComponent from '@/app/components/GoalComponent'
-import { useMemo } from "react";
-import amountCalculate from '@/utils/amountCalculate'
 import { Flame, Beef } from 'lucide-react'
 import useGetDailyMessage from '@/hooks/useGetDailyMessage'
+import useRemainNutrition from '@/hooks/useRemainNutrition'
 
 export default function HomePage() {
-    const user = useUserStore(state => state.user)
+    const user = useUserStore(state=> state.user)
 
-    // const token = useUserStore(state=> state.userAccessToken)
-    // console.log('user', user)
-    // console.log('token', token)
+    const {isPending, recommended, consumed, remain, exceed} = useRemainNutrition(user)
+
+    
 
     const message = useGetDailyMessage()
     
@@ -22,29 +21,6 @@ export default function HomePage() {
         .filter(Boolean)          
         .map(m => m.trim())
 
-    
-    const target = useMemo(() => {
-        if (
-            !user ||
-            user.height == null ||
-            user.weight == null ||
-            user.gender == null ||
-            user.goal == null ||
-            user.age == null ||
-            user.activity == null
-        ) {
-            return null
-        }
-    
-        return amountCalculate({
-            height: user.height,
-            weight: user.weight,
-            gender: user.gender,
-            activity: user.activity,
-            goal: user.goal,
-            age: user.age,
-        })
-    }, [user])
 
     
     return (
@@ -65,15 +41,17 @@ export default function HomePage() {
 
                 <AmountComponent 
                     name='칼로리'
-                    targetGrams={target?.recommendedCalories ?? 0}
+                    targetGrams={recommended.calorie ?? 0}
                     icon={<Flame className="h-4 w-4 text-orange-500" />}
-                    currentGrams={0}
+                    currentGrams={consumed.dailyCalorie}
+                    exceed={exceed.calorie}
                     />
                 <AmountComponent 
                     name='단백질' 
-                    targetGrams={target?.recommendedProteins ?? 0}
+                    targetGrams={recommended.protein ?? 0}
                     icon={<Beef className="h-4 w-4 text-red-500" />}
-                    currentGrams={0}
+                    currentGrams={consumed.dailyProtein}
+                    exceed={exceed.protein}
                 />
             </div>
             

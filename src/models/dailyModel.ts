@@ -5,7 +5,7 @@ export interface IDaily extends Document{
     userId: Types.ObjectId //유저 오브젝트id
     date: string
     meals: {
-        foodId?: Types.ObjectId //food모델 참조 
+        foodId?: Types.ObjectId 
         name: string
         protein: number
         calorie: number

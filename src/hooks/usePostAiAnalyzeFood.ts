@@ -2,9 +2,15 @@
 
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import {axiosInstance} from '@/lib/axios'
 
-export default function usePostAiAnalyzeFood(){
-    
+
+const postAiAnalyzeFood = async () => {
+    const res = await axiosInstance.post('/ai-analyze-food')
+    return res
+}
+
+const usePostAiAnalyzeFood = () => {
+    // return 
 }

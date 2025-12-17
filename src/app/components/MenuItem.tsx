@@ -1,4 +1,4 @@
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2, Star } from 'lucide-react'
 import { Food } from '../../types/food'
 
 
@@ -6,27 +6,47 @@ interface MenuItemProps {
     food: Food
     type: 'add' | 'delete'
     add?: (food: Food) => void
-    onDelete?: (food:Food) => void
+    onDelete?: (food: Food) => void
+    handleSaveToggle?: (foodId: string) => void
+    isSaved?: boolean
 }
 
-export default function MenuItem({ food, type, add, onDelete }: MenuItemProps) {
+export default function MenuItem({ food, type, add, onDelete,isSaved, handleSaveToggle }: MenuItemProps) {
+
     return (
         <div
             key={food.name}
-            className="flex items-center justify-between p-3 border border-gray-300 rounded-lg hover:bg-gray-50"
+            className="flex relative items-center justify-between p-3 border border-gray-300 rounded-lg hover:bg-gray-50"
         >
+
+
             <div
                 className={`${type === 'add' && 'flex flex-col'}`}
             >
+
                 <div className="flex items-center gap-2">
-                    <span 
+                    <span
                         className={`${type === 'add' && 'text-sm'}`}
                     >
                         {food.name}
                     </span>
-                    <p 
+                    <p
                         className={`${type === 'add' && 'text-sm'}`}
                     >{food.unit}</p>
+                    {type === 'add' &&
+                        <button
+                            onClick={()=>handleSaveToggle?.(food._id!)}
+                            className={`p-1 border rounded-md bg-white cursor-pointer
+                                
+                                `}
+                        >
+                            <Star 
+                                className='w-4 h-4' 
+                                fill={isSaved ? "#FFD700" : "none"} 
+                                color={isSaved ? "#FFD700" : "currentColor"}
+                                />
+                        </button>
+                    }
                 </div>
 
                 <div className={`${type === 'add' ? 'flex flex-col text-sm' : 'flex gap-3 mt-1'}`}>

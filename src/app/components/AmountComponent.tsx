@@ -4,13 +4,14 @@ import React from "react";
 
 interface Props {
     name: string;
-    currentGrams: number; 
-    targetGrams: number; 
+    currentGrams: number;
+    targetGrams: number;
     icon: React.ReactNode
+    exceed: number
 }
 
 
- function AmountComponent({ currentGrams= 50000, targetGrams, name, icon }: Props) {
+function AmountComponent({ currentGrams, targetGrams, name, icon, exceed }: Props) {
 
 
     const current = Math.max(0, currentGrams);
@@ -22,7 +23,7 @@ interface Props {
                 {icon}
             </section>
 
-          
+
             <Box>
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
                     <Typography variant="subtitle2"></Typography>
@@ -44,17 +45,20 @@ interface Props {
                                 borderRadius: 6,
                                 transition: "width 600ms ease",
                                 background: percent >= 100
-                                    ? "linear-gradient(90deg,#16a34a,#059669)" 
+                                    ? "linear-gradient(90deg,#ef4444,#b91c1c)"
                                     : percent >= 75
-                                        ? "linear-gradient(90deg,#f59e0b,#f97316)" 
-                                        : "linear-gradient(90deg,#ef4444,#f97316)",  
+                                        ? "linear-gradient(90deg,#f59e0b,#f97316)"
+                                        : "linear-gradient(90deg,#ef4444,#f97316)",
                             },
                         }}
                     />
                 </Tooltip>
             </Box>
-            <h2 className="text-sm">남은 {name} : 
-                <span className="text-green-500 font-bold">{targetGrams - currentGrams}kcal/g</span>
+            <h2 className="text-sm">남은 {name} :  
+                {targetGrams - currentGrams > 0
+                    ? <span className="text-green-500 font-bold"> {targetGrams - currentGrams}g</span>
+                    : <span className="text-red-500 font-bold"> +{Math.abs(targetGrams - currentGrams)}g 초과!</span>
+                }
             </h2>
         </div>
     )
