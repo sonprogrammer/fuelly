@@ -3,7 +3,6 @@ import { axiosInstance } from '@/lib/axios'
 
 const getNomalFoods = async () => {
     const res = await axiosInstance.get('/nomal-foods')
-    console.log('res', res.data)
     return res.data.foods
 }
 

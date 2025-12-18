@@ -27,7 +27,7 @@ export default function AddNomalMenu() {
   const savedFoodIdSet = new Set(
     savedFoods?.map((item: any) => item.foodId._id)
   )
-  console.log('savedfoood', savedFoods)
+
 
   const handleModalOpenClick = () => {
     setModalOpen(true)
@@ -42,6 +42,7 @@ export default function AddNomalMenu() {
     mutate(food)
   }
 
+  // !이름은 세이브지만 토글 기증임 좋아요 취소 등록 둘다 가능
   const handleSaveToggle = (foodId: string) => {
     toggleSave(foodId)
   }

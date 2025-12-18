@@ -22,7 +22,7 @@ export default function TodayMenuComponent() {
     return (
         <div className="rounded-md border border-gray-300 p-5 bg-white">
             <h1 className='text-center'>오늘 먹은 음식</h1>
-            <div className="min-h-[100px] relative">
+            <div className="min-h-[100px]">
 
                 <section className="grid grid-cols-3 text-center border rounded-md p-3 bg-gray-50 mb-4 mt-4">
                     <div>
@@ -53,7 +53,7 @@ export default function TodayMenuComponent() {
                     </section>
                     :
                     !foods || foods?.length === 0 ?
-                        <section className="absolute inset-0 flex justify-center items-center">
+                        <section className="flex justify-center items-center">
                             <p className="text-gray-400">기록된 음식이 없습니다.</p>
                         </section>
                         :

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Box from '@mui/material/Box';
+// !추가할지 말지 고민
 import ManualMenue from './ManualMenu'
 import AiMenu from './AiMenu'
 import AddNomalMenu from './AddNomalMenu'
