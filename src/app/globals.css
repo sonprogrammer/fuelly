@@ -6,6 +6,35 @@
   100% { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradientMove{
+  0%{
+    background-position: 0% 50%;
+  }
+  50%{
+    background-position: 100% 50%;
+  }
+  100%{
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes loading {
+  0% { width: 0% }
+  100% { width: 100% }
+}
+
 .animate-fade-in {
   animation: fade-in 0.8s ease forwards;
 }
@@ -77,6 +106,35 @@
 .btn:hover{
   background-color: oklch(62.7% 0.194 149.214);
 }
+
+.animate-gradient {
+  animation: gradient 6s ease infinite;
+}
+
+.bg-gradient-animated{
+  background: linear-gradient(
+    120deg,
+    #d1fae5,
+    #e0f2fe,
+    #ede9fe,
+    #d1fae5
+  );
+  background-size: 300% 300%;
+  animation: gradientMove 12s ease infinite;
+}
+
+.bg-gradient-fast {
+  background: linear-gradient(
+    120deg,
+    #bbf7d0,
+    #bae6fd,
+    #ddd6fe
+  );
+  background-size: 300% 300%;
+  animation: gradientMove 5s ease infinite;
+}
+
+
 
 :root {
   --radius: 0.625rem;
