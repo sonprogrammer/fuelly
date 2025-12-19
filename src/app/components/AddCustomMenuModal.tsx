@@ -2,23 +2,24 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState} from 'react'
-import usePostAddCustomFood from '@/hooks/usePostAddCustomFood'
-import usePostFoodToDailyMeal from '@/hooks/usePostFoodToDailyMeal'
+import {Food} from '@/types/food'
 interface ModalProps {
     open: boolean,
     onClose: () => void
+    handleSaveNomal: (food:Food) => void
+    addNomalFoodPending: boolean
+    handleSaveDaily: (food: Food) => void
+    dailyPending: boolean
 }
 
-export default function AddCustomMenuModal({ open, onClose }: ModalProps) {
+export default function AddCustomMenuModal({ open, onClose, handleSaveDaily,dailyPending, handleSaveNomal, addNomalFoodPending }: ModalProps) {
 
     const [foodName, setFoodName] = useState<string>('')
     const [calorie, setCalorie] = useState<string>('')
     const [protein, setProtein] = useState<string>('')
     const [unit, setUnit] = useState<string>('')
 
-    
-    const {mutate, isPending} = usePostAddCustomFood()
-    const { mutate: dailyMutate, isPending: dailyPending} =usePostFoodToDailyMeal()
+
     if (!open) return null;
 
     
@@ -28,17 +29,12 @@ export default function AddCustomMenuModal({ open, onClose }: ModalProps) {
             return
         }
 
-        mutate(
+        handleSaveNomal(
             {
               name: foodName,
               calorie: Number(calorie),
               protein: Number(protein),
               unit,
-            },
-            {
-              onSuccess: () => {
-                onClose()
-              },
             }
           )
     }
@@ -48,18 +44,14 @@ export default function AddCustomMenuModal({ open, onClose }: ModalProps) {
             alert('작성 내용을 확인해주세요')
             return
         }
-        dailyMutate(
+        handleSaveDaily(
             {
               name: foodName,
               calorie: Number(calorie),
               protein: Number(protein),
               unit,
             },
-            {
-              onSuccess: () => {
-                onClose()
-              },
-            }
+            
           )
     }
 
@@ -76,7 +68,7 @@ export default function AddCustomMenuModal({ open, onClose }: ModalProps) {
                     className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
 
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.7 }}
+                        initial={{ opacity: 0, scale: 0.5 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.7 }}
                         transition={{
@@ -123,11 +115,11 @@ export default function AddCustomMenuModal({ open, onClose }: ModalProps) {
                         <section className="mt-5 flex gap-2">
                             <button 
                             className={`flex-1 px-3 py-2 rounded-lg text-white
-                                ${isPending ? 'bg-gray-400 cursor-not-allowed' : 'bg-teal-500 hover:bg-teal-600'}
+                                ${addNomalFoodPending ? 'bg-gray-400 cursor-not-allowed' : 'bg-teal-500 hover:bg-teal-600'}
                               `}
                                 onClick={handleNomalFoodSubmit}
                             >
-                                {isPending ? '저장 중...' : '일반 음식에 추가하기'}
+                                {addNomalFoodPending ? '저장 중...' : '일반 음식에 추가하기'}
                             </button>
                             <button 
                                 onClick={handleDailyFoodSubmit}

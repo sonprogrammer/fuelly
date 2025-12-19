@@ -13,12 +13,11 @@ import usePostFoodToDailyMeal from '@/hooks/usePostFoodToDailyMeal'
 import useToggleSaveFood from '@/hooks/useToggleSaveFood'
 import useGetSavedFood from '@/hooks/useGetSavedFood'
 import usePostAiFood from '@/hooks/usePostAiFood'
-import { Star } from 'lucide-react'
+import { Heart } from 'lucide-react'
 
 
 export default function AiMenu() {
     const user = useUserStore(state => state.user)
-    // console.log('user', user)
     const { isPending, recommended, consumed, remain, exceed } = useRemainNutrition(user)
     const { data, mutate: recommendFood, isPending: recommending } = usePostAiRecommendFood()
     const {mutate: postCustomFood} = usePostAddCustomFood()
@@ -58,7 +57,6 @@ export default function AiMenu() {
     }
     const handleSaveToggle = (food: AiRecommendResultFood) =>{
         const savedFoodId = savedFoodMap.get(food?.name)
-        console.log('ffood', food)
         if(!savedFoodId){
             saveAiFood({
                 name: food.name,
@@ -120,7 +118,7 @@ export default function AiMenu() {
                 {data && (
                     <section className="ai추천메뉴 mt-5 space-y-3">
                         {data.meals.map((food) => {
-                            console.log('food', food)
+
                             const savedFoodId = savedFoodMap.get(food.name)
                             const isSaved = Boolean(savedFoodId)
                             const caloriePercent = Math.min((food.calorie / remain.calorie) * 100, 100)
@@ -135,8 +133,8 @@ export default function AiMenu() {
                                     handleAddCustom={handleAddCustom}
                                     handleAddDaily={handleAddDaily}
                                     handleSaveToggle={handleSaveToggle}
-                                    icon={<Star fill={isSaved ? "#FFD700" : "none"} 
-                                    color={isSaved ? "#FFD700" : "currentColor"}/>}
+                                    icon={<Heart fill={isSaved ? "#EC4899" : "none"} 
+                                    color={isSaved ? "#EC4899" : "currentColor"}/>}
                                     
                                 />
                             )

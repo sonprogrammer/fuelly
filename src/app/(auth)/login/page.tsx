@@ -3,7 +3,6 @@
 import useKakaoLogin from "@/hooks/useKakaoLogin"
 import { useEffect,useState } from "react"
 import dynamic from "next/dynamic"
-import { useUserStore } from "@/store/userStore"
 import useRegularLogin from "@/hooks/useRegularLogin"
 const KakaoLogin = dynamic(() => import('react-kakao-login'), { ssr: false })
 
@@ -13,9 +12,6 @@ export default function LoginPage() {
     const [email, setEmail] = useState<string>('')
     const [password, setPassword] = useState<string>('')
     const [remember, setRemember] = useState<boolean>(false)
-    const user = useUserStore(state => state.user)
-
-    console.log('user from loginpage', user)
 
     
     const { login } = useRegularLogin()

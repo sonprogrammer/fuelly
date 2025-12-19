@@ -1,10 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/app/components/ui/button";
-import { Card } from "@/app/components/ui/card";
-import { Trash2, Plus } from "lucide-react";
-import {useUserStore} from '@/store/userStore'
+import { Card } from "@/app/components/ui/card"
+import { Trash2, Plus } from "lucide-react"
 import useGetSavedFood from '@/hooks/useGetSavedFood'
 import useToggleSaveFood from '@/hooks/useToggleSaveFood'
 import usePostFoodToDailyMeal from '@/hooks/usePostFoodToDailyMeal'
@@ -31,11 +28,19 @@ export default function FoodTable() {
 
 
     const deleteFood = (foodId: string) => {
-        deleteSave(foodId)
+        deleteSave(foodId,{
+            onSuccess: () => {
+                alert('삭제 성공')
+            }
+        })
     };
 
     const addFood = (food: Food) => {
-        addToDaily(food)
+        addToDaily(food,{
+            onSuccess: () => {
+                alert('오늘 식단에 추가 성공')
+            }
+        })
     };
 
     return (

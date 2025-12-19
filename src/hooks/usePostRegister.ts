@@ -13,10 +13,8 @@ const usePostRegister = () => {
     const router = useRouter()
 
     const register = async (data: RegisterData) => {
-        console.log('data', data)
         try {
             const res = await axios.post('/api/register', { data })
-            console.log('res', res.data)
             if (res.data.success) {
                 alert('회원가입 성공 로그인하셍')
                 router.push('/')

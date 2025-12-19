@@ -4,7 +4,6 @@ import { Food } from '@/types/food'
 
 const postFoodToDailyMeal = async (food: Food) => {
     const res = await axiosInstance.post('/addTo-today-meal', food)
-    console.log('food', food)
     return res.data
     
 }

@@ -5,7 +5,6 @@ import { axiosInstance } from '@/lib/axios'
 const toggleSaveFood = async(foodId: string) => {
     
     const res = await axiosInstance.post('/toggle-save-food', {foodId})
-    console.log('res toggle', res.data)
     return res.data
 }
 

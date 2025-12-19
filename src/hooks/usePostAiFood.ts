@@ -4,7 +4,6 @@ import {CreateFoodFromAi} from '@/types/ai'
 
 const postAiFood = async(food: CreateFoodFromAi) => {
     const res = await axiosInstance.post('/save-ai-food',{food})
-    console.log('ppostaiFood hook', res.data)
     return res.data
 }
 

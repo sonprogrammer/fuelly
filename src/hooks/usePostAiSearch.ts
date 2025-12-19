@@ -8,9 +8,8 @@ interface AiSearch{
 }
 
 const aiSearch = async (userAndPrompt: AiSearch) => {
-    const res = await axiosInstance.post('/ai-search', {prompt})
-    console.log('ai search hooks ', res.data)
-    return res.data
+    const res = await axiosInstance.post('/ai-search', userAndPrompt)
+    return res.data.answer
 }
 
 

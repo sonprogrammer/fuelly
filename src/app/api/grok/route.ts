@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
                     content: prompt,
                 },
             ],
-            model: 'llama-3.1-8b-instant'
+            model: 'llama-3.3-70b-versatile'
         })
 
         let answer = completion.choices[0].message?.content || ""

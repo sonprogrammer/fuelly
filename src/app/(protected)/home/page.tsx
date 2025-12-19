@@ -10,7 +10,7 @@ import useRemainNutrition from '@/hooks/useRemainNutrition'
 export default function HomePage() {
     const user = useUserStore(state=> state.user)
 
-    const {isPending, recommended, consumed, remain, exceed} = useRemainNutrition(user)
+    const { recommended, consumed, exceed} = useRemainNutrition(user)
 
     
 

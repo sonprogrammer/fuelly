@@ -10,7 +10,7 @@ export async function POST(req:NextRequest) {
         const password = data.password
 
         const hashedPassword = await bcryptjs.hash(password, 10)
-        console.log('hashed', hashedPassword)
+
         await dbConnect()
 
         const newUser = await userModel.create({

@@ -6,8 +6,7 @@ import { AiRecommendFood, AiRecommendResult} from '@/types/ai'
 
 const recommendFood = async(data:AiRecommendFood): Promise<AiRecommendResult> => {
     const res = await axiosInstance.post('/ai-recommend-food', data)
-    console.log('hooks from recommend', res.data)
-    return res.data.parsedAnswer
+    return res.data.answer
 }
 
 const usePostAiRecommendFood = () => {

@@ -19,7 +19,6 @@ const useKakaoLogin = () => {
             const res = await axios.post('api/kakao-login',{
                kakaoAccessToken
             })
-            console.log('res', res)
             if(res.data.success){
                 const newUser = ({
                     kakaoId: res.data.user.kakaoId,

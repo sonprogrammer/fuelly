@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Utensils, Star, AudioWaveform, ChartColumnBig } from 'lucide-react';
+import { Utensils, Star, Heart, AudioWaveform, ChartColumnBig } from 'lucide-react';
 
 
 export default function NavbarComponent() {
@@ -27,7 +27,7 @@ export default function NavbarComponent() {
                     ${currentPage("saved") ? "font-bold text-amber-600" : ""}
                 `}
                 href='saved'>
-                    <Star />
+                    <Heart />
                     <p>Saved</p>
             </Link >
             <Link 

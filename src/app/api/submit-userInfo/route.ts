@@ -9,9 +9,6 @@ export async function POST(req: NextRequest){
   
         await dbConnect()
         const userInfo = await userInfoFromToken(req)
-
-        console.log('userInfo from submit-userinfo', userInfo)
-
     
         
         if(!userInfo){

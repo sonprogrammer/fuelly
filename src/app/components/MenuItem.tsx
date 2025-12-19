@@ -1,4 +1,4 @@
-import { Plus, Trash2, Star } from 'lucide-react'
+import { Trash2, Calendar ,Heart } from 'lucide-react'
 import { Food } from '../../types/food'
 
 
@@ -26,13 +26,11 @@ export default function MenuItem({ food, type, add, onDelete,isSaved, handleSave
 
                 <div className="flex items-center gap-2">
                     <span
-                        className={`${type === 'add' && 'text-sm'}`}
+                        className={`${type === 'add' && 'text-md font-bold'}`}
                     >
                         {food.name}
                     </span>
-                    <p
-                        className={`${type === 'add' && 'text-sm'}`}
-                    >{food.unit}</p>
+                   
                     {type === 'add' &&
                         <button
                             onClick={()=>handleSaveToggle?.(food._id!)}
@@ -40,16 +38,17 @@ export default function MenuItem({ food, type, add, onDelete,isSaved, handleSave
                                 
                                 `}
                         >
-                            <Star 
-                                className='w-4 h-4' 
-                                fill={isSaved ? "#FFD700" : "none"} 
-                                color={isSaved ? "#FFD700" : "currentColor"}
-                                />
+                            <Heart
+                            className='w-4 h-4'
+                             fill={isSaved ? "#EC4899" : "none"} 
+                                    color={isSaved ? "#EC4899" : "currentColor"}/>
+                            
                         </button>
                     }
                 </div>
 
                 <div className={`${type === 'add' ? 'flex flex-col text-sm' : 'flex gap-3 mt-1'}`}>
+                    <span className='text-gray-600'>{food.unit}</span>
                     <span className="text-gray-600">{food.calorie} kcal</span>
                     <span className="text-gray-600">단백질 {food.protein}g</span>
                 </div>
@@ -58,9 +57,10 @@ export default function MenuItem({ food, type, add, onDelete,isSaved, handleSave
             {type === 'add' ?
                 <button
                     onClick={() => add?.(food)}
-                    className=' p-2 px-3 h-full cursor-pointer rounded-xl bg-linear-to-br from-purple-400 to-orange-400 text-white'
+                    className='border w-[28%] flex flex-col items-center p-2 hover:bg-blue-50 rounded-lg transition-colors'
                 >
-                    <Plus className="h-4 w-4" />
+                    <Calendar className="h-7 w-7 text-blue-500" />
+                    <span className="text-[10px] mt-1">식단</span>
                 </button>
                 :
                 <button

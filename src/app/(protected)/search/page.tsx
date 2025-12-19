@@ -4,25 +4,85 @@ import { useState } from 'react'
 import { Sparkles, Calendar, Database, Heart } from 'lucide-react'
 import { Food } from '@/types/food'
 import SearchGuide from '@/app/components/SearchGuide'
-interface AiResponse {
-    description: string;
-    foods: Food[]
-}
+import usePostAiSearch from '@/hooks/usePostAiSearch'
+import {useUserStore} from '@/store/userStore'
+import {FixedUser } from '@/types/user'
+import usePostFoodToDailyMeal from '@/hooks/usePostFoodToDailyMeal'
+import useToggleSaveFood from '@/hooks/useToggleSaveFood'
+import usePostAddCustomFood from '@/hooks/usePostAddCustomFood'
+import useGetSavedFood from '@/hooks/useGetSavedFood'
+import usePostAiFood from '@/hooks/usePostAiFood'
+
 
 
 export default function AISearchPage() {
     const [inputValue, setInputValue] = useState<string>('')
-    const [isAnalyzing, setIsAnalyzing] = useState<boolean>(false)
-    const [result, setResult] = useState<AiResponse | null>(null)
 
+
+    const user = useUserStore(state => state.user)
+
+    // *일반음식저장훅
+    const {mutate: saveNomalFood, isPending} = usePostAddCustomFood()
+    // *오늘 식단 저장훅
+    const { mutate: saveDailyFoods, isPending: dailyPending} =usePostFoodToDailyMeal()    
+    // * 나중에 먹을 음식 저장훅
+    const { mutate: toggleSave } = useToggleSaveFood()
+    // *저장한음식가져오는 훅
+    const {data: savedFoods} = useGetSavedFood()
+    // *ai로 부터 추천받은 음식 저장훅
+    const { mutate: saveAiFood} = usePostAiFood()
+    
+    // *ai 응답 요청 훅 
+    const { mutate: aiSearchMutate,data: result,error ,isPending: isAnalyzing, } = usePostAiSearch()
+    console.log('data', result)
+
+
+    const savedFoodMap = new Map<string, string>(
+        savedFoods?.map((item) => [
+            item.foodId.name,
+            item.foodId._id
+        ])
+    )
+    
+    
     const handleSearch = () => {
-        if (!inputValue.trim()) return
+        if (!inputValue.trim() || !user) return
+        const userAndPrompt = {prompt: inputValue, user: user as FixedUser}
+        aiSearchMutate(userAndPrompt,{
+            onSuccess: () => {
+                setInputValue('')
+            },
+            onError: () => {
+                alert(error)
+            }
+        })
 
     }
 
     // !여기서 받는 타입에 따라 오늘 식단이나 일반 음식에 저장하기
     const handleSaveToDaily = (type: string, food: Food) => {
+        if(type==='liked'){
+            const savedFoodId = savedFoodMap.get(food?.name)
 
+        if(!savedFoodId){
+            saveAiFood({
+                name: food.name,
+                calorie: food.calorie,
+                protein: food.protein,
+                unit: food.unit
+            })
+            return
+        }
+        toggleSave(savedFoodId)
+        }else if(type === 'daily'){
+            saveDailyFoods(food, {onSuccess: () => {
+                alert('오늘 식단에 추가 성공')
+            }})
+        }else if(type === 'nomal'){
+            saveNomalFood(food, {onSuccess: () => {
+                alert('일반 음식 저장소에 저장 성공')
+            }})
+        }
     }
 
 
@@ -59,7 +119,7 @@ export default function AISearchPage() {
                     </div>
 
                     <button
-                        onClick={() => setIsAnalyzing(true)}
+                        
                         className=" bg-black flex items-center text-white p-5 px-8 rounded-2xl  cursor-pointer">
                         <Sparkles className="h-4 w-4 mr-2" />
                         {isAnalyzing ?
@@ -75,7 +135,7 @@ export default function AISearchPage() {
 
                 {/* //! grok답변 나오는곳 */}
                 <section className="backdrop-blur-lg bg-white/70 sm:w-[80%] w-[90%] shadow-md flex-1 rounded-xl p-5 overflow-y-auto">
-                    {isAnalyzing ? (
+                    {isAnalyzing && (
                         <div className="flex flex-col items-center justify-center h-full space-y-4">
                             <div className="animate-pulse flex space-x-4">
                                 <div className="rounded-full bg-slate-200 h-10 w-10"></div>
@@ -86,11 +146,8 @@ export default function AISearchPage() {
                             </div>
                             <p>AI가 영양 성분을 계산하고 있습니다...</p>
                         </div>
-                    )
-                    : (
-                        <SearchGuide />
-                    )
-                    }
+                    )}
+                    {!result && !isAnalyzing && <SearchGuide />}
                     {result && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                             <div>
@@ -101,7 +158,7 @@ export default function AISearchPage() {
                             </div>
 
                             <div className="grid gap-4">
-                                {result.foods.map((food, idx) => (
+                                {result.foods.map((food: Food, idx: number) => (
                                     <div key={idx} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col md:flex-row justify-between items-center gap-4">
                                         <div>
                                             <h3 className="font-bold text-lg">{food.name}</h3>
@@ -113,19 +170,19 @@ export default function AISearchPage() {
                                         <div className="flex gap-2">
                                             <button 
                                                 onClick={() => handleSaveToDaily('liked', food)}
-                                                className="flex flex-col items-center p-2 hover:bg-pink-50 rounded-lg transition-colors group">
+                                                className="flex flex-col cursor-pointer items-center p-2 hover:bg-pink-50 rounded-lg transition-colors group">
                                                 <Heart className="w-5 h-5 text-pink-500 group-hover:fill-pink-500" />
                                                 <span className="text-[10px] mt-1">좋아요</span>
                                             </button>
                                             <button 
                                                 onClick={() => handleSaveToDaily('daily', food)}
-                                                className="flex flex-col items-center p-2 hover:bg-blue-50 rounded-lg transition-colors">
+                                                className="flex flex-col cursor-pointer items-center p-2 hover:bg-blue-50 rounded-lg transition-colors">
                                                 <Calendar className="w-5 h-5 text-blue-500" />
                                                 <span className="text-[10px] mt-1">식단추가</span>
                                             </button>
                                             <button 
-                                                onClick={() => handleSaveToDaily('general', food)}
-                                                className="flex flex-col items-center p-2 hover:bg-green-50 rounded-lg transition-colors">
+                                                onClick={() => handleSaveToDaily('nomal', food)}
+                                                className="flex flex-col cursor-pointer items-center p-2 hover:bg-green-50 rounded-lg transition-colors">
                                                 <Database className="w-5 h-5 text-green-500" />
                                                 <span className="text-[10px] mt-1">음식저장</span>
                                             </button>
@@ -134,13 +191,11 @@ export default function AISearchPage() {
                                 ))}
                             </div>
                         </div>
-                    )}
+                    )
+                    }
                 </section>
             </div>
         </div>
 
     )
 }
-
-// TODO ai답변은 양(그램이든 갯수든)당 칼로리, 단백질, 추가(boolean으로),liked(saved음식에 들어가게)
-// TODO 의 json형태로 와야함 그래야 바로 추가나 saved페이지에 넣을 수 있음. 답은 그냥 문자로 하고 클릭시 json형태로

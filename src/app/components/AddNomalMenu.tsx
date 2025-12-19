@@ -1,21 +1,23 @@
 'use client'
 
-import { Search } from 'lucide-react'
+import { Search,Database } from 'lucide-react'
 import { useState } from 'react';
 import MenuItem from './MenuItem'
 import AddCustomMenuModal from './AddCustomMenuModal'
-import useGetNomalFoods from '../../hooks/useGetNomalFoods'
-import usePostFoodToDailyMeal from '../../hooks/usePostFoodToDailyMeal'
+import useGetNomalFoods from '@/hooks/useGetNomalFoods'
+import usePostFoodToDailyMeal from '@/hooks/usePostFoodToDailyMeal'
 import useToggleSaveFood from '@/hooks/useToggleSaveFood'
 import useGetSavedFood from '@/hooks/useGetSavedFood'
-import { Food } from '../../types/food'
+import usePostAddCustomFood from '@/hooks/usePostAddCustomFood'
+import { Food } from '@/types/food'
 
 export default function AddNomalMenu() {
   const [searchQuery, setSearchQuery] = useState('');
   const [modalOpen, setModalOpen] = useState<boolean>(false)
 
   const { data, isPending, isError } = useGetNomalFoods()
-  const { mutate } = usePostFoodToDailyMeal()
+  const {mutate: saveNomalFood, isPending: addNomalFoodPending} = usePostAddCustomFood()
+  const { mutate: saveDailyFoods, isPending: dailyPending } = usePostFoodToDailyMeal()
   const { mutate: toggleSave } = useToggleSaveFood()
   const { data: savedFoods } = useGetSavedFood()
 
@@ -39,7 +41,7 @@ export default function AddNomalMenu() {
 
 
   const handleAddbtnClick = (food: Food) => {
-    mutate(food)
+    saveDailyFoods(food)
   }
 
   // !이름은 세이브지만 토글 기증임 좋아요 취소 등록 둘다 가능
@@ -47,12 +49,27 @@ export default function AddNomalMenu() {
     toggleSave(foodId)
   }
 
+  const handleSaveNomal = (food: Food) => {
+    saveNomalFood(food, {
+      onSuccess: () => handleModalClose(), 
+    });
+  };
+  
+  const handleSaveDaily = (food: Food) => {
+    saveDailyFoods(food, {
+      onSuccess: () => handleModalClose(),
+    });
+  };
+
 
   return (
     <div className="bg-white rounded-md mt-3 border border-gray-300 p-5">
       <section className='flex justify-between items-center'>
         <div>
-          <h1 className="font-bold">일반 음식 검색</h1>
+          <div className='flex gap-2'>
+            <h1 className="font-bold">일반 음식 검색</h1>
+            <Database className='text-green-500'/>
+          </div>
           <p className='text-gray-500 text-sm'>자주 먹는 음식을 빠르게 추가하세요</p>
         </div>
 
@@ -100,7 +117,14 @@ export default function AddNomalMenu() {
       </div>
 
       {modalOpen && (
-        <AddCustomMenuModal open={modalOpen} onClose={handleModalClose} />
+        <AddCustomMenuModal 
+          open={modalOpen} 
+          onClose={handleModalClose} 
+          handleSaveDaily={handleSaveDaily} 
+          handleSaveNomal={handleSaveNomal}
+          dailyPending={dailyPending}
+          addNomalFoodPending={addNomalFoodPending}
+          />
       )}
 
     </div>

@@ -7,7 +7,6 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 export async function POST(req: NextRequest){
     try{
         const data = await req.json()
-        console.log('data', data)
         const { user, remain} = data
 
         if(!user || !remain){
@@ -60,31 +59,32 @@ export async function POST(req: NextRequest){
         `
 
         const completion = await groq.chat.completions.create({
-            model: 'llama-3.1-8b-instant',
+            model: 'llama-3.3-70b-versatile',
             messages: [
                 {
-                    role: 'user',
+                    role: 'system',
                     content: prompt
                 }
-            ]
+            ],
+            response_format: {type: 'json_object'}
         })
         
         const rawAnswer = completion.choices[0].message?.content 
-        console.log('rawAnswer', rawAnswer)
-
-        if(!rawAnswer){
-            throw new Error('no ai response')
+        if (!rawAnswer){
+            return NextResponse.json(
+                { message: 'AI가 응답을 생성하지 못했습니다. 잠시 후 다시 시도해주세요.' }, 
+                { status: 503 }
+            );
         }
+        try{
 
-        const parsedAnswer = JSON.parse(
-            rawAnswer
-              .replace(/```json/g, '')
-              .replace(/```/g, '')
-              .replace(/'/g, '"')
-              .trim()
-          )
-
-        return NextResponse.json({message: 'success', parsedAnswer},{status:200})
+            const parsedAnswer = JSON.parse(rawAnswer)
+            
+            return NextResponse.json({ message: 'success', answer: parsedAnswer }, { status: 200 });
+        }catch(parseError){
+            console.log('err', parseError)
+            return NextResponse.json({message: 'responding error'},{status: 402})
+        }
     }catch(err){
         console.log('err', err)
         return NextResponse.json({message:'internal server error', answer: '서버오류 다시한번 시도 해주세요'}, {status: 500})

@@ -4,7 +4,6 @@ import {FixedUser, ActivityLevel} from '@/types/user'
 const amountCalculate = (data: FixedUser) => {
     const { height, weight, gender, activity, goal, age} = data
 
-    // console.log('data from amount ', data)
     // 남성 BMR=10W+6.25H−5A+5, 
     // 여성 BMR=10W+6.25H−5A−161(W=체중, H=키, A=나이)
     const BMR = gender === 'male' 

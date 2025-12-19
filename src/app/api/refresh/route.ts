@@ -10,7 +10,6 @@ const JWT_SECRET = new TextEncoder().encode(
 export async function POST(req: NextRequest) {
     try{
     const refreshToken = req.cookies.get('refreshToken')?.value
-    // console.log('refresh', refreshToken)
 
     if(!refreshToken){
         return NextResponse.json({message: 'no refrsh token'},{status:401})

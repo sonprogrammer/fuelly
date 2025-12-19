@@ -6,7 +6,6 @@ export async function POST(req:NextRequest) {
     try {
         await dbConnect()
         const {email: nickName} = await req.json()
-        // console.log('email from check-email server', email)
         const regularUser = await userModel.findOne({nickName})
         if(regularUser){
            return NextResponse.json({success: false, message:'already exist email'}) 

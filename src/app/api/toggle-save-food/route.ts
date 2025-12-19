@@ -11,7 +11,6 @@ export async function POST(req: NextRequest){
         const userInfo = await userInfoFromToken(req)
         
         const { foodId } = await req.json()
-        console.log('ffodId from ',foodId)
 
         if(!userInfo){
             return NextResponse.json({message: 'user token is not invalid'}, {status:401})

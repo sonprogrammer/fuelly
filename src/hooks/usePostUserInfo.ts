@@ -27,12 +27,10 @@ const usePostUserInfo = () => {
         mutationFn: (data:UserInfo) => postUserInfo(data),
         onSuccess: (data) => {
             if (typeof data === 'object' && data !== null) {
-              console.log('user data from usepostinfo', data)
-              console.log('data', data.user)
+              
               setUser(data.user)
               router.push('/home')
             } else {
-                console.log(typeof data)
               console.error('서버 응답이 올바른 객체가 아닙니다:', data)
               alert('서버 응답 오류')
             }

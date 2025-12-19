@@ -13,7 +13,6 @@ export async function POST(req: NextRequest) {
         const data = await req.json()
         const {name, calorie, protein, unit} = data.food
 
-        console.log('save ai food', data)
         if(!userInfo){
             return NextResponse.json({message:'user info invalid'}, {status:401})
         }

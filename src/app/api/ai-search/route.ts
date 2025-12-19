@@ -22,7 +22,6 @@ export async function POST(req: NextRequest) {
     try {
         const { prompt, user } = await req.json()
 
-        console.log('ai-search server', prompt, user)
 
         if (!prompt || !user) {
             return NextResponse.json({ message: 'info is not provided' }, { status: 400 })
@@ -36,7 +35,7 @@ export async function POST(req: NextRequest) {
         `
 
         const serverPrompt = `
-            당신은 영양 전문가입니다.
+            당신은 영양 전문가입니다. 꼭 한국어로 보내줘.
             유저 정보를 바탕으로 ${prompt}에 대해 분석하고, 건강한 식단을 위해 3가지 추천 음식을 제안하세요.
             유저 정보는 ${userInfo}
             분석 시 유저의 활동량과 목표를 고려하여 칼로리 조절 및 영양 성분 조언을 description에 포함해줘
@@ -81,7 +80,7 @@ export async function POST(req: NextRequest) {
 
             const parsedAnswer = JSON.parse(rawAnswer)
             
-            return NextResponse.json({ message: 'success', data: parsedAnswer }, { status: 200 });
+            return NextResponse.json({ message: 'success', answer: parsedAnswer }, { status: 200 });
         }catch(parseError){
             console.log('err', parseError)
             return NextResponse.json({message: 'responding error'},{status: 402})
