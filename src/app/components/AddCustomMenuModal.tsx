@@ -66,72 +66,87 @@ export default function AddCustomMenuModal({ open, onClose, handleSaveDaily,dail
             {open && (
                 <div
                     onClick={handleOverlayClick}
-                    className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+                    className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4">
 
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.5 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.7 }}
-                        transition={{
-                            duration: 0.25,
-                            ease: [0.22, 1, 0.36, 1], 
-                        }}
-                        className="relative flex flex-col bg-white rounded-xl p-5 shadow-xl sm:w-[90%] md:w-[80%] lg:w-[60%]"
+<motion.div
+                        initial={{ opacity: 0, y: 20 }} 
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="relative flex flex-col bg-white rounded-2xl p-6 shadow-2xl w-full max-w-[450px]"
                     >
+                       
                         <button
-                            className="absolute right-3 top-3 w-6 h-6  bg-black text-white rounded-full cursor-pointer"
+                            className="absolute right-4 top-4 text-gray-400 hover:text-black transition-colors"
                             onClick={onClose}
                         >
-                            X
+                            x
                         </button>
-                        <h1 className="text-lg font-bold text-center">영양 정보를 직접 입력해주세요</h1>
-                        <input
-                            className="flex-1 bg-gray-100 p-2 rounded-xl w-full mb-3  mt-5"
-                            type="text" placeholder='음식 이름' 
-                            value={foodName}
-                            onChange={(e)=> setFoodName(e.target.value)}
-                            />
-                        <section className="flex w-full gap-3">
-                            <input
-                                className='flex-1 bg-gray-100 p-2 rounded-xl '
-                                type="number" placeholder='칼로리' 
-                                value={calorie}
-                                onChange={(e)=> setCalorie(e.target.value)}
-                                />
-                            <input
-                                className='flex-1 bg-gray-100 p-2 rounded-xl'
-                                type="number" placeholder='단백질(g)' 
-                                value={protein}
-                                onChange={(e) => setProtein(e.target.value)}
-                                />
-                            <input
-                                className='flex-1 bg-gray-100 p-2 rounded-xl'
-                                type="text" placeholder='양 (예: 100g)'
-                                value={unit}
-                                onChange={(e) => setUnit(e.target.value)}
-                                 />
-                        </section>
 
-                        
-                        <section className="mt-5 flex gap-2">
-                            <button 
-                            className={`flex-1 px-3 py-2 rounded-lg text-white
-                                ${addNomalFoodPending ? 'bg-gray-400 cursor-not-allowed' : 'bg-teal-500 hover:bg-teal-600'}
-                              `}
-                                onClick={handleNomalFoodSubmit}
-                            >
-                                {addNomalFoodPending ? '저장 중...' : '일반 음식에 추가하기'}
-                            </button>
-                            <button 
+                        <div className="mb-6">
+                            <h1 className="text-xl font-bold text-center text-gray-800">직접 입력하기</h1>
+                            <p className="text-sm text-gray-500 text-center mt-1">식단에 추가할 음식 정보를 입력하세요</p>
+                        </div>
+
+                        <div className="space-y-4">
+                            <div>
+                                <label className="text-sm font-semibold ml-1 mb-1 block">음식 이름</label>
+                                <input
+                                    className="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all"
+                                    type="text" placeholder='예: 닭가슴살 샐러드'
+                                    value={foodName}
+                                    onChange={(e) => setFoodName(e.target.value)}
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="text-sm font-semibold ml-1 mb-1 block text-orange-600">칼로리 (kcal)</label>
+                                    <input
+                                        className="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none transition-all"
+                                        type="number" placeholder='0'
+                                        value={calorie}
+                                        onChange={(e) => setCalorie(e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-sm font-semibold ml-1 mb-1 block text-blue-600">단백질 (g)</label>
+                                    <input
+                                        className="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                                        type="number" placeholder='0'
+                                        value={protein}
+                                        onChange={(e) => setProtein(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="text-sm font-semibold ml-1 mb-1 block">제공량</label>
+                                <input
+                                    className="w-full bg-gray-50 border border-gray-200 p-3 rounded-xl focus:ring-2 focus:ring-teal-500 outline-none transition-all"
+                                    type="text" placeholder='예: 100g 또는 1개'
+                                    value={unit}
+                                    onChange={(e) => setUnit(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="mt-8 flex flex-col gap-3">
+                            <button
                                 onClick={handleDailyFoodSubmit}
-                                className="flex-1 bg-blue-200 px-3 py-2 rounded-lg cursor-pointer hover:bg-blue-300"
+                                disabled={dailyPending}
+                                className="w-full bg-blue-500 text-white font-bold py-3 rounded-xl hover:bg-blue-600 active:scale-95 transition-all shadow-md"
                             >
-                                {dailyPending ? '내보내는 중...' : '오늘 먹은 음식에 바로 추가하기'}
+                                {dailyPending ? '추가 중...' : '오늘 식단에 바로 추가'}
                             </button>
-                        </section>
-
-
-                        
+                            <button
+                                onClick={handleNomalFoodSubmit}
+                                disabled={addNomalFoodPending}
+                                className="w-full bg-gray-100 text-gray-700 font-semibold py-3 rounded-xl hover:bg-gray-200 active:scale-95 transition-all"
+                            >
+                                {addNomalFoodPending ? '저장 중...' : '자주 먹는 음식으로 저장'}
+                            </button>
+                        </div>
                     </motion.div>
 
                 </div>

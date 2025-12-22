@@ -13,9 +13,10 @@ interface Props {
 
 function AmountComponent({ currentGrams, targetGrams, name, icon }: Props) {
 
+    const unit = name.includes("칼로리") ? "kcal" : "g"
 
-    const current = Math.max(0, currentGrams);
-    const percent = Math.min(100, Math.round((current / targetGrams) * 100));
+    const current = Math.max(0, currentGrams)
+    const percent = Math.min(100, Math.round((current / targetGrams) * 100))
     return (
         <div className=" rounded-lg flex-1 p-5  flex flex-col gap-3">
             <section className='flex justify-between'>
@@ -28,7 +29,7 @@ function AmountComponent({ currentGrams, targetGrams, name, icon }: Props) {
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
                     <Typography variant="subtitle2"></Typography>
                     <Typography variant="subtitle2" color="text.">
-                        {current.toLocaleString()}g / {targetGrams.toLocaleString()}g ({percent}%)
+                    {current.toLocaleString()}{unit} / {targetGrams.toLocaleString()}{unit} ({percent}%)
                     </Typography>
                 </Box>
                 <Tooltip title={`${current}g / ${targetGrams}g`} arrow>
@@ -56,8 +57,8 @@ function AmountComponent({ currentGrams, targetGrams, name, icon }: Props) {
             </Box>
             <h2 className="text-sm">남은 {name} :  
                 {targetGrams - currentGrams > 0
-                    ? <span className="text-green-500 font-bold"> {targetGrams - currentGrams}g</span>
-                    : <span className="text-red-500 font-bold"> +{Math.abs(targetGrams - currentGrams)}g 초과!</span>
+                    ? <span className="text-green-500 font-bold"> {targetGrams - currentGrams}{unit}</span>
+                    : <span className="text-red-500 font-bold"> +{Math.abs(targetGrams - currentGrams)}{unit} 초과!</span>
                 }
             </h2>
         </div>

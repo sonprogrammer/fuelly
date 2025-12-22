@@ -8,7 +8,7 @@ export default function SearchGuide() {
                 <h2 className="text-sm w-fit font-semibold text-blue-600 bg-blue-50 self-start px-3 py-1 rounded-full">
                     AI 분석 예시
                 </h2>
-                <p className='text-gray-700 leading-relaxed'>요청하신 메뉴의 총 칼로리와 주요 영양 성분 분석 결과입니다. 균형 잡힌 식단을 위해 단백질 섭취를 권장합니다.</p>
+                <p className='mt-2 text-gray-700 leading-relaxed'>요청하신 메뉴의 총 칼로리와 주요 영양 성분 분석 결과입니다. 균형 잡힌 식단을 위해 단백질 섭취를 권장합니다.</p>
             </div>
 
 

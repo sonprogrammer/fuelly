@@ -27,7 +27,7 @@ export default function NavbarComponent() {
                 `}
                 href='meals'>
                     <Utensils />
-                    <p>Today’s Meals</p>
+                    <p>Today</p>
                     </Link>
             <Link 
                 className={`p-3 flex-1 text-center flex flex-col items-center 
