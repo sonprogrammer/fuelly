@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     siteName: 'Fuelly',
     images: [
       {
-        url: '/fuelly_openGraph.png',
+        url: 'https://res.cloudinary.com/dqrsksfho/image/upload/v1766412013/ax2jb6d2zkn6ybvz3fnd.png',
         width: 1200,
         height: 630,
         alt: 'Fuelly - AI 식단 관리 서비스 소개'
