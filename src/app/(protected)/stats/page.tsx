@@ -87,25 +87,25 @@ export default function StatsPage() {
                             yAxisId="pro"
                             orientation="right"
                             domain={[0, Math.max(PRO_LIMIT, Math.max(...sortedMeals.map((d: MealData) => d.totalProtein) || [0])) + 80]}
-                            tickFormatter={(value) => `${value} g`}
-                            width={10}
+                            tickFormatter={(value) => `${value}g`}
+                            width={20}
                         />
 
                         <Tooltip />
 
 
-                        <ReferenceLine y={CAL_LIMIT} yAxisId="cal" stroke="#fca5a5" strokeDasharray="5 5" strokeWidth={1.5}
-                            label={{ value: "Kcal 목표", position: "top", fill: "#f87171", fontSize: 12 }}
+                        <ReferenceLine y={CAL_LIMIT} yAxisId="cal" stroke="#93c5fd" strokeDasharray="5 5" strokeWidth={1.5}
+                            label={{ value: "Kcal 목표", position: "top", fill: "#3b82f6", fontSize: 12 }}
                         />
 
-                        <ReferenceLine y={PRO_LIMIT} yAxisId="pro" stroke="#93c5fd" strokeDasharray="5 5" strokeWidth={1.5}
-                            label={{ value: "단백질 목표", position: "bottom", fill: "#3b82f6", fontSize: 12 }}
+                        <ReferenceLine y={PRO_LIMIT} yAxisId="pro" stroke="#fca5a5" strokeDasharray="5 5" strokeWidth={1.5}
+                            label={{ value: "단백질 목표", position: "bottom", fill: "#f87171", fontSize: 12 }} //fca5a5
                         />
                         {/* 칼로리-왼쪽  */}
-                        <Bar yAxisId="cal" dataKey="totalCalorie" name='총 섭취 칼로리' fill="#4f46e5" radius={[6, 6, 0, 0]} />
+                        <Bar yAxisId="cal" dataKey="totalCalorie" name='총 섭취 칼로리' fill="#4f46e5" radius={[6, 6, 0, 0]} barSize={40}/>
 
                         {/* 단백질-오른쪽 */}
-                        <Bar yAxisId="pro" dataKey="totalProtein" name='총 섭취 단백질' fill="#ef4444" radius={[6, 6, 0, 0]} />
+                        <Bar yAxisId="pro" dataKey="totalProtein" name='총 섭취 단백질' fill="#ef4444" radius={[6, 6, 0, 0]} barSize={40} />
                     </BarChart>
                 </ResponsiveContainer>
             </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { Card } from "@/app/components/ui/card"
-import { Trash2, Plus } from "lucide-react"
+import { Trash2, Plus, Calendar } from "lucide-react"
 import useGetSavedFood from '@/hooks/useGetSavedFood'
 import useToggleSaveFood from '@/hooks/useToggleSaveFood'
 import usePostFoodToDailyMeal from '@/hooks/usePostFoodToDailyMeal'
@@ -47,7 +47,7 @@ export default function FoodTable() {
         <div className="p-5">
 
             <h1 className="text-2xl font-bold text-center gap-2 py-5">
-                나중에 혹은 취팅~~?ㅎㅎ
+            즐겨찾기한 음식
             </h1>
 
             {/* 모바일 카드 UI */}
@@ -95,21 +95,21 @@ export default function FoodTable() {
 
                 <tbody>
                     {savedFoods?.map((f:SavedFood) => (
-                        <tr key={f.foodId._id} className="border-b hover:bg-gray-50">
+                        <tr key={f.foodId._id} className="border-b hover:bg-gray-50/30">
                             <td className="p-2">{f.foodId.name}</td>
                             <td className="p-2">{f.foodId.unit}</td>
                             <td className="p-2">{f.foodId.protein}</td>
                             <td className="p-2">{f.foodId.calorie}</td>
                             <td className="p-2">
                                 <button 
-                                    className='cursor-pointer'
+                                    className='cursor-pointer border items-center p-2 hover:bg-blue-50 rounded-lg transition-colors'
                                     onClick={() => addFood(f.foodId)}>
-                                    <Plus className="text-green-500" />
+                                    <Calendar className="text-blue-500" />
                                 </button>
                             </td>
                             <td className="p-2">
                                 <button 
-                                    className='cursor-pointer'
+                                    className='cursor-pointer p-2 px-3 rounded-xl  hover:bg-gray-200 transition-colors'
                                     onClick={() => deleteFood(f.foodId._id)}>
                                     <Trash2 className="text-red-500" />
                                 </button>

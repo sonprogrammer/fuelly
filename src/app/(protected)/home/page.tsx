@@ -12,7 +12,7 @@ export default function HomePage() {
 
     const { recommended, consumed, exceed} = useRemainNutrition(user)
 
-    
+    console.log('usr', user)    
 
     const message = useGetDailyMessage()
     
@@ -34,7 +34,7 @@ export default function HomePage() {
                     </h1>
                 </section>
                 <section className="flex-1">
-                    <GoalComponent goal={user?.goal} weight={user?.weight} />
+                    <GoalComponent goal={user?.goal} weight={user?.weight} activity={user?.activity}/>
                 </section>
             </div>
             <div className="flex w-full gap-5">
@@ -59,7 +59,7 @@ export default function HomePage() {
                 <h1 
                     className='text-xl font-bold mb-10'
                 >
-                    GROK(일론 머스크)의 응원
+                    AI 코치의 오늘 한마디
                 </h1>
                 {messages.map((m,i) => (
                     <p 

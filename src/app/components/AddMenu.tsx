@@ -10,7 +10,7 @@ import AiMenu from './AiMenu'
 import AddNomalMenu from './AddNomalMenu'
 
 export default function AddMenu() {
-    const [choice, setChoice] = useState<'manual' | 'ai' >('ai');
+    const [choice, setChoice] = useState<'manual' | 'ai' >('manual');
 
     const handleChange = (
         event: React.MouseEvent<HTMLElement>,

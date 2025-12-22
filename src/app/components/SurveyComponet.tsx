@@ -1,12 +1,11 @@
 'use client'
 import { useUserStore } from "@/store/userStore"
-import FormControl from '@mui/material/FormControl';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-// TODO 키, 몸무게, 목표 데이터 보내주고 그거에 맞게 계산
+import FormControl from '@mui/material/FormControl'
+import OutlinedInput from '@mui/material/OutlinedInput'
+import InputAdornment from '@mui/material/InputAdornment'
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import usePostUserInfo from "@/hooks/usePostUserInfo";
+import usePostUserInfo from "@/hooks/usePostUserInfo"
 
 type GoalLabel = 'bulk' | 'diet' | 'maintain'
 type Gender = 'male' | 'female'

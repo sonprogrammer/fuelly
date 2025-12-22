@@ -1,5 +1,5 @@
 type Gender = 'male' | 'female'
-export type ActivityLevel =  'sedentary' | 'light' | 'moderate' | 'active'
+export type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'active'
 type GoalLabel = 'bulk' | 'diet' | 'maintain'
 
 export interface User {
