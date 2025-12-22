@@ -30,7 +30,7 @@ export default function GoalComponent({ goal, weight, activity }: GoalProps) {
     }
     const activityName = activityMap[activity!] || activity
     return (
-        <div className='rounded-xl border border-green-200 bg-white/10 shadow-sm p-6 transition hover:shadow-lg'>
+        <div className='rounded-xl border border-green-200 bg-white/10 shadow-sm p-6 transition hover:shadow-lg relative'>
             <section className='w-full space-y-2'>
 
                 <div className='flex items-center justify-between w-full'>
@@ -40,7 +40,7 @@ export default function GoalComponent({ goal, weight, activity }: GoalProps) {
                         onClick={() => setEdit('goal')}
                         className='flex items-center gap-1 font-semibold text-green-700 hover:text-green-900 transition-colors cursor-pointer'
                     >
-                        {goalName}
+                        {goalName || '설정 필요'}
                     </button>
                 </div>
 
@@ -51,7 +51,7 @@ export default function GoalComponent({ goal, weight, activity }: GoalProps) {
                         onClick={() => setEdit('weight')}
                         className="flex items-center gap-1 font-semibold text-gray-800 hover:text-black transition-colors cursor-pointer"
                     >
-                        {weight}kg
+                        {weight ? `${weight}kg` : '설정 필요'}
                     </button>
                 </div>
 
@@ -60,13 +60,13 @@ export default function GoalComponent({ goal, weight, activity }: GoalProps) {
                     <button
                         aria-label='활동량 수정'
                         onClick={() => setEdit('activity')}
-                        className='flex items-center gap-1 font-semibold text-gray-800 hover:text-black transition-colors cursor-pointer'>
-                        {activityName}
+                        className={`flex items-center gap-1 font-semibold text-gray-800 hover:text-black transition-colors cursor-pointer ${!activity ? 'text-red-500' : 'text-gray-800 hover:text-black'}`}>
+                        {activityName || '설정 필요'}
                     </button>
                 </div>
 
             </section>
-            <p className='text-xs text-gray-500 text-end absolute bottom-1 left-5'>*각 항목을 클릭하여 수정할 수 있습니다.</p>
+            <p className='text-xs text-gray-500 text-end absolute bottom-1 right-5'>*각 항목을 클릭하여 수정할 수 있습니다.</p>
 
             {edit && (
                 <div

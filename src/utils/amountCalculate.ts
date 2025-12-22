@@ -12,7 +12,7 @@ const amountCalculate = (data: FixedUser) => {
 
     const activityFactorMap: Record<ActivityLevel, number> ={
         sedentary: 1.2,
-        light: 1.37,
+        light: 1.375,
         moderate: 1.55,
         active: 1.73
     }
@@ -24,6 +24,12 @@ const amountCalculate = (data: FixedUser) => {
     let recommendedCalories = TDEE
     if(goal === 'diet') recommendedCalories -= 300
     if(goal ==='bulk') recommendedCalories += 300
+
+    // ! 최소 하루 권장 칼로리로 건강 무리 없게 최소 칼로리 정함
+    const MIN_CALORIES = gender === 'male' ? 1500 : 1200
+    if (recommendedCalories < MIN_CALORIES) {
+        recommendedCalories = MIN_CALORIES
+    }
 
     let proteinPerKg = 1.2
     if(goal === 'diet') proteinPerKg = 1.8
