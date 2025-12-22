@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion"
 import { useState } from 'react'
 import useUpdatedUserInfo from '@/hooks/useUpdateUserInfo'
-
+import { toast } from 'react-hot-toast'
 interface ModalProps {
     type: string | null
     onClose: () => void
@@ -48,7 +48,12 @@ export default function GoalModalComponent({ type, onClose, recentGoal, recentWe
         if (type === 'goal' && updatedGoal) {
             updateMutate(
                 { goal: updatedGoal },
-                { onSuccess: onClose }
+                { onSuccess: () => {
+                    toast.success('목표가 수정되었습니다!')
+                    onClose()
+                }
+                }
+                
             )
         }
         
@@ -56,14 +61,21 @@ export default function GoalModalComponent({ type, onClose, recentGoal, recentWe
             console.log('updatedWeigh', weight)
             updateMutate(
                 { weight: Number(weight) },
-                { onSuccess: onClose }
+                { onSuccess: () => {
+                    toast.success('체중 기록 완료!')
+                    onClose() }
+                }
             )
         }
     
         if (type === 'activity' && activity) {
             updateMutate(
                 { activity },
-                { onSuccess: onClose }
+                { onSuccess: () => {
+                    toast.success('운동량이 업데이트되었습니다!')
+                    onClose()
+                    } 
+                }
             )
         }
     }

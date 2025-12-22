@@ -36,6 +36,7 @@ export default function GoalComponent({ goal, weight, activity }: GoalProps) {
                 <div className='flex items-center justify-between w-full'>
                     <h1 className='font-semibold'>현재 목표</h1>
                     <button
+                        aria-label='목표수정'
                         onClick={() => setEdit('goal')}
                         className='flex items-center gap-1 font-semibold text-green-700 hover:text-green-900 transition-colors cursor-pointer'
                     >
@@ -46,6 +47,7 @@ export default function GoalComponent({ goal, weight, activity }: GoalProps) {
                 <div className='flex items-center justify-between w-full'>
                     <h1 className='font-semibold'>체중</h1>
                     <button
+                        aria-label='몸무게 수정'
                         onClick={() => setEdit('weight')}
                         className="flex items-center gap-1 font-semibold text-gray-800 hover:text-black transition-colors cursor-pointer"
                     >
@@ -56,6 +58,7 @@ export default function GoalComponent({ goal, weight, activity }: GoalProps) {
                 <div className='flex items-center justify-between w-full'>
                     <h1 className='font-semibold'>운동량</h1>
                     <button
+                        aria-label='활동량 수정'
                         onClick={() => setEdit('activity')}
                         className='flex items-center gap-1 font-semibold text-gray-800 hover:text-black transition-colors cursor-pointer'>
                         {activityName}

@@ -1,22 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Link from "next/link";
 import QueryProviderWrapper from './components/QueryProviderWrapper'
 import LogoutComponent from './components/LogoutComponent'
 import NavbarComponent from './components/NavbarComponent'
 import HomeComponent from './components/HomeComponent'
+import { Toaster } from 'react-hot-toast'
 
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Fuelly",
@@ -31,22 +21,20 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        // className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         className="h-screen flex flex-col w-full"
       >
-        {/* TODO 위치 변경해야함 */}
-        <header className="text-center p-5 flex gap-3 justify-center bg-amber-50 fixed w-full top-0 z-10">
-          <Link href='/'>FUELLY</Link>
-            <LogoutComponent></LogoutComponent>
-            <HomeComponent />
+        <header className="p-5 flex gap-3 justify-center bg-amber-50 fixed w-full top-0 z-10">
+              <HomeComponent />
+            <div className='absolute right-5 top-5'>
+              <LogoutComponent />
+            </div>
         </header>
         <QueryProviderWrapper>
+        <Toaster position="top-center" reverseOrder={false} />
 
-          {/* <section className="flex-1 mt-16 mb-16 overflow-auto bg-linear-to-br from-green-50 to-blue-50"> */}
-            {children}
-          {/* </section> */}
+          {children}
         </QueryProviderWrapper>
-        <nav className="fixed bottom-0 w-full bg-orange-50 ">
+        <nav className="fixed bottom-0 w-full bg-orange-50 z-50">
           <NavbarComponent />
         </nav>
       </body>

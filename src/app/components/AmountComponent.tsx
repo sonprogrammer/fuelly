@@ -17,7 +17,7 @@ function AmountComponent({ currentGrams, targetGrams, name, icon, exceed }: Prop
     const current = Math.max(0, currentGrams);
     const percent = Math.min(100, Math.round((current / targetGrams) * 100));
     return (
-        <div className="border border-gray-300 rounded-lg flex-1 p-5 bg-white flex flex-col gap-3">
+        <div className=" rounded-lg flex-1 p-5  flex flex-col gap-3">
             <section className='flex justify-between'>
                 <h1>{name}</h1>
                 {icon}

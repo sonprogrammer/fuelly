@@ -33,6 +33,7 @@ export default function MenuItem({ food, type, add, onDelete,isSaved, handleSave
                    
                     {type === 'add' &&
                         <button
+                            aria-label='좋아요 저장'
                             onClick={()=>handleSaveToggle?.(food._id!)}
                             className={`p-1 border rounded-md bg-white cursor-pointer
                                 
@@ -56,6 +57,7 @@ export default function MenuItem({ food, type, add, onDelete,isSaved, handleSave
 
             {type === 'add' ?
                 <button
+                    aria-label='식단추가'
                     onClick={() => add?.(food)}
                     className='border w-[28%] flex flex-col items-center p-2 hover:bg-blue-50 rounded-lg transition-colors'
                 >
@@ -64,6 +66,7 @@ export default function MenuItem({ food, type, add, onDelete,isSaved, handleSave
                 </button>
                 :
                 <button
+                    aria-label='식단 삭제'
                     onClick={() => onDelete?.(food)}
                     className=' p-2 px-3 cursor-pointer rounded-xl text-white hover:bg-gray-200'
                 >

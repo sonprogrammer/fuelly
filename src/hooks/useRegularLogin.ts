@@ -4,7 +4,7 @@
 import { useUserStore } from "@/store/userStore";
 import { useRouter } from "next/navigation";
 import axios from 'axios'
-
+import { toast } from 'react-hot-toast'
 interface LoginInfo {
     nickName: string;
     password: string;
@@ -21,6 +21,7 @@ const useRegularLogin = () => {
         try {
             const res = await axios.post('api/regular-login', { nickName, password })
             if (res.data.success) {
+                toast.success(`${res.data.user.nickName}님, 환영합니다!`)
                 const newUser = {
                     nickName: res.data.user.nickName,
                     height: res.data.user.height,
@@ -35,14 +36,14 @@ const useRegularLogin = () => {
                 const accessToken = res.data.accessToken 
                 setUserAccessToken(accessToken)
                 setUser(newUser)
-                // TODO여기서 기존에 저장된게 있으면 바로 홈으로 아니면 설문조사 하는 페이지로
+                
                 if(newUser?.weight && newUser?.height){
                     router.push('/home')
                 }else {
                     router.push('/survey')
                 }
             }else if(!res.data.success){
-                alert(`${res.data.message}`)
+                toast.error(res.data.message || '로그인 정보를 확인해주세요.')
             }
             
 

@@ -1,11 +1,12 @@
 "use client";
 
 import { Card } from "@/app/components/ui/card"
-import { Trash2, Plus, Calendar } from "lucide-react"
+import { Trash2, Calendar } from "lucide-react"
 import useGetSavedFood from '@/hooks/useGetSavedFood'
 import useToggleSaveFood from '@/hooks/useToggleSaveFood'
 import usePostFoodToDailyMeal from '@/hooks/usePostFoodToDailyMeal'
 import {Food} from '@/types/food'
+import { toast } from 'react-hot-toast'
 
 interface SavedFood {
     _id: string;
@@ -30,7 +31,7 @@ export default function FoodTable() {
     const deleteFood = (foodId: string) => {
         deleteSave(foodId,{
             onSuccess: () => {
-                alert('삭제 성공')
+                toast.success('음식이 삭제되었습니다!')
             }
         })
     };
@@ -38,7 +39,7 @@ export default function FoodTable() {
     const addFood = (food: Food) => {
         addToDaily(food,{
             onSuccess: () => {
-                alert('오늘 식단에 추가 성공')
+                toast.success(`${food.name}이(가) 식단에 추가되었습니다!`)
             }
         })
     };
@@ -50,9 +51,8 @@ export default function FoodTable() {
             즐겨찾기한 음식
             </h1>
 
-            {/* 모바일 카드 UI */}
             <div className="grid gap-3 md:hidden">
-                <p className='text-gray-400 text-right'>+클릭시 오늘 식단에 추가됩니다</p>
+                <p className='text-gray-400 text-right'>달력 클릭시 오늘 식단에 추가됩니다</p>
                 {savedFoods?.map((f:SavedFood) => (
                     <Card key={f.foodId._id} className="p-5">
                         <div className="flex justify-between">
@@ -64,13 +64,17 @@ export default function FoodTable() {
                             </div>
                             <section className="h-full flex items-center gap-2">
                                 <button 
-                                    className='cursor-pointer'
-                                    onClick={() => addFood(f.foodId)}>
-                                    <Plus className="text-green-500" />
+                                    className='cursor-pointer border items-center p-2 hover:bg-blue-50 rounded-lg transition-colors'
+                                    onClick={() => addFood(f.foodId)}
+                                    aria-label='식단추가'
+                                    >
+                                    <Calendar className="text-blue-500" />
                                 </button>
                                 <button
                                     className='cursor-pointer'
-                                    onClick={() => deleteFood(f.foodId._id)}>
+                                    onClick={() => deleteFood(f.foodId._id)}
+                                    aria-label='저장삭제'
+                                    >
                                     <Trash2 className="text-red-500" />
                                 </button>
                             </section>
@@ -80,7 +84,7 @@ export default function FoodTable() {
                 ))}
             </div>
 
-            {/* 데스크탑 테이블 UI */}
+            {/* 피씨버전 */}
             <table className="hidden md:table w-full text-center border-collapse">
                 <thead>
                     <tr className="border-b">
@@ -103,14 +107,18 @@ export default function FoodTable() {
                             <td className="p-2">
                                 <button 
                                     className='cursor-pointer border items-center p-2 hover:bg-blue-50 rounded-lg transition-colors'
-                                    onClick={() => addFood(f.foodId)}>
+                                    onClick={() => addFood(f.foodId)}
+                                    aria-label='식단추가'
+                                    >
                                     <Calendar className="text-blue-500" />
                                 </button>
                             </td>
                             <td className="p-2">
                                 <button 
                                     className='cursor-pointer p-2 px-3 rounded-xl  hover:bg-gray-200 transition-colors'
-                                    onClick={() => deleteFood(f.foodId._id)}>
+                                    onClick={() => deleteFood(f.foodId._id)}
+                                    aria-label='저장삭제'
+                                    >
                                     <Trash2 className="text-red-500" />
                                 </button>
                             </td>

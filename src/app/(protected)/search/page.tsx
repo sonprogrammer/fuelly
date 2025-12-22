@@ -12,7 +12,14 @@ import useToggleSaveFood from '@/hooks/useToggleSaveFood'
 import usePostAddCustomFood from '@/hooks/usePostAddCustomFood'
 import useGetSavedFood from '@/hooks/useGetSavedFood'
 import usePostAiFood from '@/hooks/usePostAiFood'
+import { toast } from 'react-hot-toast'
 
+
+interface SavedFood {
+    _id: string;
+    savedUser: string
+    foodId: Food
+}
 
 
 export default function AISearchPage() {
@@ -22,9 +29,9 @@ export default function AISearchPage() {
     const user = useUserStore(state => state.user)
 
     // *일반음식저장훅
-    const {mutate: saveNomalFood, isPending} = usePostAddCustomFood()
+    const {mutate: saveNomalFood} = usePostAddCustomFood()
     // *오늘 식단 저장훅
-    const { mutate: saveDailyFoods, isPending: dailyPending} =usePostFoodToDailyMeal()    
+    const { mutate: saveDailyFoods} =usePostFoodToDailyMeal()    
     // * 나중에 먹을 음식 저장훅
     const { mutate: toggleSave } = useToggleSaveFood()
     // *저장한음식가져오는 훅
@@ -34,11 +41,11 @@ export default function AISearchPage() {
     
     // *ai 응답 요청 훅 
     const { mutate: aiSearchMutate,data: result,error ,isPending: isAnalyzing, } = usePostAiSearch()
-    console.log('data', result)
+
 
 
     const savedFoodMap = new Map<string, string>(
-        savedFoods?.map((item) => [
+        savedFoods?.map((item: SavedFood) => [
             item.foodId.name,
             item.foodId._id
         ])
@@ -70,17 +77,21 @@ export default function AISearchPage() {
                 calorie: food.calorie,
                 protein: food.protein,
                 unit: food.unit
+            },{
+                onSuccess: () => toast.success('즐겨찾기에 저장되었습니다!')
             })
             return
         }
-        toggleSave(savedFoodId)
+        toggleSave(savedFoodId,{
+            onSuccess: () => toast.success('즐겨찾기에서 삭제되었습니다!')
+        })
         }else if(type === 'daily'){
             saveDailyFoods(food, {onSuccess: () => {
-                alert('오늘 식단에 추가 성공')
+                toast.success(`${food.name}이(가) 식단에 추가되었습니다!`)
             }})
         }else if(type === 'nomal'){
             saveNomalFood(food, {onSuccess: () => {
-                alert('일반 음식 저장소에 저장 성공')
+                toast.success(`${food.name}이(가) 새로운 음식이 등록되었습니다!`)
             }})
         }
     }
@@ -119,7 +130,7 @@ export default function AISearchPage() {
                     </div>
 
                     <button
-                        
+                        aria-label='검색'
                         className=" bg-black flex items-center text-white p-5 px-8 rounded-2xl  cursor-pointer">
                         <Sparkles className="h-4 w-4 mr-2" />
                         {isAnalyzing ?
@@ -169,18 +180,21 @@ export default function AISearchPage() {
                                         
                                         <div className="flex gap-2">
                                             <button 
+                                                aria-label='좋아요저장'
                                                 onClick={() => handleSaveToDaily('liked', food)}
                                                 className="flex flex-col cursor-pointer items-center p-2 hover:bg-pink-50 rounded-lg transition-colors group">
                                                 <Heart className="w-5 h-5 text-pink-500 group-hover:fill-pink-500" />
                                                 <span className="text-[10px] mt-1">좋아요</span>
                                             </button>
                                             <button 
+                                                aria-label='식단추가'
                                                 onClick={() => handleSaveToDaily('daily', food)}
                                                 className="flex flex-col cursor-pointer items-center p-2 hover:bg-blue-50 rounded-lg transition-colors">
                                                 <Calendar className="w-5 h-5 text-blue-500" />
                                                 <span className="text-[10px] mt-1">식단추가</span>
                                             </button>
                                             <button 
+                                                aria-label='일반음식 저장'
                                                 onClick={() => handleSaveToDaily('nomal', food)}
                                                 className="flex flex-col cursor-pointer items-center p-2 hover:bg-green-50 rounded-lg transition-colors">
                                                 <Database className="w-5 h-5 text-green-500" />

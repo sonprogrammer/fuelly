@@ -27,18 +27,21 @@ export default function SearchGuide() {
                     </div>
                     <div className="flex gap-2">
                             <button
+                                aria-label='좋아요 저장'
                                  className="flex flex-col items-center p-2 cursor-pointer hover:bg-pink-50 rounded-lg transition-colors group"
                             >
                                 <Heart className="w-5 h-5 text-pink-500 group-hover:fill-pink-500" />
                                 <span className="text-[10px] mt-1">저장하기</span>
                             </button>
                             <button
+                                aria-label='식단추가'
                                 className="flex flex-col items-center p-2 cursor-pointer hover:bg-blue-50 rounded-lg transition-colors"
                             >
                                 <Calendar className="w-5 h-5 text-blue-500" />
                                 <span className="text-[10px] mt-1">식단추가</span>
                             </button>
                             <button
+                                aria-label='일반음식 저장'
                                 className="flex flex-col items-center p-2 cursor-pointer hover:bg-green-50 rounded-lg transition-colors"
                             >
                                 <Database className="w-5 h-5 text-green-500" />

@@ -10,6 +10,7 @@ import useToggleSaveFood from '@/hooks/useToggleSaveFood'
 import useGetSavedFood from '@/hooks/useGetSavedFood'
 import usePostAddCustomFood from '@/hooks/usePostAddCustomFood'
 import { Food } from '@/types/food'
+import { toast } from 'react-hot-toast'
 
 export default function AddNomalMenu() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -46,18 +47,33 @@ export default function AddNomalMenu() {
 
   // !이름은 세이브지만 토글 기증임 좋아요 취소 등록 둘다 가능
   const handleSaveToggle = (foodId: string) => {
-    toggleSave(foodId)
+    const isCurrentlySaved = savedFoodIdSet.has(foodId)
+    toggleSave(foodId, {
+      onSuccess: () => {
+          if (isCurrentlySaved) {
+              toast('즐겨찾기에서 삭제되었습니다.');
+          } else {
+              toast.success('즐겨찾기에 저장되었습니다!');
+          }
+      }
+  })
   }
 
   const handleSaveNomal = (food: Food) => {
     saveNomalFood(food, {
-      onSuccess: () => handleModalClose(), 
+      onSuccess: () => {
+        handleModalClose()
+        toast.success(`${food.name}이(가) 일반 음식에 추가되었습니다!`)
+      }, 
     });
   };
   
   const handleSaveDaily = (food: Food) => {
     saveDailyFoods(food, {
-      onSuccess: () => handleModalClose(),
+      onSuccess: () => {
+        handleModalClose()
+        toast.success(`${food.name}이(가) 식단에 추가되었습니다!`)
+      },
     });
   };
 
@@ -94,7 +110,7 @@ export default function AddNomalMenu() {
       </section>
 
       {isPending &&
-        <div className='w-full flex justify-center '>
+        <div className='w-full flex justify-center mt-10'>
           <img src='/spinner.gif' alt='spinner' className='w-10' />
         </div>
       }

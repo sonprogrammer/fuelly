@@ -2,11 +2,19 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Utensils, Star, Heart, AudioWaveform, ChartColumnBig } from 'lucide-react';
+import { Utensils, Heart, AudioWaveform, ChartColumnBig } from 'lucide-react'
+import { useUserStore } from '@/store/userStore'
 
 
 export default function NavbarComponent() {
+    const user = useUserStore(state=> state.user)
     const pathname = usePathname()
+
+    const isSurveyPage = pathname === '/survey'
+    
+    if(!user || isSurveyPage){
+        return null
+    }
 
     const currentPage = (path: string) => pathname === `/${path}`
 
