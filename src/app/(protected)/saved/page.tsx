@@ -1,7 +1,7 @@
 "use client";
 
 import { Card } from "@/app/components/ui/card"
-import { Trash2, Calendar } from "lucide-react"
+import { Trash2, Calendar, HeartOff } from "lucide-react"
 import useGetSavedFood from '@/hooks/useGetSavedFood'
 import useToggleSaveFood from '@/hooks/useToggleSaveFood'
 import usePostFoodToDailyMeal from '@/hooks/usePostFoodToDailyMeal'
@@ -15,7 +15,7 @@ interface SavedFood {
 }
 
 export default function FoodTable() {
-    const { data: savedFoods } = useGetSavedFood()
+    const { data: savedFoods, isPending } = useGetSavedFood()
     // ! 이렇게 이름을 지정한 이유는 어차피 해당 유저로 해당 음식에 저장이 있으면 삭제되는 기능을 서버에서 구현해놈
     const { mutate: deleteSave } = useToggleSaveFood()
     const { mutate: addToDaily } = usePostFoodToDailyMeal()
@@ -28,7 +28,7 @@ export default function FoodTable() {
                 toast.success('음식이 삭제되었습니다!')
             }
         })
-    };
+    }
 
     const addFood = (food: Food) => {
         addToDaily(food,{
@@ -36,7 +36,27 @@ export default function FoodTable() {
                 toast.success(`${food.name}이(가) 식단에 추가되었습니다!`)
             }
         })
-    };
+    }
+
+    if (isPending) {
+        return <div className="p-10 text-center text-gray-500">데이터를 불러오는 중입니다...</div>
+    }
+
+    if (!savedFoods || savedFoods.length === 0) {
+        return (
+            <div className="flex flex-col items-center justify-center py-20 px-5 text-center">
+                <div className="bg-gray-100 p-6 rounded-full mb-4">
+                    <HeartOff className="w-12 h-12 text-gray-400" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-700 mb-2">즐겨찾기한 음식이 없어요</h2>
+                <p className="text-gray-500 mb-6">
+                    자주 먹는 음식을 즐겨찾기에 추가하고<br />
+                    간편하게 식단을 구성해 보세요!
+                </p>
+                
+            </div>
+        )
+    }
 
     return (
         <div className="p-5">
@@ -79,6 +99,7 @@ export default function FoodTable() {
             </div>
 
             {/* 피씨버전 */}
+            <p className='text-gray-400 text-right'>달력 클릭시 오늘 식단에 추가됩니다</p>
             <table className="hidden md:table w-full text-center border-collapse">
                 <thead>
                     <tr className="border-b">
