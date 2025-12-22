@@ -39,7 +39,7 @@ const SignUpPage = () => {
     }
 
     return (
-        <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 px-4">
+        <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 px-4 mt-10">
 
             <div className="w-full max-w-md bg-white p-8 rounded-8 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100">
                 
@@ -58,7 +58,7 @@ const SignUpPage = () => {
                                 value={email}
                                 onChange={(e) => {
                                     setEmail(e.target.value)
-                                    setEmailValid(null) // 이메일 수정 시 다시 인증 필요
+                                    setEmailValid(null) 
                                 }}
                                 className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all"
                                 required
