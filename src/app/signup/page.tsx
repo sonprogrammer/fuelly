@@ -54,7 +54,7 @@ const SignUpPage = () => {
                         <div className="relative group">
                             <input 
                                 type="email"
-                                placeholder="example@fuelly.com"
+                                placeholder="example"
                                 value={email}
                                 onChange={(e) => {
                                     setEmail(e.target.value)
