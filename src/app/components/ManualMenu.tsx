@@ -1,4 +1,4 @@
-// TODO이거 그냥 ai search페이지에서 사용해도 됨 굳이 today's meal페이지서 사용할 필요없음
+// TODO이거 없애도 댐
 'use client'
 
 import {useState} from 'react'
@@ -6,9 +6,6 @@ import {useState} from 'react'
 export default function ManualMenu() {
     const [search, setSearch] = useState<string>('')
 
-    const handleAiClick = () => {
-        
-    }
 
     return(
         <div className="flex flex-col gap-2 bg-white p-5 rounded-md border border-gray-300">

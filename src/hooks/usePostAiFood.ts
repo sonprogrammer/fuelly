@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { axiosInstance} from '@/lib/axios'
-import {CreateFoodFromAi} from '@/types/ai'
+import {CreateFoodFromAi} from '@/types/ai'
 
 const postAiFood = async(food: CreateFoodFromAi) => {
     const res = await axiosInstance.post('/save-ai-food',{food})

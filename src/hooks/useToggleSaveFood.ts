@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { axiosInstance } from '@/lib/axios'
+import { toast } from 'react-hot-toast'
 
 
 const toggleSaveFood = async(foodId: string) => {
@@ -18,7 +19,7 @@ const useToggleSaveFood = () => {
         },
         onError: (error) => {
             console.error('토글 실패:', error)
-            alert('요청 처리에 실패했습니다.')
+            toast.error('요청 처리에 실패했습니다.')
         }
     })
 }

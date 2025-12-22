@@ -11,13 +11,7 @@ import { toast } from 'react-hot-toast'
 interface SavedFood {
     _id: string;
     savedUser: string;
-    foodId:{
-        _id: string;
-        name: string;
-        unit: string;
-        protein: number;
-        calorie: number;
-    }
+    foodId: Food
 }
 
 export default function FoodTable() {
@@ -72,7 +66,7 @@ export default function FoodTable() {
                                 </button>
                                 <button
                                     className='cursor-pointer'
-                                    onClick={() => deleteFood(f.foodId._id)}
+                                    onClick={() => deleteFood(f.foodId._id!)}
                                     aria-label='저장삭제'
                                     >
                                     <Trash2 className="text-red-500" />
@@ -116,7 +110,7 @@ export default function FoodTable() {
                             <td className="p-2">
                                 <button 
                                     className='cursor-pointer p-2 px-3 rounded-xl  hover:bg-gray-200 transition-colors'
-                                    onClick={() => deleteFood(f.foodId._id)}
+                                    onClick={() => deleteFood(f.foodId._id!)}
                                     aria-label='저장삭제'
                                     >
                                     <Trash2 className="text-red-500" />

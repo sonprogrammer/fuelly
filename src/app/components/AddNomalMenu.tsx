@@ -12,6 +12,12 @@ import usePostAddCustomFood from '@/hooks/usePostAddCustomFood'
 import { Food } from '@/types/food'
 import { toast } from 'react-hot-toast'
 
+interface SavedFood {
+  _id: string;
+  savedUser: string;
+  foodId: Food
+}
+
 export default function AddNomalMenu() {
   const [searchQuery, setSearchQuery] = useState('');
   const [modalOpen, setModalOpen] = useState<boolean>(false)
@@ -28,7 +34,7 @@ export default function AddNomalMenu() {
 
 
   const savedFoodIdSet = new Set(
-    savedFoods?.map((item: any) => item.foodId._id)
+    savedFoods?.map((item: SavedFood) => item.foodId._id)
   )
 
 

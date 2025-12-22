@@ -5,7 +5,8 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import InputAdornment from '@mui/material/InputAdornment'
 import { useRouter } from "next/navigation"
 import { useState } from "react"
-import usePostUserInfo from "@/hooks/usePostUserInfo"
+import usePostUserInfo from "@/hooks/usePostUserInfo" 
+import { toast } from 'react-hot-toast'
 
 type GoalLabel = 'bulk' | 'diet' | 'maintain'
 type Gender = 'male' | 'female'
@@ -38,19 +39,23 @@ export default function SurveyComponent() {
     const formValid = weight !== null && height !== null && goal !== null && gender !== null && activity !== null && age !== null
     const handleStartClick = () => {
         if (!formValid) {
-            alert('입력 상태를 확인해주세요')
+            toast.error('입력 상태를 확인해주세요')
             return
         }
         const userInfoData = { goal, height, weight, gender, activity, age }
-        mutate(userInfoData)
+        mutate(userInfoData,{
+            onSuccess: () => {
+                toast.success('Fuelly와 함께 건강식단을 만들어 보세요!')
+                router.replace('/home')
+            }
+        })
     }
 
 
     return (
         <section className="border sm:w-[50%] w-[80%] max-h-[90%]  rounded-2xl bg-white p-5 overflow-y-auto">
             <div className="mb-5">
-                {/* TODO 카카오랑 일반로그인 이름 처리 하기 */}
-                <h1 className="font-bold text-lg">{user?.nickName}님 FUELLY에 오신 것을 환영합니다!</h1>
+                <h1 className="font-bold text-lg">{user?.nickName ? user?.nickName : user?.name}님 FUELLY에 오신 것을 환영합니다!</h1>
                 <p className='text-gray-500 font-bold'>영양 목표를 설정하기 위해 몇 가지 정보를 알려주세요</p>
             </div>
 

@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState} from 'react'
 import {Food} from '@/types/food'
+import { toast } from 'react-hot-toast'
 interface ModalProps {
     open: boolean,
     onClose: () => void
@@ -25,7 +26,7 @@ export default function AddCustomMenuModal({ open, onClose, handleSaveDaily,dail
     
     const handleNomalFoodSubmit = () => {
         if(!foodName || !calorie || !protein || !unit) {
-            alert('작성 내용을 확인해주세요')
+            toast.error('작성 내용을 확인해주세요')
             return
         }
 
@@ -41,7 +42,7 @@ export default function AddCustomMenuModal({ open, onClose, handleSaveDaily,dail
 
     const handleDailyFoodSubmit = () => {
         if(!foodName || !calorie || !protein || !unit) {
-            alert('작성 내용을 확인해주세요')
+            toast.error('작성 내용을 확인해주세요')
             return
         }
         handleSaveDaily(

@@ -40,7 +40,7 @@ export default function AISearchPage() {
     const { mutate: saveAiFood} = usePostAiFood()
     
     // *ai 응답 요청 훅 
-    const { mutate: aiSearchMutate,data: result,error ,isPending: isAnalyzing, } = usePostAiSearch()
+    const { mutate: aiSearchMutate,data: result ,isPending: isAnalyzing, } = usePostAiSearch()
 
 
 
@@ -60,7 +60,7 @@ export default function AISearchPage() {
                 setInputValue('')
             },
             onError: () => {
-                alert(error)
+                toast.error('error')
             }
         })
 

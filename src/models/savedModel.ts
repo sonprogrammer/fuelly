@@ -1,7 +1,4 @@
-import mongoose, {Schema,Types, Document} from "mongoose";
-
-
-//TODO 이건 foodModel에서 가져와도 될것 같아 피룡없어 보임 추후에 확인해보기
+import mongoose, {Schema,Types, Document} from "mongoose"
 
 export interface ISaved extends Document{
     savedUser: Types.ObjectId;

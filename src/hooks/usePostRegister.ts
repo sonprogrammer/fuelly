@@ -2,6 +2,7 @@
 
 import axios from "axios"
 import { useRouter } from "next/navigation"
+import { toast } from 'react-hot-toast'
 
 
 interface RegisterData {
@@ -16,12 +17,12 @@ const usePostRegister = () => {
         try {
             const res = await axios.post('/api/register', { data })
             if (res.data.success) {
-                alert('회원가입 성공 로그인하셍')
-                router.push('/')
+                toast.success('성공적으로 가입되었습니다!')
+                router.replace('/')
             }
         } catch (error) {
             console.log(error)
-            alert('회원가입 실패')
+            toast.error('회원가입 실패')
         }
     }
     return { register }

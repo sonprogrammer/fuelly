@@ -2,6 +2,7 @@
 import { useUserStore } from '@/store/userStore'
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
+import { toast } from 'react-hot-toast'
 interface KakaoToken {
     response: {
         access_token: string
@@ -35,7 +36,7 @@ const useKakaoLogin = () => {
                 const accessToken = res.data.accessToken
                 setUserAccessToken(accessToken)
                 setUser(newUser)
-                // TODO 서버로 부터 토큰이랑 리프레시토큰은Httponly쿠키로 받아서 처리로직 작성해야함
+
                 if(newUser.height && newUser.weight){
                     router.push('/home')
                 }else{
@@ -44,7 +45,7 @@ const useKakaoLogin = () => {
                 }
             }
         } catch (error) {
-            // TODO 로그인 오류시 알림창 라이브러리 도입
+
             console.error('error login', error)
         }
     }
@@ -52,6 +53,7 @@ const useKakaoLogin = () => {
     const kakaoOnFailure = () => {
         // TODO 로그인 오류시 알림창 라이브러리 도입
         console.log('kakao login error')
+        toast.error('카카오 로그인 에러가 발생하였습니다')
     }
 
     return { kakaoOnSuccess, kakaoOnFailure}

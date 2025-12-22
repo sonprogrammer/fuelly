@@ -5,6 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from "@/lib/axios"
 import { useUserStore } from "@/store/userStore"
 import { useRouter } from "next/navigation"
+import { toast } from 'react-hot-toast'
 
 
 interface UserInfo{
@@ -29,15 +30,15 @@ const usePostUserInfo = () => {
             if (typeof data === 'object' && data !== null) {
               
               setUser(data.user)
-              router.push('/home')
+              router.replace('/home')
             } else {
               console.error('서버 응답이 올바른 객체가 아닙니다:', data)
-              alert('서버 응답 오류')
+              toast.error('서버 응답 오류')
             }
           },
         onError: (err) => {
             console.log('사용자 정보 전송 시패', err)
-            alert('메롱')
+            toast.error('에러가 발생하였습니다. 잠시후 다시 이용해주세요')
         }
     })
 }

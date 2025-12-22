@@ -3,7 +3,7 @@
 import { useUserStore } from "@/store/userStore"
 import AmountComponent from '@/app/components/AmountComponent'
 import GoalComponent from '@/app/components/GoalComponent'
-import { Flame, Beef, Sparkles } from 'lucide-react' // 아이콘 추가
+import { Flame, Beef, Sparkles } from 'lucide-react' 
 import useGetDailyMessage from '@/hooks/useGetDailyMessage'
 import useRemainNutrition from '@/hooks/useRemainNutrition'
 

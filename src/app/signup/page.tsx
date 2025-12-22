@@ -4,6 +4,7 @@ import usePostRegister from '@/hooks/usePostRegister'
 import checkEmail from '@/lib/checkEmail'
 import { useState } from "react"
 import { CheckCircle2, XCircle, Loader2 } from 'lucide-react'
+import { toast } from 'react-hot-toast'
 
 const SignUpPage = () => {
     const [email, setEmail] = useState<string>('')
@@ -26,11 +27,11 @@ const SignUpPage = () => {
 
     const handleRegisterClick = () => {
         if (!emailValid) {
-            alert('이메일 중복 확인을 완료해주세요.')
+            toast.error('이메일 중복 확인을 완료해주세요.')
             return
         }
         if (!passwordMatched) {
-            alert('비밀번호가 일치하지 않습니다.')
+            toast.error('비밀번호가 일치하지 않습니다.')
             return
         }
         const data = { nickName: email, password }
@@ -110,11 +111,10 @@ const SignUpPage = () => {
                     </div>
                 </div>
 
-                {/* 가입 버튼 */}
                 <div className="mt-10">
                     <button 
                         onClick={handleRegisterClick}
-                        className="w-full py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-2xl font-black text-lg shadow-lg shadow-emerald-200 hover:shadow-xl hover:-translate-y-0.5 transition-all active:scale-[0.98]"
+                        className="w-full py-4 bg-linear-to-r from-emerald-500 to-green-600 text-white rounded-2xl font-black text-lg shadow-lg shadow-emerald-200 hover:shadow-xl hover:-translate-y-0.5 transition-all active:scale-[0.98]"
                     >
                         시작하기
                     </button>

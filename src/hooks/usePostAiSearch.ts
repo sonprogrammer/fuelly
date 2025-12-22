@@ -17,8 +17,8 @@ const usePostAiSearch = () => {
 
     return useMutation({
         mutationFn: (userAndPrompt: AiSearch) => aiSearch(userAndPrompt),
-        onSuccess: (data) => {console.log('success')},
-        onError: (error) => {console.log('error')}
+        onSuccess: (data) => {console.log('success', data)},
+        onError: (error) => {console.log('error', error)}
     })
 }
 

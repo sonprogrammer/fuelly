@@ -23,7 +23,7 @@ interface Activity {
     label: ActivityLevel
 }
 
-export default function GoalModalComponent({ type, onClose, recentGoal, recentWeight, recentAtivity }: ModalProps) {
+export default function GoalModalComponent({ type, onClose, recentWeight }: ModalProps) {
     const [weight, setWeight] = useState<string>(String(recentWeight ?? ""))
     const [updatedGoal, setUpdatedGoal] = useState<GoalLabel | null>(null)
     const [activity, setActivity] =useState<ActivityLevel | null>(null)

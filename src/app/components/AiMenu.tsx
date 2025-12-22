@@ -7,7 +7,7 @@ import Image from 'next/image'
 import useRemainNutrition from '@/hooks/useRemainNutrition'
 import { useUserStore } from '@/store/userStore'
 import usePostAiRecommendFood from '@/hooks/usePostAiRecommendFood'
-import { AiRecommendResultFood } from '@/types/ai'
+import { AiRecommendResultFood } from '@/types/ai'
 import usePostAddCustomFood from '@/hooks/usePostAddCustomFood'
 import usePostFoodToDailyMeal from '@/hooks/usePostFoodToDailyMeal'
 import useToggleSaveFood from '@/hooks/useToggleSaveFood'
@@ -15,20 +15,26 @@ import useGetSavedFood from '@/hooks/useGetSavedFood'
 import usePostAiFood from '@/hooks/usePostAiFood'
 import { Heart } from 'lucide-react'
 import { toast } from 'react-hot-toast'
+import { Food} from '@/types/food'
 
+interface SavedFood {
+    _id: string
+    foodId: Food
+    savedUser: string
+}
 
 export default function AiMenu() {
     const user = useUserStore(state => state.user)
-    const { isPending, recommended, consumed, remain, exceed } = useRemainNutrition(user)
+    const {  remain} = useRemainNutrition(user)
     const { data, mutate: recommendFood, isPending: recommending } = usePostAiRecommendFood()
     const { mutate: postCustomFood } = usePostAddCustomFood()
-    const { mutate: dailyMutate, isPending: dailyPending } = usePostFoodToDailyMeal()
+    const { mutate: dailyMutate } = usePostFoodToDailyMeal()
     const { mutate: toggleSave } = useToggleSaveFood()
     const { data: savedFoods } = useGetSavedFood()
     const { mutate: saveAiFood } = usePostAiFood()
 
     const savedFoodMap = new Map<string, string>(
-        savedFoods?.map((item) => [
+        savedFoods?.map((item: SavedFood) => [
             item.foodId.name,
             item.foodId._id
         ])

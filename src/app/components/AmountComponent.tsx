@@ -11,7 +11,7 @@ interface Props {
 }
 
 
-function AmountComponent({ currentGrams, targetGrams, name, icon, exceed }: Props) {
+function AmountComponent({ currentGrams, targetGrams, name, icon }: Props) {
 
 
     const current = Math.max(0, currentGrams);

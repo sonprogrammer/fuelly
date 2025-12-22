@@ -1,6 +1,6 @@
 import { AiRecommendResultFood } from '@/types/ai'
 import AiRecommendProgressBar from './AiRecommendProgressBar'
-import { PlusCircle, Utensils, BookmarkPlus } from 'lucide-react'
+import { PlusCircle, BookmarkPlus } from 'lucide-react'
 
 interface AiRecommendMenuProps {
     data: AiRecommendResultFood

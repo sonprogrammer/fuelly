@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { axiosInstance } from '@/lib/axios'
 import { Food } from '@/types/food'
+import { toast } from 'react-hot-toast'
 
 const postCustomFood = async (data: Food)=> {
     const res = await axiosInstance.post('/add-nomalFood', data)
@@ -17,7 +18,7 @@ const usePostAddCustomFood = () => {
         },
         onError: (err) => {
             console.log('err', err)
-            alert('err occured')
+            toast.error('err occured')
         }
     })
 }

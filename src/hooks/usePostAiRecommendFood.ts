@@ -1,6 +1,6 @@
 import { useMutation } from '@tanstack/react-query'
 import {axiosInstance} from '@/lib/axios'
-import { AiRecommendFood, AiRecommendResult} from '@/types/ai'
+import { AiRecommendFood, AiRecommendResult} from '@/types/ai'
 
 
 
