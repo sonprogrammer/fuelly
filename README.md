@@ -1,37 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# Fuelly - 사용자 데이터를 기반으로 최적의 권장 섭취량을 제안하는 AI 헬스케어 서비스
 
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Fuelly는 사용자의 신체 데이터를 분석하여 과학적인 기초대사량(BMR)과 일일 총 에너지 소비량(TDEE)을 산출하고, 이를 바탕으로 최적의 권장 칼로리와 단백질 섭취량을 제안합니다. 
+AI(Grok) 식단 가이드와 직관적인 차트를 통해 건강한 식습관 형성을 돕습니다.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**[서비스 이용해보기](https://fuelly.onrender.com/)**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 💡 기획 배경 (Motivation)
 
-## Learn More
+매일 식단을 관리하며 느꼈던 세 가지 핵심 불편함을 해결하기 위해 Fuelly를 개발했습니다.
 
-To learn more about Next.js, take a look at the following resources:
+1. **지속적인 계산의 피로감**: 음식을 먹을 때마다 매번 칼로리와 영양 성분을 수동으로 계산하고 기억해야 하는 번거로움.
+2. **휘발되는 기록**: "오늘 뭐 먹었지?" 돌아서면 잊어버리는 식단 기록을 체계적으로 저장할 공간의 필요성.
+3. **AI 추천과 기록의 분리**: AI(그록)에게 메뉴 추천을 받아도 따로 적어두지 않으면 금방 잊게 되는 '정보의 파편화' 현상.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Fuelly**는 이 모든 과정을 하나로 합쳐, 사용자가 **계산은 시스템에 맡기고 기록은 습관처럼** 할 수 있도록 돕습니다.
+---
+## ✨ 주요 기능 (Key Features)
+- 정밀한 칼로리 계산: Mifflin-St Jeor 공식을 사용하여 정확한 기초대사량(BMR) 산출.
+- 건강 보호 로직: 극단적인 저칼로리 식단을 방지하기 위한 최소 권장 칼로리 보호 로직 적용 (남성 1500kcal, 여성 1200kcal).
+- 목표별 맞춤 가이드: 다이어트, 벌크업, 유지 등 목표에 따른 권장 칼로리 및 단백질 섭취량 자동 조정.
+- AI 식단 가이드 : Grok(AI)을 통해 사용자의 상태에 맞는 추천 메뉴와 상세 식단 설명 제공.
+- 간편 기록 시스템: 즐겨찾기, 일반 음식 저장, 오늘 식단 추가 기능을 통한 빠른 데이터 입력.
+- 실시간 진행률: 오늘 먹은 음식을 기반으로 권장 섭취량 대비 현재 섭취 현황을 프로그레스 바로 실시간 표시.
+- 데이터 시각화: Rechart를 활용하여 최근 7일간의 섭취량을 차트로 확인하고, 최대 30일간의 식단 기록 리스트 제공.
+- 건강 우선 로직: 극단적인 저칼로리 식단을 방지하기 위한 최소 권장 칼로리 보호 로직 적용 (남성 1500kcal, 여성 1200kcal).
+- 인터랙티브 대시보드: 클릭 한 번으로 체중, 목표, 활동량을 실시간으로 수정하고 반영하는 모달 시스템.
+- 반응형 UI: Tailwind CSS를 활용하여 모바일과 데스크톱 모두에 최적화된 사용자 경험 제공.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
+## 🛠 기술 스택 (Tech Stack)
 
-## Deploy on Vercel
+| 분류 | 기술 스택 |
+| :--- | :--- |
+| **Framework** | Next.js |
+| **Language** | TypeScript |
+| **State Management** | Zustand, React-Query |
+| **Styling** | Tailwind CSS, Material UI (MUI) |
+| **Visualization** | Recharts |
+| **AI Integration** | Grok AI API |
+| **Icons** | Lucide React |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
+## 🧪 계산 공식 (Calculation Logic)Fuelly는 검증된 건강 지표 계산식을 사용합니다.
+### Mifflin-St Jeor 공식을 사용하여 정밀하게 계산합니다.
+- **남성**: $$10 \times \text{weight} + 6.25 \times \text{height} - 5 \times \text{age} + 5$$
+- **여성**: $$10 \times \text{weight} + 6.25 \times \text{height} - 5 \times \text{age} - 161$$
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 2. 권장 섭취량 및 단백질 가이드
+- **다이어트**: $TDEE - 300kcal$ (단백질: 체중 $\times 1.8g$)
+- **벌크업**: $TDEE + 300kcal$ (단백질: 체중 $\times 2.0g$)
+- **유지**: $TDEE$ 유지 (단백질: 체중 $\times 1.2g$)
+- **안전 하한선**: 계산값이 남성 1500kcal / 여성 1200kcal 미만일 경우 하한선 값으로 고정하여 건강 보호.
