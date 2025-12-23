@@ -5,6 +5,7 @@ Fuelly는 사용자의 신체 데이터를 분석하여 과학적인 기초대�
 AI(Grok) 식단 가이드와 직관적인 차트를 통해 건강한 식습관 형성을 돕습니다.
 
 **[서비스 이용해보기](https://fuelly.onrender.com/)**
+> *※ Render 무료 플랜 특성상 첫 접속 시 로딩이 약 30초~1분 정도 소요될 수 있습니다.*
 
 ## 💡 기획 배경 (Motivation)
 
@@ -43,7 +44,7 @@ AI(Grok) 식단 가이드와 직관적인 차트를 통해 건강한 식습관 �
 
 ---
 ## 🧪 계산 공식 (Calculation Logic)Fuelly는 검증된 건강 지표 계산식을 사용합니다.
-### Mifflin-St Jeor 공식을 사용하여 정밀하게 계산합니다.
+### 1. Mifflin-St Jeor 공식을 사용하여 정밀 계산
 - **남성**: $$10 \times \text{weight} + 6.25 \times \text{height} - 5 \times \text{age} + 5$$
 - **여성**: $$10 \times \text{weight} + 6.25 \times \text{height} - 5 \times \text{age} - 161$$
 
