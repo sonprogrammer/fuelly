@@ -41,6 +41,7 @@ AI(Grok) 식단 가이드와 직관적인 차트를 통해 건강한 식습관 �
 | **Visualization** | Recharts |
 | **AI Integration** | Grok AI API |
 | **Icons** | Lucide React |
+| **Database** | MongoDB |
 
 ---
 ## 🧪 계산 공식 (Calculation Logic)Fuelly는 검증된 건강 지표 계산식을 사용합니다.
