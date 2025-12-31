@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import QueryProviderWrapper from './components/QueryProviderWrapper'
 import LogoutComponent from './components/LogoutComponent'
@@ -29,8 +29,17 @@ export const metadata: Metadata = {
     ],
     locale: 'ko_KR',
     type:'website',
+  },
+  manifest: '/mainfest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'Fuelly'
   }
-};
+}
+export const viewport: Viewport = {
+  themeColor: "#10b981",
+}
 
 export default function RootLayout({
   children,

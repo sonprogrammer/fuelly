@@ -1,0 +1,21 @@
+{
+    "name": "Fuelly",
+    "short_name": "Fuelly",
+    "description": "당신의 건강한 식습관, Fuelly가 함께합니다",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#fffbeb", 
+    "theme_color": "#10b981",
+    "icons": [
+      {
+        "src": "/fuelly_192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "/fuelly_512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
