@@ -13,7 +13,12 @@ const nextConfig: NextConfig = {
     config.parallelism = 1; 
     return config;
   },
+  experimental: {
+    workerThreads: false, 
+    cpus: 1,              
+  },
   typescript: { ignoreBuildErrors: true },
+  
 };
 
 export default withPWA(nextConfig);
