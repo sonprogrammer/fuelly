@@ -1,24 +1,19 @@
 import type { NextConfig } from "next";
-import withPWAInit from "@ducanh2912/next-pwa";
+import withSerwistInit from "@serwist/next";
 
-const withPWA = withPWAInit({
-    dest: "public", // 서비스 워커 파일이 생성될 위치
-    cacheOnFrontEndNav: true, // 프론트엔드 네비게이션 시 캐싱 여부
-    aggressiveFrontEndNavCaching: true,
-  })
+const withSerwist = withSerwistInit({
+  swSrc: "app/sw.ts", // 서비스 워커 소스 파일 위치
+  swDest: "public/sw.js", // 생성될 파일
+  disable: process.env.NODE_ENV === "development",
+});
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@ducanh2912/next-pwa"],
-  webpack: (config, { webpack }) => {
-    config.parallelism = 1; 
-    return config;
-  },
+  // 메모리 부족 에러 방지 설정 유지
   experimental: {
-    workerThreads: false, 
-    cpus: 1,              
+    workerThreads: false,
+    cpus: 1,
   },
   typescript: { ignoreBuildErrors: true },
-  
-};
 
-export default withPWA(nextConfig);
+};
+export default withSerwist(nextConfig);
