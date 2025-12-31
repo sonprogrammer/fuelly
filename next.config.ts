@@ -8,7 +8,11 @@ const withPWA = withPWAInit({
   })
 
 const nextConfig: NextConfig = {
-
+  experimental: {
+    workerThreads: false,
+    cpus: 1
+  },
+  staticPageGenerationTimeout: 1000
 };
 
 export default withPWA(nextConfig);
