@@ -12,7 +12,8 @@ export const metadata: Metadata = {
   title: "Fuelly - 스마트한 식단 관리",
   description: "나에게 딱 맞는 영양 목표와 식단을 추천받으세요.",
   icons: {
-    icon: '/favicon_fuelly.png'
+    icon: '/favicon_fuelly.png',
+    apple: '/fuelly_192.png'
   },
   openGraph: {
     title: 'Fuelly - 스마트한 식단 관리',
@@ -30,7 +31,7 @@ export const metadata: Metadata = {
     locale: 'ko_KR',
     type:'website',
   },
-  manifest: '/mainfest.json',
+  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
