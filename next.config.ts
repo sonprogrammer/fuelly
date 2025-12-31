@@ -9,7 +9,7 @@ const withPWA = withPWAInit({
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@ducanh2912/next-pwa"],
-  webpack: (config) => {
+  webpack: (config, { webpack }) => {
     config.parallelism = 1; 
     return config;
   },
