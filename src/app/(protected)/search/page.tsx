@@ -102,13 +102,13 @@ export default function AISearchPage() {
 
 
     return (
-        <div className="relative h-full overflow-hidden">
+        <div className="relative h-full overflow-hidden flex flex-col items-center">
 
 
 
             <div className="bg-gradient-animated absolute inset-0 z-0" />
-            <div className="p-5 flex flex-col h-full gap-3 items-center relative z-10">
-                <header className="pt-8 pb-6 sm:pt-12 sm:pb-10">
+            <div className="p-5 flex flex-col h-full gap-3 max-w-4xl items-center relative z-10">
+                <header className="pt-8 pb-6 sm:pt-12 sm:pb-10 shrink-0">
                     <h1 className="text-2xl sm:text-4xl font-extrabold text-center bg-clip-text text-transparent bg-linear-to-r from-blue-600 to-purple-600">
                         AI 식단 가이드
                     </h1>

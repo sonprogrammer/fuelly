@@ -35,7 +35,6 @@ export default function GoalModalComponent({ type, onClose, recentWeight }: Moda
         { name: '다이어트(체지방 감소)', label: 'diet' },
         { name: '유지', label: 'maintain' }
     ]
-    console.log('type', type)
 
     const activities: Activity[] =[
         {name: '거의 운동 안함', label: 'sedentary'},

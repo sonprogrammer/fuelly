@@ -2,7 +2,6 @@
 
 import { useState } from 'react'
 import GoalModalComponent from '../components/GoalModalComponent'
-import { createPortal } from 'react-dom'
 
 
 interface GoalProps {

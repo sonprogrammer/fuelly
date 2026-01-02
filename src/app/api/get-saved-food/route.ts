@@ -9,6 +9,8 @@ export async function GET(req: NextRequest) {
     try{
         await dbConnect()
 
+        const Food = foodModel;
+
         const userInfo = await userInfoFromToken(req)
 
         if(!userInfo){

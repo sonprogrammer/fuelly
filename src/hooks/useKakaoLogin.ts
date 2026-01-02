@@ -51,7 +51,6 @@ const useKakaoLogin = () => {
     }
 
     const kakaoOnFailure = () => {
-        // TODO 로그인 오류시 알림창 라이브러리 도입
         console.log('kakao login error')
         toast.error('카카오 로그인 에러가 발생하였습니다')
     }
