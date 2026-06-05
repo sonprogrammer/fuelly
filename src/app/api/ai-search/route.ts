@@ -9,7 +9,6 @@ const activityMap: Record<string, string> = {
     'active': '주 6회 이상 강도 높은 운동을 즐기며 활동량이 매우 많음'
 };
 
-// 목표 라벨 변환 (예시)
 const goalMap: Record<string, string> = {
     'diet': '체중 감량 및 다이어트',
     'bulk': '근육량 증가 및 벌크업',
