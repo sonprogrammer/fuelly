@@ -8,7 +8,6 @@ export default function HomeComponent () {
     const router = useRouter()
     const user = useUserStore(state => state.user)
     const pathname = usePathname()
-console.log('pathname', pathname)
 
     const handleClick = () => {
         if(user?.goal){
