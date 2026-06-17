@@ -29,7 +29,7 @@ export const metadata: Metadata = {
       }
     ],
     locale: 'ko_KR',
-    type:'website',
+    type: 'website',
   },
   manifest: '/manifest.json',
   appleWebApp: {
@@ -47,23 +47,31 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
   return (
     <html lang="en">
       <body
-        className="h-screen flex flex-col w-full"
+        className="h-screen flex flex-col  w-full"
       >
-        <header className="p-5 flex gap-3 justify-center bg-amber-50 fixed w-full top-0 z-10">
-              <HomeComponent />
-            <div className='absolute right-5 top-5'>
-              <LogoutComponent />
-            </div>
+        <header className="p-5 flex gap-3 justify-center bg-amber-50 w-full ">
+
+          <HomeComponent />
+
+          <div className='absolute right-5 top-5'>
+            <LogoutComponent />
+          </div>
         </header>
-        <QueryProviderWrapper>
+        <main className=' flex-1 overflow-y-auto bg-linear-to-br from-green-50 to-blue-50'>
+
+          <QueryProviderWrapper>
+
+            {children}
+          </QueryProviderWrapper>
+        </main>
         <Toaster position="top-center" reverseOrder={false} />
 
-          {children}
-        </QueryProviderWrapper>
-        <nav className="fixed bottom-0 w-full bg-orange-50 z-50">
+        <nav className="flex-none w-full bg-orange-50 z-50">
+        
           <NavbarComponent />
         </nav>
       </body>

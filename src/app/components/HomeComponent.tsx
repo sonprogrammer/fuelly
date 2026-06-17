@@ -1,15 +1,20 @@
 'use client'
 
-import {useRouter} from 'next/navigation'
+import {usePathname, useRouter} from 'next/navigation'
 import {useUserStore} from '@/store/userStore'
+import { toast } from 'react-hot-toast'
 
 export default function HomeComponent () {
     const router = useRouter()
     const user = useUserStore(state => state.user)
+    const pathname = usePathname()
+console.log('pathname', pathname)
 
     const handleClick = () => {
-        if(user){
-            router.push('/home')
+        if(user?.goal){
+            router.replace('/home')
+        }else if(pathname === '/survey'){
+            toast.error('목표설정을 해주세요.')
         }else{
             router.push('/')
         }

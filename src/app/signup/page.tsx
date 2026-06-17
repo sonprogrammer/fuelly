@@ -39,7 +39,7 @@ const SignUpPage = () => {
     }
 
     return (
-        <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 px-4 mt-10">
+        <div className="h-full flex flex-col justify-center items-center bg-gray-50 px-4">
 
             <div className="w-full max-w-md bg-white p-8 rounded-8 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100">
                 
@@ -50,11 +50,11 @@ const SignUpPage = () => {
 
                 <div className="space-y-5">
                     <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Email</label>
+                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">사용할 이름</label>
                         <div className="relative group">
                             <input 
                                 type="email"
-                                placeholder="example"
+                                placeholder="근육왕"
                                 value={email}
                                 onChange={(e) => {
                                     setEmail(e.target.value)

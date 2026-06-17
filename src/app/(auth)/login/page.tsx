@@ -34,7 +34,7 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col justify-center items-center bg-gray-50 px-4 mt-10">
+        <div className="h-full flex flex-col justify-center items-center bg-gray-50 px-4">
 
             <div className="w-full max-w-md bg-white p-8 sm:p-10 rounded-8 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100">
                 
@@ -50,7 +50,7 @@ export default function LoginPage() {
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-300 group-focus-within:text-emerald-500 transition-colors" />
                         <input 
                             type="email"
-                            placeholder="아이디(이메일)"
+                            placeholder="닉네임"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all text-sm"
@@ -71,7 +71,6 @@ export default function LoginPage() {
                     </div>
                 </div>
 
-                {/* 아이디 저장 및 찾기 */}
                 <div className="flex mb-8 justify-between items-center px-1">
                     <label className="flex gap-2 items-center cursor-pointer group">
                         <input 

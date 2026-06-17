@@ -4,8 +4,6 @@ import { useState } from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import Box from '@mui/material/Box';
-// !추가할지 말지 고민
-import ManualMenue from './ManualMenu'
 import AiMenu from './AiMenu'
 import AddNomalMenu from './AddNomalMenu'
 
@@ -40,8 +38,7 @@ export default function AddMenu() {
             </Box>
             {choice == 'manual' ? 
             <div>
-                {/* TODO 밑에 컴포넌트는 ai 검색하는 컴포넌트임 이 페이지에서 사용할지 아님 ai 검색 페이지에서만 쓸지 고민*/}
-            {/* <ManualMenue /> */}
+
             <AddNomalMenu />
             </div>
             :
