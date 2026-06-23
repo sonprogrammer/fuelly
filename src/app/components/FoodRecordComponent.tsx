@@ -1,8 +1,10 @@
-import { Card, CardContent } from "@/app/components/ui/card";
-import { Progress } from "@/app/components/ui/progress";
+'use client'
 import dayjs from "dayjs";
 import "dayjs/locale/ko"
 import { Food } from '@/types/food'
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 
 interface DayData {
   date: string;
@@ -18,73 +20,89 @@ interface FoodRecordProps {
   CAL_LIMIT: number;
 }
 
+dayjs.locale("ko")
 export default function FoodRecordComponent({ sampleData, PRO_LIMIT, CAL_LIMIT }: FoodRecordProps) {
-  dayjs.locale("ko")
+  const [openIds, setOpenIds] = useState<string[]>([]);
+
+  const toggleOpen = (id: string) => {
+    setOpenIds(prev =>
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
 
   return (
-    <div className="flex flex-col gap-8 w-full max-w-2xl mx-auto px-4 sm:px-0 py-4 bg-gray-950 min-h-screen">
+    <div className="w-full max-w-2xl mx-auto px-4 space-y-3">
       {sampleData.map((day) => {
-        const isCalOver = day.totalCalorie > CAL_LIMIT;
+        const isOpen = openIds.includes(day.date);
 
         return (
-          <div key={day.date} className="group">
-            <div className="flex items-center gap-2 mb-3 px-1">
-              <span className="text-xl sm:text-2xl font-black text-white">{dayjs(day.fullDate).format("D")}</span>
-              <div className="flex flex-col leading-none">
-                <span className="text-[10px] sm:text-xs font-bold text-gray-500 uppercase">{dayjs(day.fullDate).format("MMM")}</span>
-                <span className="text-sm font-semibold text-blue-400">{dayjs(day.fullDate).format("dddd")}</span>
-              </div>
-            </div>
-
-            <Card className="h-[480px] border border-gray-800 shadow-none overflow-hidden rounded-2xl flex flex-col bg-gray-900">
-              <CardContent className="p-0 flex-1 flex flex-col min-h-0">
-                <div className="p-6 sm:p-8 flex-1 flex flex-col overflow-hidden">
-
-                  <div className="grid grid-cols-2 gap-6 mb-8 shrink-0">
-                    <div className="space-y-2">
-                      <p className="text-[10px] font-black text-gray-600 tracking-widest">CALORIES</p>
-                      <div className="flex items-baseline gap-1">
-                        <span className={`text-xl font-black ${isCalOver ? 'text-orange-500' : 'text-white'}`}>
-                          {day.totalCalorie.toLocaleString()}
-                        </span>
-                        <span className="text-[10px] font-bold text-gray-500">/ {CAL_LIMIT}</span>
-                      </div>
-                      <Progress value={(day.totalCalorie / CAL_LIMIT) * 100} className="h-1.5 bg-gray-800" />
-                    </div>
-
-                    <div className="space-y-2">
-                      <p className="text-[10px] font-black text-gray-600 tracking-widest">PROTEIN</p>
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-xl font-black text-white">{day.totalProtein.toLocaleString()}</span>
-                        <span className="text-[10px] font-bold text-gray-500">/ {PRO_LIMIT}</span>
-                      </div>
-                      <Progress value={(day.totalProtein / PRO_LIMIT) * 100} className="h-1.5 bg-gray-800" />
-                    </div>
-                  </div>
-
-                  <div className="flex-1 flex flex-col min-h-0">
-                    <p className="text-3 font-black text-gray-600 tracking-widest uppercase mb-3">Meal Log</p>
-
-                    <div className="flex-1 overflow-y-auto pr-2 space-y-2">
-                      {day.meals.length > 0 && (
-                        day.meals.map((meal, idx) => (
-                          <div key={idx} className="flex items-center justify-between p-3.5 rounded-2xl bg-gray-800/50 hover:bg-gray-800 transition-colors border border-gray-700/50">
-                            <div className="flex flex-col min-w-0">
-                              <span className="text-sm font-bold text-gray-200 truncate">{meal.name}</span>
-                              <span className="text-[11px] text-gray-500 font-medium">{meal.unit}</span>
-                            </div>
-                            <div className="flex flex-col items-end shrink-0 ml-4">
-                              <span className="text-xs font-black text-gray-300">{meal.calorie} <small className="font-normal text-gray-500">kcal</small></span>
-                              <span className="text-[10px] font-bold text-blue-400 uppercase tracking-tighter">P {meal.protein}g</span>
-                            </div>
-                          </div>
-                        ))
-                      )}
-                    </div>
+          <div key={day.date} className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
+            {/* 요약 헤더 (언제나 노출) */}
+            <div
+              className="p-5 flex items-center justify-between cursor-pointer hover:bg-gray-800/50 transition-colors"
+              onClick={() => toggleOpen(day.date)}
+            >
+              <div className="flex items-center gap-4">
+                <div className="text-center">
+                  <p className="text-[10px] font-bold text-gray-500 uppercase">{dayjs(day.fullDate).format("MMM")}</p>
+                  <p className="text-xl font-black text-white">{dayjs(day.fullDate).format("D")}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-white">{dayjs(day.fullDate).format("dddd")}</p>
+                  <div className="flex gap-3 text-[11px] text-gray-400 font-medium">
+                    <span>{day.meals.length}개 음식</span>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+                <div className="flex flex-col text-gray-400 text-[11px] font-medium justify-center">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-bold">
+                      <span className={day.totalCalorie > CAL_LIMIT ? "text-red-500" : "text-gray-500"}>
+                        {day.totalCalorie.toLocaleString()}
+                      </span>
+                      <span className="text-gray-600 mx-1">/</span>
+                      <span className="text-gray-400">{CAL_LIMIT} kcal</span>
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-bold">
+                      <span className={day.totalProtein >= PRO_LIMIT ? "text-emerald-400" : "text-gray-500"}>
+                        {day.totalProtein.toLocaleString()}
+                      </span>
+                      <span className="text-gray-600 mx-1">/</span>
+                      <span className="text-gray-400">{PRO_LIMIT} g</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+
+              <motion.div animate={{ rotate: isOpen ? 180 : 0 }}>
+                <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${openIds ? '' : 'rotate-180'}`} />
+              </motion.div>
+            </div>
+
+            <AnimatePresence>
+              {isOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="bg-gray-950 border-t border-gray-800"
+                >
+                  <div className="p-4 space-y-2">
+                    {day.meals.map((meal, idx) => (
+                      <div key={idx} className="flex justify-between items-center p-3 bg-gray-900 rounded-xl">
+                        <span className="text-sm text-gray-300">{meal.name}</span>
+                        <div className="text-right">
+                          <p className="text-xs font-bold text-white">{meal.calorie}kcal</p>
+                          <p className="text-[10px] text-blue-400">P {meal.protein}g</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         );
       })}

@@ -21,7 +21,7 @@ export default function useGetDailyMessage() {
 
         const fetchMessage = async () => {
             try {
-                const res = await axiosInstance.post('/grok', {
+                const res = await axiosInstance.post('/groq', {
                     prompt: '운동과 식단을 관리하는 사람을 위해 두 문장으로 응원 메시지 보내줘'
                 })
            

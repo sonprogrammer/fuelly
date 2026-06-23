@@ -1,15 +1,6 @@
 'use client'
 
-import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ReferenceLine,
-    ResponsiveContainer,
-} from "recharts";
+
 import FoodRecordComponent from '../../components/FoodRecordComponent'
 import dayjs from "dayjs"
 import { useState } from 'react'
@@ -17,6 +8,7 @@ import { useUserStore } from "@/store/userStore"
 import useGetUserAllMeal from '@/hooks/useGetUserAllMeal'
 import useRemainNutrition from '@/hooks/useRemainNutrition'
 import { Food } from '@/types/food'
+import dynamic from "next/dynamic";
 
 
 
@@ -29,6 +21,14 @@ interface MealData {
     _id: string;
 }
 
+const DailyMealChart = dynamic(() => import('@/app/components/DailyMealChart').then((mod) => mod.DailyMealChart),{
+    ssr: false,
+    loading: () => (
+        <div className="h-[300px] flex items-center justify-center text-gray-500 animate-pulse">
+            차트 로딩 중...
+        </div>
+    )
+})
 
 export default function StatsPage() {
     const [range, setRange] = useState<7 | 30>(7);
@@ -60,7 +60,7 @@ export default function StatsPage() {
     const filteredData = sortedMeals?.filter((daily: MealData) => {
         const diff = today.diff(dayjs(daily.fullDate), "day")
         return diff >= 0 && diff < (range || 7)
-    });
+    }).reverse();
 
     if (pendingtoGetMeal) return 
     <div className="p-10 text-center animate-pulse">
@@ -71,43 +71,8 @@ export default function StatsPage() {
         <div className="p-5 h-full">
             <div className='그래프 '>
                 <h1 className="text-gray-400">최근 7일 기록</h1>
-                <ResponsiveContainer width="100%" height={300}>
-                    <BarChart data={sortedMeals} margin={{ top: 20, right: 40, left: 40, bottom: 5 }} >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="date" />
-
-                        <YAxis
-                            yAxisId="cal"
-                            domain={[0, Math.max(CAL_LIMIT, Math.max(...sortedMeals.map((d: MealData) => d.totalCalorie) || [0])) + 1000]}
-                            tickFormatter={(value) => `${value} Kcal`}
-                            width={10}
-                        />
-
-                        <YAxis
-                            yAxisId="pro"
-                            orientation="right"
-                            domain={[0, Math.max(PRO_LIMIT, Math.max(...sortedMeals.map((d: MealData) => d.totalProtein) || [0])) + 80]}
-                            tickFormatter={(value) => `${value}g`}
-                            width={20}
-                        />
-
-                        <Tooltip />
-
-
-                        <ReferenceLine y={CAL_LIMIT} yAxisId="cal" stroke="#93c5fd" strokeDasharray="5 5" strokeWidth={1.5}
-                            label={{ value: "Kcal 목표", position: "top", fill: "#3b82f6", fontSize: 12 }}
-                        />
-
-                        <ReferenceLine y={PRO_LIMIT} yAxisId="pro" stroke="#fca5a5" strokeDasharray="5 5" strokeWidth={1.5}
-                            label={{ value: "단백질 목표", position: "bottom", fill: "#f87171", fontSize: 12 }} //fca5a5
-                        />
-                        {/* 칼로리-왼쪽  */}
-                        <Bar yAxisId="cal" dataKey="totalCalorie" name='총 섭취 칼로리' fill="#4f46e5" radius={[6, 6, 0, 0]} barSize={40}/>
-
-                        {/* 단백질-오른쪽 */}
-                        <Bar yAxisId="pro" dataKey="totalProtein" name='총 섭취 단백질' fill="#ef4444" radius={[6, 6, 0, 0]} barSize={40} />
-                    </BarChart>
-                </ResponsiveContainer>
+                <DailyMealChart sortedMeals={sortedMeals} CAL_LIMIT={CAL_LIMIT} PRO_LIMIT={PRO_LIMIT}/>
+                
             </div>
 
 

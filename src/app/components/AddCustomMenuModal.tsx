@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from 'react'
 import { Food } from '@/types/food'
 import { toast } from 'react-hot-toast'
+import { usePostAiFoodInfo } from "@/hooks/usePostAiFoodInfo";
 interface ModalProps {
     open: boolean,
     onClose: () => void
@@ -19,6 +20,8 @@ export default function AddCustomMenuModal({ open, onClose, handleSaveDaily, dai
     const [calorie, setCalorie] = useState<string>('')
     const [protein, setProtein] = useState<string>('')
     const [unit, setUnit] = useState<string>('')
+
+    const { mutate: foodAiInfo, isPending } = usePostAiFoodInfo()
 
 
     if (!open) return null;
@@ -38,6 +41,24 @@ export default function AddCustomMenuModal({ open, onClose, handleSaveDaily, dai
                 unit,
             }
         )
+    }
+
+    // * ai가 자동으로 채워넣기
+    const handleAiAutoFill = () => {
+        console.log('hdafds')
+        if(!foodName.trim()) {
+            toast.dismiss()
+            toast.error('음식명을 입력하고 요청해주세요')
+            return
+        }
+        foodAiInfo(foodName.trim(), {
+            onSuccess: (data) => {
+                setCalorie(data.calorie.toString())
+                setProtein(data.protein.toString())
+                setUnit(data.unit || '')
+                toast.success('AI 영양 정보 불러오기 성공')
+            }
+        })
     }
 
     const handleDailyFoodSubmit = () => {
@@ -90,7 +111,17 @@ export default function AddCustomMenuModal({ open, onClose, handleSaveDaily, dai
 
                         <div className="space-y-4">
                             <div>
-                                <label className="text-xs font-medium text-gray-500 mb-1.5 block">음식 이름</label>
+                                <label className="text-xs font-medium text-gray-500 mb-1.5 flex justify-between items-center">
+                                    <span>음식 이름</span>
+                                    <button
+                                        type="button" 
+                                        onClick={handleAiAutoFill}
+                                        disabled={isPending}
+                                        className="text-emerald-400 hover:text-emerald-300 transition-colors text-[10px] font-bold cursor-pointer"
+                                    >
+                                        {isPending ? '✨ 분석 중...' : '✨ AI 자동 채우기'}
+                                    </button>
+                                </label>
                                 <input
                                     className="w-full bg-gray-800 border border-gray-700 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 rounded-lg focus:outline-none focus:border-emerald-500 transition-all"
                                     type="text"

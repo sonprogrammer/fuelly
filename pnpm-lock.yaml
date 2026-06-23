@@ -177,6 +177,9 @@ importers:
       babel-plugin-styled-components:
         specifier: ^2.1.4
         version: 2.1.4(@babel/core@7.28.5)(styled-components@6.1.19(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
+      babel-plugin-transform-remove-console:
+        specifier: ^6.9.4
+        version: 6.9.4
       eslint:
         specifier: ^9
         version: 9.39.1(jiti@2.6.1)
@@ -2055,6 +2058,9 @@ packages:
     resolution: {integrity: sha512-Xgp9g+A/cG47sUyRwwYxGM4bR/jDRg5N6it/8+HxCnbT5XNKSKDT9xm4oag/osgqjC2It/vH0yXsomOG6k558g==}
     peerDependencies:
       styled-components: '>= 2'
+
+  babel-plugin-transform-remove-console@6.9.4:
+    resolution: {integrity: sha512-88blrUrMX3SPiGkT1GnvVY8E/7A+k6oj3MNvUtTIxJflFzXTw1bHkuJ/y039ouhFMp2prRn5cQGzokViYi1dsg==}
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
@@ -5908,6 +5914,8 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
+
+  babel-plugin-transform-remove-console@6.9.4: {}
 
   balanced-match@1.0.2: {}
 

@@ -37,7 +37,7 @@ export default function NavbarComponent() {
                             href={path}
                             className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs transition-colors
                             ${isActive
-                                    ? 'text-gray-800 font-medium'
+                                    ? 'text-emerald-500 font-black'
                                     : 'text-gray-400 hover:text-gray-600'
                                 }`}
                         >
