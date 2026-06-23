@@ -39,91 +39,97 @@ const SignUpPage = () => {
     }
 
     return (
-        <div className="h-full flex flex-col justify-center items-center bg-gray-50 px-4">
+         <div className="h-full flex flex-col justify-center items-center bg-gray-950 px-4">
+        <div className="w-full max-w-sm flex flex-col">
 
-            <div className="w-full max-w-md bg-white p-8 rounded-8 shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-gray-100">
-                
-                <div className="text-center mb-10">
-                    <h1 className="text-3xl font-black text-gray-900 tracking-tight mb-2">회원가입</h1>
-                    <p className="text-sm text-gray-400 font-medium">FUELLY와 함께 건강한 식단을 시작하세요</p>
-                </div>
+            <div className="text-center mb-8">
+                <p className="text-xs font-medium tracking-widest text-gray-500 uppercase mb-4">FUELLY</p>
+                <h1 className="text-2xl font-bold text-white mb-2">회원가입</h1>
+                <p className="text-sm text-gray-500">FUELLY와 함께 건강한 식단을 시작하세요</p>
+            </div>
 
-                <div className="space-y-5">
-                    <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">사용할 이름</label>
-                        <div className="relative group">
-                            <input 
-                                type="email"
-                                placeholder="근육왕"
-                                value={email}
-                                onChange={(e) => {
-                                    setEmail(e.target.value)
-                                    setEmailValid(null) 
-                                }}
-                                className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all"
-                                required
-                            />
-                            <button
-                                onClick={handleEmailCheckClick}
-                                disabled={!email || isChecking}
-                                className="absolute right-2 top-2 bottom-2 px-4 bg-emerald-500 text-white rounded-xl text-xs font-bold hover:bg-emerald-600 disabled:bg-gray-200 transition-colors shadow-sm"
-                            >
-                                {isChecking ? <Loader2 className="w-4 h-4 animate-spin" /> : '중복 확인'}
-                            </button>
+            <div className="space-y-4 mb-6">
+
+                <div className="space-y-1.5">
+                    <label className="text-xs text-gray-500 ml-1">사용할 이름</label>
+                    <div className="relative group">
+                        <input
+                            type="email"
+                            placeholder="근육왕"
+                            value={email}
+                            onChange={(e) => {
+                                setEmail(e.target.value)
+                                setEmailValid(null)
+                            }}
+                            className="w-full pl-4 pr-24 py-2.5 bg-gray-900 border border-gray-800 rounded-xl text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition-all"
+                            required
+                        />
+                        <button
+                            onClick={handleEmailCheckClick}
+                            disabled={!email || isChecking}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1.5 bg-emerald-500 text-white rounded-lg text-xs font-medium hover:bg-emerald-400 disabled:bg-gray-700 disabled:text-gray-500 transition-colors cursor-pointer"
+                        >
+                            {isChecking ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : '중복 확인'}
+                        </button>
+                    </div>
+                    {emailValid !== null && (
+                        <div className={`flex items-center gap-1.5 ml-1 text-xs ${emailValid ? 'text-emerald-400' : 'text-red-400'}`}>
+                            {emailValid ? <CheckCircle2 className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
+                            {emailValid ? '사용 가능한 이름입니다' : '이미 사용 중인 이름입니다'}
                         </div>
-                        {emailValid !== null && (
-                            <div className={`flex items-center gap-1.5 ml-1 mt-1 text-[13px] font-bold ${emailValid ? 'text-emerald-600' : 'text-red-500'}`}>
-                                {emailValid ? <CheckCircle2 className="w-4 h-4" /> : <XCircle className="w-4 h-4" />}
-                                {emailValid ? '사용 가능한 이메일입니다' : '이미 사용 중인 아이디입니다'}
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Password</label>
-                        <input 
-                            type="password"
-                            placeholder="비밀번호를 입력하세요"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all"
-                            required
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Confirm Password</label>
-                        <input 
-                            type="password"
-                            placeholder="비밀번호를 한 번 더 입력하세요"
-                            value={checkPassword}
-                            onChange={(e) => setCheckPassword(e.target.value)}
-                            className={`w-full p-4 bg-gray-50 border rounded-2xl focus:outline-none focus:ring-2 transition-all ${
-                                passwordMatched === false ? 'border-red-200 focus:ring-red-500/10 focus:bg-white' : 'border-gray-100 focus:ring-emerald-500/20 focus:bg-white'
-                            }`}
-                            required
-                        />
-                        {passwordMatched === false && (
-                            <p className="text-[13px] font-bold text-red-500 ml-1 mt-1 flex items-center gap-1.5">
-                                <XCircle className="w-4 h-4" /> 비밀번호가 일치하지 않습니다
-                            </p>
-                        )}
-                    </div>
+                    )}
                 </div>
 
-                <div className="mt-10">
-                    <button 
-                        onClick={handleRegisterClick}
-                        className="w-full py-4 bg-linear-to-r from-emerald-500 to-green-600 text-white rounded-2xl font-black text-lg shadow-lg shadow-emerald-200 hover:shadow-xl hover:-translate-y-0.5 transition-all active:scale-[0.98]"
-                    >
-                        시작하기
-                    </button>
-                    <p className="text-center text-sm text-gray-400 mt-6 font-medium">
-                        이미 계정이 있으신가요? <a href="/login" className="text-emerald-600 font-bold hover:underline">로그인</a>
-                    </p>
+                <div className="space-y-1.5">
+                    <label className="text-xs text-gray-500 ml-1">비밀번호</label>
+                    <input
+                        type="password"
+                        placeholder="비밀번호를 입력하세요"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="w-full px-4 py-2.5 bg-gray-900 border border-gray-800 rounded-xl text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-emerald-500 transition-all"
+                        required
+                    />
+                </div>
+
+                <div className="space-y-1.5">
+                    <label className="text-xs text-gray-500 ml-1">비밀번호 확인</label>
+                    <input
+                        type="password"
+                        placeholder="비밀번호를 한 번 더 입력하세요"
+                        value={checkPassword}
+                        onChange={(e) => setCheckPassword(e.target.value)}
+                        className={`w-full px-4 py-2.5 bg-gray-900 border rounded-xl text-sm text-white placeholder:text-gray-600 focus:outline-none transition-all
+                            ${passwordMatched === false
+                                ? 'border-red-500/50 focus:border-red-500'
+                                : 'border-gray-800 focus:border-emerald-500'
+                            }`}
+                        required
+                    />
+                    {passwordMatched === false && (
+                        <div className="flex items-center gap-1.5 ml-1 text-xs text-red-400">
+                            <XCircle className="w-3.5 h-3.5" />
+                            비밀번호가 일치하지 않습니다
+                        </div>
+                    )}
                 </div>
             </div>
+
+            <button
+                onClick={handleRegisterClick}
+                className="w-full py-3 bg-emerald-500 text-white rounded-xl text-sm font-medium hover:bg-emerald-400 active:scale-[0.98] transition-all cursor-pointer"
+            >
+                시작하기
+            </button>
+
+            <p className="text-center text-xs text-gray-600 mt-6">
+                이미 계정이 있으신가요?{' '}
+                <a href="/login" className="text-emerald-500 hover:text-emerald-400 transition-colors">
+                    로그인
+                </a>
+            </p>
         </div>
+    </div>
     )
 }
 

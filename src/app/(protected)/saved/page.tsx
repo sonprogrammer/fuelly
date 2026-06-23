@@ -1,11 +1,10 @@
 "use client";
 
-import { Card } from "@/app/components/ui/card"
 import { Trash2, Calendar, HeartOff } from "lucide-react"
 import useGetSavedFood from '@/hooks/useGetSavedFood'
 import useToggleSaveFood from '@/hooks/useToggleSaveFood'
 import usePostFoodToDailyMeal from '@/hooks/usePostFoodToDailyMeal'
-import {Food} from '@/types/food'
+import { Food } from '@/types/food'
 import { toast } from 'react-hot-toast'
 
 interface SavedFood {
@@ -23,7 +22,7 @@ export default function FoodTable() {
 
 
     const deleteFood = (foodId: string) => {
-        deleteSave(foodId,{
+        deleteSave(foodId, {
             onSuccess: () => {
                 toast.success('음식이 삭제되었습니다!')
             }
@@ -31,7 +30,7 @@ export default function FoodTable() {
     }
 
     const addFood = (food: Food) => {
-        addToDaily(food,{
+        addToDaily(food, {
             onSuccess: () => {
                 toast.success(`${food.name}이(가) 식단에 추가되었습니다!`)
             }
@@ -39,108 +38,106 @@ export default function FoodTable() {
     }
 
     if (isPending) {
-        return <div className="p-10 text-center text-gray-500">데이터를 불러오는 중입니다...</div>
+        return (
+            <div className="flex justify-center items-center py-20">
+                <div className="w-8 h-8 border-2 border-gray-700 border-t-emerald-500 rounded-full animate-spin" />
+            </div>
+        )
     }
 
     if (!savedFoods || savedFoods.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center py-20 px-5 text-center">
-                <div className="bg-gray-100 p-6 rounded-full mb-4">
-                    <HeartOff className="w-12 h-12 text-gray-400" />
+                <div className="p-4 bg-gray-800 rounded-full mb-4">
+                    <HeartOff className="w-8 h-8 text-gray-600" />
                 </div>
-                <h2 className="text-xl font-bold text-gray-700 mb-2">즐겨찾기한 음식이 없어요</h2>
-                <p className="text-gray-500 mb-6">
-                    자주 먹는 음식을 즐겨찾기에 추가하고<br />
-                    간편하게 식단을 구성해 보세요!
-                </p>
-                
+                <p className="text-sm font-semibold text-gray-400 mb-1">즐겨찾기한 음식이 없어요</p>
+                <p className="text-xs text-gray-600">자주 먹는 음식을 즐겨찾기에 추가하고 간편하게 식단을 구성해 보세요</p>
             </div>
         )
     }
-
     return (
-        <div className="p-5">
+        <div className="p-5 max-w-5xl mx-auto">
+            <div className="flex items-center justify-between mb-5">
+                <h2 className="text-base font-semibold text-white">즐겨찾기한 음식</h2>
+                <p className="text-xs text-gray-600">달력 아이콘으로 오늘 식단에 추가</p>
+            </div>
 
-            <h1 className="text-2xl font-bold text-center gap-2 py-5">
-            즐겨찾기한 음식
-            </h1>
-
-            <div className="grid gap-3 md:hidden">
-                <p className='text-gray-400 text-right'>달력 클릭시 오늘 식단에 추가됩니다</p>
-                {savedFoods?.map((f:SavedFood) => (
-                    <Card key={f.foodId._id} className="p-5">
-                        <div className="flex justify-between">
-                            <div>
-                                <h2 className="font-bold text-lg">{f.foodId.name}</h2>
-                                <p className="text-sm text-gray-600">{f.foodId.unit}</p>
-                                <p className="text-sm">단백질: {f.foodId.protein}g</p>
-                                <p className="text-sm">칼로리: {f.foodId.calorie}kcal</p>
+            <div className="flex flex-col gap-2 md:hidden">
+                {savedFoods?.map((f: SavedFood) => (
+                    <div key={f.foodId._id} className="flex items-center justify-between px-4 py-3 bg-gray-900 border border-gray-800 rounded-xl hover:bg-gray-800 transition-colors">
+                        <div className="flex flex-col gap-1 min-w-0">
+                            <span className="text-sm font-semibold text-white truncate">{f.foodId.name}</span>
+                            <div className="flex items-center gap-2 text-xs text-gray-600">
+                                <span>{f.foodId.unit}</span>
+                                <span className="w-px h-3 bg-gray-700" />
+                                <span>{f.foodId.calorie} kcal</span>
+                                <span className="w-px h-3 bg-gray-700" />
+                                <span>단백질 {f.foodId.protein}g</span>
                             </div>
-                            <section className="h-full flex items-center gap-2">
-                                <button 
-                                    className='cursor-pointer border items-center p-2 hover:bg-blue-50 rounded-lg transition-colors'
-                                    onClick={() => addFood(f.foodId)}
-                                    aria-label='식단추가'
-                                    >
-                                    <Calendar className="text-blue-500" />
-                                </button>
-                                <button
-                                    className='cursor-pointer'
-                                    onClick={() => deleteFood(f.foodId._id!)}
-                                    aria-label='저장삭제'
-                                    >
-                                    <Trash2 className="text-red-500" />
-                                </button>
-                            </section>
-
                         </div>
-                    </Card>
+                        <div className="flex items-center gap-1 ml-3 shrink-0">
+                            <button
+                                onClick={() => addFood(f.foodId)}
+                                aria-label='식단추가'
+                                className="p-2 rounded-lg hover:bg-blue-500/10 transition-colors cursor-pointer"
+                            >
+                                <Calendar className="w-4 h-4 text-blue-400" />
+                            </button>
+                            <button
+                                onClick={() => deleteFood(f.foodId._id!)}
+                                aria-label='저장삭제'
+                                className="p-2 rounded-lg hover:bg-red-500/10 transition-colors cursor-pointer"
+                            >
+                                <Trash2 className="w-4 h-4 text-red-400" />
+                            </button>
+                        </div>
+                    </div>
                 ))}
             </div>
 
-            {/* 피씨버전 */}
-            <p className='text-gray-400 text-right'>달력 클릭시 오늘 식단에 추가됩니다</p>
-            <table className="hidden md:table w-full text-center border-collapse">
-                <thead>
-                    <tr className="border-b">
-                        <th className="p-2">음식</th>
-                        <th className="p-2">양</th>
-                        <th className="p-2">단백질(g)</th>
-                        <th className="p-2">칼로리(kcal)</th>
-                        <th className="p-2">오늘 식단에 추가</th>
-                        <th className="p-2">삭제</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {savedFoods?.map((f:SavedFood) => (
-                        <tr key={f.foodId._id} className="border-b hover:bg-gray-50/30">
-                            <td className="p-2">{f.foodId.name}</td>
-                            <td className="p-2">{f.foodId.unit}</td>
-                            <td className="p-2">{f.foodId.protein}</td>
-                            <td className="p-2">{f.foodId.calorie}</td>
-                            <td className="p-2">
-                                <button 
-                                    className='cursor-pointer border items-center p-2 hover:bg-blue-50 rounded-lg transition-colors'
-                                    onClick={() => addFood(f.foodId)}
-                                    aria-label='식단추가'
-                                    >
-                                    <Calendar className="text-blue-500" />
-                                </button>
-                            </td>
-                            <td className="p-2">
-                                <button 
-                                    className='cursor-pointer p-2 px-3 rounded-xl  hover:bg-gray-200 transition-colors'
-                                    onClick={() => deleteFood(f.foodId._id!)}
-                                    aria-label='저장삭제'
-                                    >
-                                    <Trash2 className="text-red-500" />
-                                </button>
-                            </td>
+            <div className="hidden md:block border border-gray-800 rounded-2xl overflow-hidden">
+                <table className="w-full text-sm">
+                    <thead>
+                        <tr className="bg-gray-800 border-b border-gray-700">
+                            <th className="text-left px-4 py-3 text-xs font-medium text-gray-500">음식</th>
+                            <th className="text-left px-4 py-3 text-xs font-medium text-gray-500">제공량</th>
+                            <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">칼로리</th>
+                            <th className="text-center px-4 py-3 text-xs font-medium text-gray-500">단백질</th>
+                            <th className="text-center px-4 py-3 text-xs font-medium text-gray-500 w-16">식단추가</th>
+                            <th className="text-center px-4 py-3 text-xs font-medium text-gray-500 w-16">삭제</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody className="divide-y divide-gray-800">
+                        {savedFoods?.map((f: SavedFood) => (
+                            <tr key={f.foodId._id} className="hover:bg-gray-800/50 transition-colors">
+                                <td className="px-4 py-3 font-medium text-white">{f.foodId.name}</td>
+                                <td className="px-4 py-3 text-gray-600 text-xs">{f.foodId.unit}</td>
+                                <td className="px-4 py-3 text-center text-orange-400 font-medium">{f.foodId.calorie} kcal</td>
+                                <td className="px-4 py-3 text-center text-emerald-400 font-medium">{f.foodId.protein}g</td>
+                                <td className="px-4 py-3 text-center">
+                                    <button
+                                        onClick={() => addFood(f.foodId)}
+                                        aria-label='식단추가'
+                                        className="p-2 rounded-lg hover:bg-blue-500/10 transition-colors cursor-pointer inline-flex"
+                                    >
+                                        <Calendar className="w-4 h-4 text-blue-400" />
+                                    </button>
+                                </td>
+                                <td className="px-4 py-3 text-center">
+                                    <button
+                                        onClick={() => deleteFood(f.foodId._id!)}
+                                        aria-label='저장삭제'
+                                        className="p-2 rounded-lg hover:bg-red-500/10 transition-colors cursor-pointer inline-flex"
+                                    >
+                                        <Trash2 className="w-4 h-4 text-red-400" />
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }

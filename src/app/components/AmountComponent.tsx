@@ -1,5 +1,3 @@
-
-import { Box, Typography, LinearProgress, Tooltip } from "@mui/material";
 import React from "react";
 
 interface Props {
@@ -10,57 +8,50 @@ interface Props {
     exceed: number
 }
 
-
 function AmountComponent({ currentGrams, targetGrams, name, icon }: Props) {
-
     const unit = name.includes("칼로리") ? "kcal" : "g"
-
     const current = Math.max(0, currentGrams)
     const percent = Math.min(100, Math.round((current / targetGrams) * 100))
+    const remaining = targetGrams - currentGrams
+
+    const barColor =
+        percent >= 100 ? 'bg-red-500' :
+            percent >= 75 ? 'bg-orange-400' :
+                'bg-emerald-500'
+
     return (
-        <div className=" rounded-lg flex-1 p-5  flex flex-col gap-3">
-            <section className='flex justify-between'>
-                <h1>{name}</h1>
-                {icon}
-            </section>
+        <div className="rounded-2xl p-5 flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    {icon}
+                    <span className="text-sm font-semibold text-gray-300">{name}</span>
+                </div>
+                <span className="text-xs text-gray-600">{percent}%</span>
+            </div>
 
+            <div className="flex items-baseline justify-between">
+                <span className="text-2xl font-bold text-white">
+                    {current.toLocaleString()}
+                    <span className="text-sm font-normal text-gray-500 ml-1">{unit}</span>
+                </span>
+                <span className="text-xs text-gray-600">
+                    목표 {targetGrams.toLocaleString()}{unit}
+                </span>
+            </div>
 
-            <Box>
-                <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-                    <Typography variant="subtitle2"></Typography>
-                    <Typography variant="subtitle2" color="text.">
-                    {current.toLocaleString()}{unit} / {targetGrams.toLocaleString()}{unit} ({percent}%)
-                    </Typography>
-                </Box>
-                <Tooltip title={`${current}g / ${targetGrams}g`} arrow>
-                    <LinearProgress
-                        variant="determinate"
-                        value={percent}
-                        aria-label="amount-progress"
-                        sx={{
-                            height: 12,
-                            borderRadius: 6,
-                            backgroundColor: (theme) =>
-                                theme.palette.mode === "light" ? "#eee" : theme.palette.grey[800],
-                            "& .MuiLinearProgress-bar": {
-                                borderRadius: 6,
-                                transition: "width 600ms ease",
-                                background: percent >= 100
-                                    ? "linear-gradient(90deg,#ef4444,#b91c1c)"
-                                    : percent >= 75
-                                        ? "linear-gradient(90deg,#f59e0b,#f97316)"
-                                        : "linear-gradient(90deg,#ef4444,#f97316)",
-                            },
-                        }}
-                    />
-                </Tooltip>
-            </Box>
-            <h2 className="text-sm">남은 {name} :  
-                {targetGrams - currentGrams > 0
-                    ? <span className="text-green-500 font-bold"> {targetGrams - currentGrams}{unit}</span>
-                    : <span className="text-red-500 font-bold"> +{Math.abs(targetGrams - currentGrams)}{unit} 초과!</span>
+            <div className="w-full bg-gray-800 rounded-full h-2">
+                <div
+                    className={`h-2 rounded-full transition-all duration-500 ${barColor}`}
+                    style={{ width: `${percent}%` }}
+                />
+            </div>
+
+            <p className="text-xs text-gray-500">
+                {remaining > 0
+                    ? <>남은 {name}: <span className="text-emerald-400 font-semibold">{remaining.toLocaleString()}{unit}</span></>
+                    : <>목표 초과: <span className="text-red-400 font-semibold">+{Math.abs(remaining).toLocaleString()}{unit}</span></>
                 }
-            </h2>
+            </p>
         </div>
     )
 }

@@ -50,30 +50,25 @@ export default function RootLayout({
 
   return (
     <html lang="en">
-      <body
-        className="h-screen flex flex-col  w-full"
-      >
-        <header className="p-5 flex gap-3 justify-center bg-amber-50 w-full ">
-
+      <body className="h-screen flex flex-col w-full bg-gray-950">
+        <header className="flex-none px-5 py-4 flex items-center justify-center bg-gray-900 border-b border-gray-800 relative">
           <HomeComponent />
-
-          <div className='absolute right-5 top-5'>
+          <div className='absolute right-5'>
             <LogoutComponent />
           </div>
         </header>
-        <main className=' flex-1 overflow-y-auto bg-linear-to-br from-green-50 to-blue-50'>
 
+        <main className='flex-1 overflow-y-auto'>
           <QueryProviderWrapper>
-
             {children}
           </QueryProviderWrapper>
         </main>
+
         <Toaster position="top-center" reverseOrder={false} />
 
-        <nav className="flex-none w-full bg-orange-50 z-50">
-        
-          <NavbarComponent />
-        </nav>
+
+        <NavbarComponent />
+
       </body>
     </html>
   );

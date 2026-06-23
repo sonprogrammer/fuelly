@@ -7,7 +7,7 @@ const getNomalFoods = async () => {
 }
 
 
-const useGetNomalFoods = () => {
+const useGetNomalFoods = () => { 
     return useQuery({
         queryKey: ['nomalFoods'],
         queryFn: () => getNomalFoods()

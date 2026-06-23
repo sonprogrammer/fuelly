@@ -19,142 +19,151 @@ interface Goal {
 }
 
 interface Activity {
-    name : string
+    name: string
     label: ActivityLevel
 }
+
+const goals: Goal[] = [
+    { name: '벌그업(근육 증가)', label: 'bulk' },
+    { name: '다이어트(체지방 감소)', label: 'diet' },
+    { name: '유지', label: 'maintain' }
+]
+
+const activities: Activity[] = [
+    { name: '거의 운동 안함', label: 'sedentary' },
+    { name: '가벼운 운동(주 1~2회)', label: 'light' },
+    { name: '보통 운동(주 3~5회)', label: 'moderate' },
+    { name: '많이 운동(주 6회 이상)', label: 'active' },
+]
 
 export default function GoalModalComponent({ type, onClose, recentWeight }: ModalProps) {
     const [weight, setWeight] = useState<string>(String(recentWeight ?? ""))
     const [updatedGoal, setUpdatedGoal] = useState<GoalLabel | null>(null)
-    const [activity, setActivity] =useState<ActivityLevel | null>(null)
+    const [activity, setActivity] = useState<ActivityLevel | null>(null)
 
-    const {mutate: updateMutate} = useUpdatedUserInfo()
-    
-    const goals: Goal[] = [
-        { name: '벌그업(근육 증가)', label: 'bulk' },
-        { name: '다이어트(체지방 감소)', label: 'diet' },
-        { name: '유지', label: 'maintain' }
-    ]
+    const { mutate: updateMutate } = useUpdatedUserInfo()
 
-    const activities: Activity[] =[
-        {name: '거의 운동 안함', label: 'sedentary'},
-        {name: '가벼운 운동(주 1~2회)', label: 'moderate'},
-        {name: '보통 운동(주 3~5회)', label: 'light'},
-        {name: '많이 운동(주 6회 이상)', label: 'active'},
-    ]
+
 
     const handleSubmitClick = () => {
         if (type === 'goal' && updatedGoal) {
             updateMutate(
                 { goal: updatedGoal },
-                { onSuccess: () => {
-                    toast.success('목표가 수정되었습니다!')
-                    onClose()
+                {
+                    onSuccess: () => {
+                        toast.success('목표가 수정되었습니다!')
+                        onClose()
+                    }
                 }
-                }
-                
+
             )
         }
-        
+
         if (type === 'weight' && weight) {
             console.log('updatedWeigh', weight)
             updateMutate(
                 { weight: Number(weight) },
-                { onSuccess: () => {
-                    toast.success('체중 기록 완료!')
-                    onClose() }
+                {
+                    onSuccess: () => {
+                        toast.success('체중 기록 완료!')
+                        onClose()
+                    }
                 }
             )
         }
-    
+
         if (type === 'activity' && activity) {
             updateMutate(
                 { activity },
-                { onSuccess: () => {
-                    toast.success('운동량이 업데이트되었습니다!')
-                    onClose()
-                    } 
+                {
+                    onSuccess: () => {
+                        toast.success('운동량이 업데이트되었습니다!')
+                        onClose()
+                    }
                 }
             )
         }
     }
-    
+
 
     return (
         <AnimatePresence>
             <motion.div
-                initial={{ opacity: 0, scale: 0.7 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.7 }}
-                transition={{
-                    duration: 0.25,
-                    ease: [0.22, 1, 0.36, 1],
-                }}
-                className="relative flex flex-col bg-white rounded-xl p-5 shadow-xl max-w-md sm:max-w-lg"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="relative flex flex-col bg-gray-900 border border-gray-700 rounded-2xl p-6 shadow-2xl w-[calc(100vw-2rem)] max-w-[380px]"
             >
-                <button
-                    onClick={onClose}
-                    className='absolute top-3 right-3 w-6 h-6  bg-black text-white rounded-full cursor-pointer'
-                >X</button>
-                <h1 className='text-center mb-3 font-bold'>
-                    {type === 'weight' ? '체중 수정' : type === 'goal'? '목표 수정' : '운동량 수정'}
-                </h1>
-                {type === 'goal' ?
-                    <section>
+                <div className="flex items-center justify-between mb-5">
+                    <h2 className="text-base font-semibold text-white">
+                        {type === 'weight' ? '체중 수정' : type === 'goal' ? '목표 수정' : '운동량 수정'}
+                    </h2>
+                    <button
+                        onClick={onClose}
+                        className="p-1.5 rounded-lg hover:bg-gray-800 transition-colors text-gray-500 hover:text-gray-300 cursor-pointer"
+                    >
+                        ✕
+                    </button>
+                </div>
+
+                {type === 'goal' && (
+                    <section className="flex flex-col gap-2">
                         {goals.map(g => (
                             <button
                                 key={g.name}
-                                className={`bg-stone-50 w-full text-start 
-                                rounded-xl border border-gray-300 px-3 py-2 mb-2 
-                                ${updatedGoal === g.label && 'border-teal-500 bg-teal-50'}
-                                `}
                                 onClick={() => setUpdatedGoal(g.label)}
+                                className={`w-full text-left text-sm px-4 py-3 rounded-xl border transition-all cursor-pointer
+                                ${updatedGoal === g.label
+                                        ? 'border-emerald-500/50 bg-emerald-500/20 text-emerald-400'
+                                        : 'border-gray-700 bg-gray-800 text-gray-400 hover:bg-gray-700'
+                                    }`}
                             >
                                 {g.name}
                             </button>
                         ))}
-                        <button 
-                            onClick={handleSubmitClick}
-                            className='w-full py-1 text-white rounded-xl mt-3 bg-teal-500 cursor-pointer'>
-                            수정 하기
-                        </button>
                     </section>
-                    :
-                    type === 'weight' ?
-                    <section className="flex flex-col justify-center">
-                        <input type="number"
-                            placeholder={`${recentWeight}`}
-                            value={weight}
-                            onChange={(e) => setWeight(e.target.value)}
-                            className="text-right" />
-                        <button 
-                            onClick={handleSubmitClick}
-                            className='w-full py-1 text-white rounded-xl mt-3 bg-teal-500 cursor-pointer'>
-                            수정 하기
-                        </button>
+                )}
+
+                {type === 'weight' && (
+                    <section className="flex flex-col gap-3">
+                        <div className="relative">
+                            <input
+                                type="number"
+                                placeholder={`${recentWeight}`}
+                                value={weight}
+                                onChange={(e) => setWeight(e.target.value)}
+                                className="w-full px-4 py-2.5 pr-12 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white text-right focus:outline-none focus:border-emerald-500 transition-all"
+                            />
+                            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-gray-500">kg</span>
+                        </div>
                     </section>
-                    : 
-                    <section>
+                )}
+
+                {type === 'activity' && (
+                    <section className="flex flex-col gap-2">
                         {activities.map(a => (
-                            <button 
+                            <button
                                 key={a.name}
-                                className={`bg-stone-50 w-full text-start 
-                                    rounded-xl border border-gray-300 px-3 py-2 mb-2 
-                                    ${activity === a.label && 'border-teal-500 bg-teal-50'}
-                                    `}
-                                    onClick={() => setActivity(a.label)}
-                                >
+                                onClick={() => setActivity(a.label)}
+                                className={`w-full text-left text-sm px-4 py-3 rounded-xl border transition-all cursor-pointer
+                                ${activity === a.label
+                                        ? 'border-emerald-500/50 bg-emerald-500/20 text-emerald-400'
+                                        : 'border-gray-700 bg-gray-800 text-gray-400 hover:bg-gray-700'
+                                    }`}
+                            >
                                 {a.name}
                             </button>
                         ))}
-                       
-                        <button 
-                            onClick={handleSubmitClick}
-                            className='w-full py-1 text-white rounded-xl mt-3 bg-teal-500 cursor-pointer'>
-                            수정하기
-                        </button>
                     </section>
-                }
+                )}
+
+                <button
+                    onClick={handleSubmitClick}
+                    className="w-full mt-5 py-2.5 text-sm font-medium text-white bg-emerald-500 rounded-xl hover:bg-emerald-400 active:scale-[0.98] transition-all cursor-pointer"
+                >
+                    수정하기
+                </button>
             </motion.div>
         </AnimatePresence>
     )

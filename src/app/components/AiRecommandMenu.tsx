@@ -23,61 +23,67 @@ export default function AiRecommendMenu({
 }: AiRecommendMenuProps) {
 
     return (
-        <div className="group relative flex flex-col gap-5 border border-emerald-100 rounded-4xl bg-white p-6 shadow-sm hover:shadow-md transition-all duration-300">
-            
-
-            <div className="flex justify-between items-start">
-                <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                        <h3 className="text-xl font-black text-gray-800 tracking-tight">{data.name}</h3>
-                        <button 
-                            aria-label='즐겨찾기'
-                            onClick={() => handleSaveToggle(data)}
-                            className="transition-transform active:scale-125 cursor-pointer text-pink-500"
-                        >
-                            {icon}
-                        </button>
-                    </div>
-                    <span className="text-sm font-bold text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-full w-fit">
-                        {data.amount} 기준
-                    </span>
+        <div className="flex flex-col gap-4 px-4 py-4 border-b border-gray-800 last:border-b-0 hover:bg-gray-800/50 transition-colors">
+        <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2">
+                    <h3 className="text-sm font-semibold text-white">{data.name}</h3>
+                    <button
+                        aria-label='즐겨찾기'
+                        onClick={() => handleSaveToggle(data)}
+                        className="p-1 rounded-md hover:bg-pink-500/10 transition-colors cursor-pointer"
+                    >
+                        {icon}
+                    </button>
                 </div>
+                <span className="text-xs text-gray-600">{data.amount} 기준</span>
             </div>
-
-            <div className="space-y-4">
-                <div className="space-y-1.5">
-                    <div className="flex justify-between text-sm font-black">
-                        <span className="text-gray-500">칼로리</span>
-                        <span className="text-orange-500">{data.calorie} <span className="text-xs font-medium">kcal</span></span>
-                    </div>
-                    <AiRecommendProgressBar percent={caloriePercent} />
+            <div className="flex items-center gap-3 text-right">
+                <div>
+                    <p className="text-xs text-gray-600">칼로리</p>
+                    <p className="text-sm font-semibold text-orange-400">{data.calorie} kcal</p>
                 </div>
-
-                <div className="space-y-1.5">
-                    <div className="flex justify-between text-sm font-black">
-                        <span className="text-gray-500">단백질</span>
-                        <span className="text-emerald-600">{data.protein} <span className="text-xs font-medium">g</span></span>
-                    </div>
-                    <AiRecommendProgressBar percent={proteinPercent} />
+                <div>
+                    <p className="text-xs text-gray-600">단백질</p>
+                    <p className="text-sm font-semibold text-emerald-400">{data.protein}g</p>
                 </div>
-            </div>
-
-            <div className="flex gap-2 pt-2">
-                <button 
-                    onClick={() => handleAddDaily(data)}
-                    className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-emerald-500 text-white rounded-xl font-bold text-sm hover:bg-emerald-600 active:scale-[0.97] transition-all cursor-pointer shadow-sm shadow-emerald-100"
-                >
-                    <PlusCircle className="w-4 h-4" />
-                    오늘 식단
-                </button>
-                <button 
-                    onClick={() => handleAddCustom(data)}
-                    className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-gray-50 text-gray-600 border border-gray-100 rounded-xl font-bold text-sm hover:bg-gray-100 active:scale-[0.97] transition-all cursor-pointer"
-                >
-                    <BookmarkPlus className="w-4 h-4" />
-                    내 음식함
-                </button>
             </div>
         </div>
+
+        <div className="space-y-2">
+            <div className="space-y-1">
+                <div className="flex justify-between text-xs text-gray-600">
+                    <span>칼로리 충족률</span>
+                    <span>{Math.round(caloriePercent)}%</span>
+                </div>
+                <AiRecommendProgressBar percent={caloriePercent} />
+            </div>
+            <div className="space-y-1">
+                <div className="flex justify-between text-xs text-gray-600">
+                    <span>단백질 충족률</span>
+                    <span>{Math.round(proteinPercent)}%</span>
+                </div>
+                <AiRecommendProgressBar percent={proteinPercent} />
+            </div>
+        </div>
+
+        <div className="flex gap-2">
+            <button
+                onClick={() => handleAddDaily(data)}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 bg-emerald-500 text-white text-xs font-medium rounded-lg hover:bg-emerald-400 active:scale-[0.98] transition-all cursor-pointer"
+            >
+                <PlusCircle className="w-3.5 h-3.5" />
+                오늘 식단에 추가
+            </button>
+            <button
+                onClick={() => handleAddCustom(data)}
+                className="flex-1 flex items-center justify-center gap-1.5 py-2 border border-gray-700 text-gray-400 text-xs font-medium rounded-lg hover:bg-gray-700 active:scale-[0.98] transition-all cursor-pointer"
+            >
+                <BookmarkPlus className="w-3.5 h-3.5" />
+                내 음식함에 저장
+            </button>
+        </div>
+    </div>
+  
     )
 }

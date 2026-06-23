@@ -9,7 +9,6 @@ export async function PATCH(req: NextRequest) {
         const userInfo = await userInfoFromToken(req)
 
         const update = await req.json()
-        console.log('upate', update)
 
         if(!userInfo){
             return NextResponse.json({message:'invalid user token'},{status:401})

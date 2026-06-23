@@ -4,6 +4,7 @@ import { create } from "zustand"
 import { persist } from "zustand/middleware"
 
 interface User{
+    _id?: string;
     name?: string; //카카오
     kakaoId?: string; //카카오
     nickName?: string;//일반

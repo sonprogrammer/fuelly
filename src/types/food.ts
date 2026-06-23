@@ -5,4 +5,5 @@ export interface Food{
     protein: number,
     unit: string,
     _id?: string
+    createdBy?: string
 }

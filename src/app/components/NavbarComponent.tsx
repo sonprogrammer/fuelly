@@ -1,61 +1,52 @@
 'use client'
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Utensils, Heart, AudioWaveform, ChartColumnBig } from 'lucide-react'
 import { useUserStore } from '@/store/userStore'
 
+const navItems = [
+    { path: 'meals', icon: Utensils, label: 'Today' },
+    { path: 'saved', icon: Heart, label: 'Saved' },
+    { path: 'search', icon: AudioWaveform, label: 'AI Search' },
+    { path: 'stats', icon: ChartColumnBig, label: 'Stats' },
+]
 
 export default function NavbarComponent() {
-    const user = useUserStore(state=> state.user)
+    const user = useUserStore(state => state.user)
     const pathname = usePathname()
 
-    const isSurveyPage = pathname === '/survey'
-    
-    if(!user || isSurveyPage){
-        return null
-    }
+    // const isSurveyPage = pathname === '/survey'
 
-    const currentPage = (path: string) => pathname === `/${path}`
+    // if(!user || isSurveyPage){
+    //     return null
+    // }
+
+    if (!user || pathname === '/survey') return null
+
+    // const currentPage = (path: string) => pathname === `/${path}`
 
     return (
-        <section className='flex justify-around h-full'>
-            <Link 
-                className={`p-3 flex-1 text-center flex flex-col items-center 
-                    hover:bg-amber-200
-                    ${currentPage("meals") ? "font-bold text-amber-600" : ""}
-                `}
-                href='meals'>
-                    <Utensils />
-                    <p>Today</p>
-                    </Link>
-            <Link 
-                className={`p-3 flex-1 text-center flex flex-col items-center 
-                    hover:bg-amber-200
-                    ${currentPage("saved") ? "font-bold text-amber-600" : ""}
-                `}
-                href='saved'>
-                    <Heart />
-                    <p>Saved</p>
-            </Link >
-            <Link 
-                className={`p-3 flex-1 text-center flex flex-col items-center 
-                    hover:bg-amber-200
-                    ${currentPage("search") ? "font-bold text-amber-600" : ""}
-                `}
-                href='search'>
-                     <AudioWaveform />
-                    <p>AI Search</p>
-            </Link >
-            <Link 
-                className={`p-3 flex-1 text-center flex flex-col items-center 
-                    hover:bg-amber-200
-                    ${currentPage("stats") ? "font-bold text-amber-600" : ""}
-                `}
-                href='stats'>
-                    <ChartColumnBig />
-                    <p>Stats</p>
-            </Link >
-        </section>
+        <nav className="flex-none w-full bg-gray-900 border-t border-gray-800 z-50">
+
+            <section className='flex justify-around'>
+                {navItems.map(({ path, icon: Icon, label }) => {
+                    const isActive = pathname === `/${path}`
+                    return (
+                        <Link
+                            key={path}
+                            href={path}
+                            className={`flex-1 flex flex-col items-center gap-1 py-3 text-xs transition-colors
+                            ${isActive
+                                    ? 'text-gray-800 font-medium'
+                                    : 'text-gray-400 hover:text-gray-600'
+                                }`}
+                        >
+                            <Icon className={`w-5 h-5 ${isActive ? 'stroke-[2.5px]' : 'stroke-[1.5px]'}`} />
+                            <span>{label}</span>
+                        </Link>
+                    )
+                })}
+            </section>
+        </nav>
     )
 }
