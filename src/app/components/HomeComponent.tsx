@@ -22,7 +22,7 @@ export default function HomeComponent() {
     return (
         <button
             onClick={handleClick}
-            className="cursor-pointer text-base font-bold tracking-tight text-white hover:opacity-70 transition-opacity"
+            className="cursor-pointer text-base font-bold tracking-tight text-emerald-500 hover:opacity-70 transition-opacity"
 
         >
             FUELLY

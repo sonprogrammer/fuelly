@@ -1,11 +1,20 @@
+'use client'
+
+import useKakaoLogin from '@/hooks/useKakaoLogin'
 import { MoveRight } from 'lucide-react'
+import dynamic from 'next/dynamic'
+
+
+const KakaoLogin = dynamic(() => import('react-kakao-login'), { ssr: false })
 
 export default function LoginSection() {
-  return (
-    <section className="h-full flex flex-col justify-center items-center text-center px-6 bg-gray-950">
+
+    const { kakaoOnSuccess, kakaoOnFailure } = useKakaoLogin()
+    return (
+        <section className="h-full flex flex-col justify-center items-center text-center px-6 bg-gray-950">
             <div className="max-w-md w-full flex flex-col items-center">
 
-                <p className="text-xs font-medium tracking-widest text-gray-500 uppercase mb-8">FUELLY</p>
+                <p className="text-sm font-medium tracking-widest text-emerald-500 uppercase mb-8 animate-bounce">FUELLY</p>
 
                 <h1 className="text-4xl md:text-5xl font-bold text-white leading-tight mb-4">
                     건강한 식단,<br />
@@ -29,9 +38,22 @@ export default function LoginSection() {
                     <a
                         href="/login"
                         className="flex items-center justify-center w-full border border-gray-700 text-gray-300 py-3 rounded-xl text-sm font-medium hover:bg-gray-800 active:scale-[0.98] transition-all"
-                  >
+                    >
                         로그인
                     </a>
+                    <KakaoLogin
+                        token={process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID as string}
+                        onSuccess={kakaoOnSuccess}
+                        onFail={kakaoOnFailure}
+                        render={(renderProps: { onClick: () => void }) => (
+                            <button
+                                onClick={renderProps.onClick}
+                                className="cursor-pointer w-full mt-5 py-3 bg-[#FEE500] text-[#191919] rounded-xl text-sm font-medium hover:brightness-95 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                            >
+                                카카오로 시작하기
+                            </button>
+                        )}
+                    />
                 </div>
 
                 <div className="flex items-center gap-6 mt-12 text-xs text-gray-600">
@@ -43,5 +65,5 @@ export default function LoginSection() {
                 </div>
             </div>
         </section>
-  )
+    )
 }

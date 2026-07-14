@@ -4,18 +4,21 @@ import { useUserStore } from "@/store/userStore"
 import AmountComponent from '@/app/components/AmountComponent'
 import GoalComponent from '@/app/components/GoalComponent'
 import { Flame, Beef, Sparkles } from 'lucide-react'
-import useGetDailyMessage from '@/hooks/useGetDailyMessage'
 import useRemainNutrition from '@/hooks/useRemainNutrition'
+import { useState } from "react"
+import { useGetDailyMessage } from "@/hooks/useGetDailyMessage"
+import { ReqMsgModal } from "@/app/components/ReqMsgModal"
 
 export default function HomePage() {
     const user = useUserStore(state => state.user)
     const { recommended, consumed, exceed } = useRemainNutrition(user)
+    const [reqModalOpen, setReqModalOpen] = useState(false)
 
-    const message = useGetDailyMessage()
-    const messages = message
-        .split(/(?<=[.!?])\s+/)
-        .filter(Boolean)
-        .map(m => m.trim())
+    const { data: fetchMsg, isPending: fetchingMsg } = useGetDailyMessage()
+
+    const defaultMessage = "오늘의 작은 변화가 더 큰 성장을 만든다.\nNo matter what, just do it.";
+    const displayMsg = fetchMsg.answer || defaultMessage 
+
 
     return (
         <div className="flex flex-col gap-5 p-5 md:p-8 max-w-5xl mx-auto min-h-full mb-10 sm:mb-0">
@@ -56,22 +59,40 @@ export default function HomePage() {
 
 
             <section className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
-                <div className="flex items-center gap-2 mb-5">
-                    <div className="p-2 bg-purple-500/20 rounded-lg">
-                        <Sparkles className="w-4 h-4 text-purple-400" />
+                <div className="flex items-center justify-between mb-5">
+                    <div className="flex items-center gap-2">
+                        <div className="p-2 bg-purple-500/20 rounded-lg">
+                            <Sparkles className="w-4 h-4 text-purple-400" />
+                        </div>
+                        <h2 className="text-sm font-semibold text-white">AI 코치의 오늘 한마디</h2>
                     </div>
-                    <h2 className="text-sm font-semibold text-white">AI 코치의 오늘 한마디</h2>
+                    {!fetchMsg || !fetchMsg.alreadyExist && (
+                        <div>
+                            <button
+                                onClick={() => setReqModalOpen(true)}
+                                className="text-purple-400 text-xs cursor-pointer hover:bg-purple-500/30 p-3 rounded-xl">
+                                응원 요청하기
+                            </button>
+                            <p className="text-gray-300 text-[8px]">*일일 1회 요청가능합니다.</p>
+                        </div>
+                    )}
                 </div>
                 <div className="space-y-2">
-                    {messages.map((m, i) => (
-                        <p
-                            key={`${m}-${i}`}
-                            className="text-sm text-center text-gray-400 leading-relaxed animate-in fade-in slide-in-from-bottom-2 duration-700"
-                            style={{ animationDelay: `${i * 200}ms`, animationFillMode: 'both' }}
-                        >
-                            {`"${m}"`}
+                    <div className="p-4 bg-gray-800/50 rounded-xl mb-4">
+                        <p className="text-white text-center whitespace-pre-line">
+                            {fetchingMsg ? "불러오는 중..." : displayMsg}
                         </p>
-                    ))}
+                    </div>
+
+
+                    {reqModalOpen &&
+
+                            <ReqMsgModal
+                                onClose={() => setReqModalOpen(false)}
+                            />
+
+                    }
+
                 </div>
             </section>
         </div>

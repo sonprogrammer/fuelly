@@ -16,7 +16,7 @@ export async function POST(req: NextRequest){
         const prompt = `
         너는 전문 영양사야.
         사용자 정보와 남은 영양 목표, 조건과 응답 형식에 3개의 음식을 보내줘.
-        단위를 제외하고 꼭 한국어로 보내줘.
+        단위를 제외하고 무조건 반드시 한국어로만 보내줘.
         사용자 정보
         성별 : ${user.gender}
         나이 : ${user.age}

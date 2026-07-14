@@ -7,7 +7,7 @@ const JWT_SECRET = new TextEncoder().encode(
 export async function userInfoFromToken(req: NextRequest){
     const header = req.headers.get('Authorization')
     if(!header || !header?.startsWith('Bearer ')) return null
-
+  console.log('header ', header)
     try{
 
       const token = header.split(' ')[1]
