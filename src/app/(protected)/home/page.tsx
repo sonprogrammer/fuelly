@@ -17,7 +17,7 @@ export default function HomePage() {
     const { data: fetchMsg, isPending: fetchingMsg } = useGetDailyMessage()
 
     const defaultMessage = "오늘의 작은 변화가 더 큰 성장을 만든다.\nNo matter what, just do it.";
-    const displayMsg = fetchMsg.answer || defaultMessage 
+    const displayMsg = fetchMsg?.answer ? fetchMsg.answer :  defaultMessage 
 
 
     return (
