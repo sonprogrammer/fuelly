@@ -14,7 +14,10 @@ export default function TodayMenuComponent() {
     const user = useUserStore(state => state.user)
     const { data: dailyFoods, isPending } = useGetDailyMeal()
     const { consumed, remain } = useRemainNutrition(user)
+    console.log('daily', dailyFoods)
 
+    const date = new Date()
+    console.log('now', date)
     const { mutate } = useDeleteDailyFood()
     const foods = dailyFoods?.meals
 

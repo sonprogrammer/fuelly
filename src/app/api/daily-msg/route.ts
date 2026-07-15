@@ -1,8 +1,9 @@
 import  dailyMsg from '@/models/dailyMsgModel';
 import dbConnect from "@/lib/mongoose";
 import { userInfoFromToken } from "@/lib/userInfoFromToken";
-import dayjs from "dayjs";
+
 import { NextRequest, NextResponse } from "next/server";
+import dayjs from '@/lib/dayjs';
 
 export async function GET(req: NextRequest){
     try {

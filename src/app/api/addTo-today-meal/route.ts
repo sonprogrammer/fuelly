@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/mongoose";
 import dailyMeal from '@/models/dailyModel'
 import { userInfoFromToken } from "@/lib/userInfoFromToken"
-import dayjs from 'dayjs'
+import dayjs from "@/lib/dayjs";
+
 
 export async function POST(req: NextRequest) {
     try {

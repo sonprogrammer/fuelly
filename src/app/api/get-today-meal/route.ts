@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/mongoose";
 import dailyMeal from '@/models/dailyModel'
 import { userInfoFromToken } from "@/lib/userInfoFromToken"
-import dayjs from 'dayjs'
+import dayjs from "@/lib/dayjs";
+
 
 export async function GET(req: NextRequest){
     try{
@@ -15,6 +16,7 @@ export async function GET(req: NextRequest){
         }
 
         const today = dayjs().format('YYYY-MM-DD')
+        
 
         const userDailyMeal = await dailyMeal.findOne({
             date: today,

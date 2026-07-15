@@ -18,7 +18,6 @@ export async function DELETE(req: NextRequest) {
         }
 
         const userId = userInfo.objectId
-        console.log('userid', userId)
 
         const deleteFood = await Food.findOneAndDelete({ createdBy: userId, _id: food._id })
 
