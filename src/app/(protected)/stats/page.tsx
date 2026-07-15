@@ -2,7 +2,6 @@
 
 
 import FoodRecordComponent from '../../components/FoodRecordComponent'
-import dayjs from "dayjs"
 import { useState } from 'react'
 import { useUserStore } from "@/store/userStore"
 import useGetUserAllMeal from '@/hooks/useGetUserAllMeal'
@@ -21,7 +20,11 @@ interface MealData {
     _id: string;
 }
 
-const DailyMealChart = dynamic(() => import('@/app/components/DailyMealChart').then((mod) => mod.DailyMealChart),{
+export interface GroupedMealData extends Omit<MealData, 'meals'> {
+    meals: (Food & { quantity: number })[]
+}
+
+const DailyMealChart = dynamic(() => import('@/app/components/DailyMealChart').then((mod) => mod.DailyMealChart), {
     ssr: false,
     loading: () => (
         <div className="h-[300px] flex items-center justify-center text-gray-500 animate-pulse">
@@ -34,59 +37,63 @@ export default function StatsPage() {
     const [range, setRange] = useState<7 | 30>(7);
 
     const user = useUserStore(state => state.user)
-    const { data: allMeal, isPending: pendingtoGetMeal } = useGetUserAllMeal()
+    const { data: allMeal, isPending: pendingtoGetMeal } = useGetUserAllMeal(range)
 
     const { recommended } = useRemainNutrition(user)
-    const sortedMeals = allMeal?.map((meal: MealData) => {
-        return {
-            date: dayjs(meal.date).format('MM-DD'),
-            fullDate: meal.date,
-            meals: meal.meals,
-            totalCalorie: meal.totalCalorie,
-            totalProtein: meal.totalProtein,
-            id: meal._id
-        }
-    }) || []
 
 
+    const groupFoods = (foodList: Food[]) => {
+
+        const grouped = foodList.reduce((acc: Record<string, Food & { quantity: number }>, cur: Food) => {
+            const key = cur.foodId || cur.name
+            if (acc[key]) {
+                acc[key].quantity += 1
+            } else {
+                acc[key] = {...cur , quantity: 1}
+            }
+            return acc
+        }, { }) ?? {}
+        return grouped
+    }
 
     const CAL_LIMIT = recommended.calorie
     const PRO_LIMIT = recommended.protein
-    const today = dayjs()
 
- 
+
 
     // * 날짜별 식단 보기
-    const filteredData = sortedMeals?.filter((daily: MealData) => {
-        const diff = today.diff(dayjs(daily.fullDate), "day")
-        return diff >= 0 && diff < (range || 7)
-    }).reverse();
+    const filteredData = allMeal?.map((day: MealData) => {
+        const groupObj = groupFoods(day.meals)
+        const groupMealsArray = Object.values(groupObj)
+        return { ...day, meals: groupMealsArray} 
+    })
 
-    if (pendingtoGetMeal) return 
+    console.log('filtered', filteredData)
+    if (pendingtoGetMeal) return
     <div className="p-10 text-center animate-pulse">
         데이터 로딩 중...
     </div>;
 
     return (
         <div className="p-5 h-full">
-            <div className='그래프 '>
-                <h1 className="text-gray-400">최근 7일 기록</h1>
-                <DailyMealChart sortedMeals={sortedMeals} CAL_LIMIT={CAL_LIMIT} PRO_LIMIT={PRO_LIMIT}/>
-                
+            <div className='그래프 mb-10'>
+                <h1 className="text-gray-400">{`최근 ${range}일 기록`}</h1>
+                <DailyMealChart sortedMeals={allMeal} CAL_LIMIT={CAL_LIMIT} PRO_LIMIT={PRO_LIMIT} />
+
             </div>
 
 
             {/* //* 식단 */}
             <section className="flex gap-3 pl-5">
                 <button
-                    className={`px-4 py-2 rounded-lg border ${range === 7 ? "bg-blue-600 text-white" : "bg-white"}`}
+                    className={`px-4 py-2 rounded-lg border ${range === 7 ? "bg-blue-600 text-white" : "bg-white"} cursor-pointer`}
                     onClick={() => setRange(7)}
                 >
                     최근 7일
                 </button>
 
                 <button
-                    className={`px-4 py-2 rounded-lg border ${range === 30 ? "bg-blue-600 text-white" : "bg-white"}`}
+                    className={`px-4 py-2 rounded-lg border ${range === 30 ? "bg-blue-600 text-white" : "bg-white"} cursor-pointer`}
                     onClick={() => setRange(30)}
                 >
                     최근 30일
@@ -102,10 +109,10 @@ export default function StatsPage() {
                         : ""
                 }>
                     {filteredData.length > 0 ? (
-                        filteredData?.map((day: MealData) => (
+                        filteredData?.map((dailyData: GroupedMealData) => (
                             <FoodRecordComponent
-                                key={day.date}
-                                sampleData={[day]}
+                                key={dailyData.date}
+                                dailyData={[dailyData]}
                                 CAL_LIMIT={CAL_LIMIT}
                                 PRO_LIMIT={PRO_LIMIT}
                             />

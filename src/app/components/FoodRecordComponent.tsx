@@ -1,7 +1,7 @@
 'use client'
 import dayjs from "dayjs";
 import "dayjs/locale/ko"
-import { Food } from '@/types/food'
+import { GroupFoodsArrayType } from '@/types/food'
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
@@ -10,18 +10,18 @@ interface DayData {
   date: string;
   totalCalorie: number;
   totalProtein: number;
-  meals: Food[];
+  meals: GroupFoodsArrayType[];
   fullDate?: string;
 }
 
 interface FoodRecordProps {
-  sampleData: DayData[];
+  dailyData: DayData[];
   PRO_LIMIT: number;
   CAL_LIMIT: number;
 }
 
 dayjs.locale("ko")
-export default function FoodRecordComponent({ sampleData, PRO_LIMIT, CAL_LIMIT }: FoodRecordProps) {
+export default function FoodRecordComponent({ dailyData, PRO_LIMIT, CAL_LIMIT }: FoodRecordProps) {
   const [openIds, setOpenIds] = useState<string[]>([]);
 
   const toggleOpen = (id: string) => {
@@ -32,23 +32,23 @@ export default function FoodRecordComponent({ sampleData, PRO_LIMIT, CAL_LIMIT }
 
   return (
     <div className="w-full max-w-2xl mx-auto px-4 space-y-3">
-      {sampleData.map((day) => {
+      {dailyData.map((day) => {
         const isOpen = openIds.includes(day.date);
 
         return (
           <div key={day.date} className="bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden">
-            {/* 요약 헤더 (언제나 노출) */}
+
             <div
               className="p-5 flex items-center justify-between cursor-pointer hover:bg-gray-800/50 transition-colors"
               onClick={() => toggleOpen(day.date)}
             >
               <div className="flex items-center gap-4">
                 <div className="text-center">
-                  <p className="text-[10px] font-bold text-gray-500 uppercase">{dayjs(day.fullDate).format("MMM")}</p>
-                  <p className="text-xl font-black text-white">{dayjs(day.fullDate).format("D")}</p>
+                  <p className="text-[10px] font-bold text-gray-500 uppercase">{dayjs(day.date).format("MMM")}</p>
+                  <p className="text-xl font-black text-white">{dayjs(day.date).format("D")}</p>
                 </div>
                 <div>
-                  <p className="text-sm font-bold text-white">{dayjs(day.fullDate).format("dddd")}</p>
+                  <p className="text-sm font-bold text-white">{dayjs(day.date).format("dddd")}</p>
                   <div className="flex gap-3 text-[11px] text-gray-400 font-medium">
                     <span>{day.meals.length}개 음식</span>
                   </div>
@@ -92,7 +92,14 @@ export default function FoodRecordComponent({ sampleData, PRO_LIMIT, CAL_LIMIT }
                   <div className="p-4 space-y-2">
                     {day.meals.map((meal, idx) => (
                       <div key={idx} className="flex justify-between items-center p-3 bg-gray-900 rounded-xl">
-                        <span className="text-sm text-gray-300">{meal.name}</span>
+                        <div className="flex gap-2">
+                          <span className="text-sm text-gray-300">{meal.name}</span>
+                          {meal.quantity && meal.quantity > 1 && (
+                             <span className="flex items-center justify-center h-5 px-1.5 rounded-full bg-emerald-500 text-[10px] font-bold text-gray-900">
+                                x{meal.quantity}
+                            </span>
+                          )}
+                        </div>
                         <div className="text-right">
                           <p className="text-xs font-bold text-white">{meal.calorie}kcal</p>
                           <p className="text-[10px] text-blue-400">P {meal.protein}g</p>
