@@ -51,7 +51,7 @@ export async function POST(req: NextRequest){
                     'name': '음식명',
                     'calorie': 숫자,
                     'protein': 숫자,
-                    'amount' : 단위
+                    'amount' : 단위(예시: 1개, 100g, 300g)
                 }
             ]
             
@@ -59,7 +59,7 @@ export async function POST(req: NextRequest){
         `
 
         const completion = await groq.chat.completions.create({
-            model: 'llama-3.3-70b-versatile',
+            model: 'openai/gpt-oss-20b',
             messages: [
                 {
                     role: 'system',

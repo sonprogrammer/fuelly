@@ -10,8 +10,12 @@ export function ReqMsgModal({onClose} : {onClose: () => void}) {
 
     const { mutate, isPending } = useRequestDailyMessage()
 
+    console.log('hifdasf')
+
     const handleSubmitToAi = () => {
+        console.log('pompt', prompt)
         if (!prompt) return toast('응원받고 싶은 내용을 적어주세요')
+            console.log('clicek', prompt)
         mutate(prompt, {
             onSuccess: (res) => {
                 console.log('res fsdf', res)
@@ -36,7 +40,7 @@ export function ReqMsgModal({onClose} : {onClose: () => void}) {
                     className="w-full bg-gray-800 p-2 text-white my-4 outline-none resize-none" 
                 />
                 <button 
-                    className="bg-purple-300 px-5 rounded-xl hover:bg-purple-500 hover:text-white font-bold"
+                    className="bg-purple-300 px-5 py-2 rounded-md hover:bg-purple-500 hover:text-white font-semibold "
                 onClick={handleSubmitToAi} disabled={isPending}>
                     {isPending ? '요청 중...' : '요청하기'}
                 </button>

@@ -16,7 +16,6 @@ export default function TodayMenuComponent() {
     const user = useUserStore(state => state.user)
     const { data: dailyFoods, isPending } = useGetDailyMeal()
     const { consumed, remain } = useRemainNutrition(user)
-    console.log('daily', dailyFoods)
 
     const { mutate } = useDeleteDailyFood()
     const foods = dailyFoods?.meals ?? []
@@ -31,7 +30,6 @@ export default function TodayMenuComponent() {
         }
         return acc
     }, {})
-    console.log('groupFoods', Object.values(groupFoods))
 
     const grouopFoodsArray = Object.values(groupFoods) as GroupFoodsArrayType[]
 

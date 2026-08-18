@@ -24,14 +24,12 @@ export async function proxy(req: NextRequest) {
 
 
   if (!refreshToken) {
-    // console.log('리프레시토큰 없음 - 미들웨어 ')
     return NextResponse.json({ message: 'no refreshtoken' }, { status: 401 })
   }
 
   if (!accessToken) {
     try {
       await jwtVerify(refreshToken, JWT_SECRET)
-      // console.log('Access token 없음 → Refresh token 검증 성공')
       return NextResponse.next()
     } catch (err) {
       console.log('err', err)
@@ -41,15 +39,12 @@ export async function proxy(req: NextRequest) {
   // !엑세스토큰 검증
   try {
     await jwtVerify(accessToken, JWT_SECRET);
-    // console.log('엑세스토큰 검증 성공 From middleware')
     return NextResponse.next();
 
   } catch {
-    // console.log("Access token 만료 → 브라우저에서 refresh 요청 필요")
     return NextResponse.next()
   }
 }
 export const config = {
   matcher: ['/api/:path*',],
 }
-//여기로 오는 것만 동작함
