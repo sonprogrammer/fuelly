@@ -16,7 +16,8 @@ export default function ProtectUser({ children }: { children: React.ReactNode })
     useEffect(() => {
         const initToken = async () => {
             try {
-                await axiosInstance.post('/autoLogin')
+                const res = await axiosInstance.post('/autoLogin')
+                setUserAccessToken(res.data.accessToken)
             } catch (err) {
                 console.log('err',err)
                 await axiosInstance.post('/Logout', {})

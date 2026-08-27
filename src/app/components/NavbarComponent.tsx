@@ -12,11 +12,13 @@ const navItems = [
 ]
 
 export default function NavbarComponent() {
+    const userAccessToken = useUserStore(state => state.userAccessToken)
     const user = useUserStore(state => state.user)
     const pathname = usePathname()
+    console.log('access', userAccessToken)
 
 
-    if (!user || pathname === '/' || pathname === '/survey') return null
+    if (!userAccessToken || pathname === '/' || pathname === '/survey') return null
 
 
     return (
