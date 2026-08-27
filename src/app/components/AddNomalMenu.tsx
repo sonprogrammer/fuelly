@@ -80,12 +80,6 @@ export default function AddNomalMenu() {
   }
 
 
-  const handleAddbtnClick = (food: Food) => {
-    saveDailyFoods(food)
-  }
-
-
-
   // !이름은 세이브지만 토글 기증임 좋아요 취소 등록 둘다 가능
   const handleSaveToggle = (foodId: string) => {
     const isCurrentlySaved = savedFoodIdSet.has(foodId)
@@ -209,7 +203,7 @@ export default function AddNomalMenu() {
                                 food={food}
                                 type="add"
                                 key={food._id}
-                                add={handleAddbtnClick}
+                                add={handleSaveDaily}
                                 handleSaveToggle={handleSaveToggle}
                                 isSaved={savedFoodIdSet.has(food._id!)}
                                 isMine={isMine(food.createdBy ?? '')}

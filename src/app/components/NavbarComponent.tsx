@@ -15,15 +15,9 @@ export default function NavbarComponent() {
     const user = useUserStore(state => state.user)
     const pathname = usePathname()
 
-    // const isSurveyPage = pathname === '/survey'
 
-    // if(!user || isSurveyPage){
-    //     return null
-    // }
+    if (!user || pathname === '/' || pathname === '/survey') return null
 
-    if (!user || pathname === '/survey') return null
-
-    // const currentPage = (path: string) => pathname === `/${path}`
 
     return (
         <nav className="flex-none w-full bg-gray-900 border-t border-gray-800 z-50">

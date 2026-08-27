@@ -1,12 +1,16 @@
 'use client'
 
-import { useEffect} from 'react'
+import { useEffect, useState} from 'react'
 import {useRouter } from 'next/navigation'
 import LoginSection from './LoginSection'
 import {axiosInstance} from '@/lib/axios'
+import Loading from '@/app/components/Loading'
 
 export default function LandingComponent({hasRefreshToken}: {hasRefreshToken: boolean}) {
     const router = useRouter()
+    const [loading, setLoading] = useState(false)
+
+    
 
 
     useEffect(() => {
@@ -14,13 +18,18 @@ export default function LandingComponent({hasRefreshToken}: {hasRefreshToken: bo
       const autoLogin = async() => {
         try{
           await axiosInstance.post('/autoLogin')
-          router.push('/home')
+          router.replace('/home')
         }catch(err){
           console.log('faile', err)
+          setLoading(false)
         }
       }
       autoLogin()
     },[router, hasRefreshToken])
+
+    if(loading){
+      return <Loading />
+    }
   
     return (
       <div className="h-full">

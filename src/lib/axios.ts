@@ -13,30 +13,30 @@ axiosInstance.interceptors.request.use(
     async config => {
         //!요청시마다 토큰을 넣음
         const token = useUserStore.getState().userAccessToken
-        if(!token){
-            if(!isRefreshing){
+        if (!token) {
+            if (!isRefreshing) {
                 isRefreshing = true
-                try{
+                try {
                     const res = await axios.post('/api/refresh')
                     const newToken = res.data.accessToken
 
-                    if(newToken){
+                    if (newToken) {
                         useUserStore.getState().setUserAccessToken(newToken)
                         config.headers = config.headers ?? {}
                         config.headers.Authorization = `Bearer ${newToken}`
                         processQueue(null, newToken)
                     }
-                }catch(err){
+                } catch (err) {
                     processQueue(err as Error, null)
                     useUserStore.getState().setUserAccessToken(null)
-                    
-                }finally {
+
+                } finally {
                     isRefreshing = false
-                  }
+                }
             }
         }
-        if(token && config.headers){
-            config.headers.Authorization =`Bearer ${token}`
+        if (token && config.headers) {
+            config.headers.Authorization = `Bearer ${token}`
         }
         return config
     },
@@ -46,53 +46,53 @@ axiosInstance.interceptors.request.use(
 interface QueueItem {
     res: (value: string | null) => void;
     rej: (error: Error) => void;
-  }
+}
 
 let isRefreshing = false;
 let failedQueue: QueueItem[] = [];
 
 const processQueue = (error: Error | null, token: string | null = null): void => {
     failedQueue.forEach(promise => {
-      if (error) {
-        promise.rej(error);
-      } else {
-        promise.res(token);
-      }
+        if (error) {
+            promise.rej(error);
+        } else {
+            promise.res(token);
+        }
     });
     failedQueue = [];
-  };
+};
 
 axiosInstance.interceptors.response.use(
     res => res,
-    async(err) => {
+    async (err) => {
         const originalRequest = err.config
         // console.log('err', err)
 
-        if(err.response?.status !== 401 || originalRequest._retry){
+        if (err.response?.status !== 401 || originalRequest._retry) {
             return Promise.reject(err)
         }
 
-        if(isRefreshing){
+        if (isRefreshing) {
             return new Promise((res, rej) => {
-                failedQueue.push({res, rej})
+                failedQueue.push({ res, rej })
             }).then(token => {
                 originalRequest.headers.Authorization = `Bearer ${token}`
                 return axiosInstance(originalRequest)
             })
-            
+
         }
 
         originalRequest._retry = true
         isRefreshing = true
 
         const setUserAccessToken = useUserStore.getState().setUserAccessToken
-        try{
+        try {
             const res = await axios.post('/api/refresh')
-            
+
             const newAccessToken = res.data.accessToken
 
-            
-            if(newAccessToken){
+
+            if (newAccessToken) {
                 setUserAccessToken(newAccessToken)
 
                 originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
@@ -100,19 +100,19 @@ axiosInstance.interceptors.response.use(
                 processQueue(null, newAccessToken)
 
                 return axiosInstance(originalRequest)
-            }else{
+            } else {
                 throw new Error('no access token received')
             }
-        }catch(err){
+        } catch (err) {
             processQueue(err as Error, null)
             setUserAccessToken(null)
             useUserStore.getState().clearUser()
-            if(typeof window !== 'undefined'){
+            if (typeof window !== 'undefined') {
                 toast.error('세션 만료 재로그인하세요')
                 window.location.href = '/login'
             }
             return Promise.reject(err)
-        }finally{
+        } finally {
             isRefreshing = false
         }
     }

@@ -15,7 +15,6 @@ const usePostFoodToDailyMeal = () => {
         mutationFn: (food:Food)=> postFoodToDailyMeal(food),
         onSuccess: () => {
             queryClient.invalidateQueries({queryKey: ['todayMeal']})
-            toast.success('식단 등록 성공')
         },
         onError: () => {
             toast.error('식단 등록 실패')
