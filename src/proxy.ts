@@ -15,7 +15,7 @@ export async function proxy(req: NextRequest) {
     pathname === '/api/kakao-login' ||
     pathname === '/api/regular-login' ||
     pathname === '/api/register' ||
-    pathname === '/api/autoLogin'
+    pathname === '/api/refresh'
   ) {
     return NextResponse.next()
   }
@@ -30,13 +30,6 @@ export async function proxy(req: NextRequest) {
 
   if (!accessToken) {
     return NextResponse.json({message: 'no accessToken'}, { status: 401})
-    // try {
-    //   await jwtVerify(refreshToken, JWT_SECRET)
-    //   return NextResponse.next()
-    // } catch (err) {
-    //   console.log('err', err)
-    //   return NextResponse.json({ message: 'no erreerr' }, { status: 401 })
-    // }
   }
   // !엑세스토큰 검증
   try {

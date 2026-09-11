@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/mongoose";
 import savedModel from '@/models/savedModel'
-import foodModel from '@/models/foodModel'
 import { userInfoFromToken } from "@/lib/userInfoFromToken"
 
 
@@ -9,7 +8,6 @@ export async function GET(req: NextRequest) {
     try{
         await dbConnect()
 
-        const Food = foodModel;
 
         const userInfo = await userInfoFromToken(req)
 

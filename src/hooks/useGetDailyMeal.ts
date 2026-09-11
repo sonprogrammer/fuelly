@@ -10,7 +10,9 @@ const getDailyMeal = async () => {
 const useGetDailyMeal = () => {
     return useQuery({
         queryKey: ['todayMeal'],
-        queryFn: () => getDailyMeal()
+        queryFn: () => getDailyMeal(),
+        staleTime: 1000 * 60 * 10,
+        gcTime: 1000 * 60 * 30
     })
 }
 

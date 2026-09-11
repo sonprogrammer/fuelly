@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 
 const getDailyMsg = async() => {
     const res = await axiosInstance.get('/daily-msg')
-    console.log('res.data', res.data)
     return res.data
 }
 

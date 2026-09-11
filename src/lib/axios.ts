@@ -13,31 +13,14 @@ axiosInstance.interceptors.request.use(
     async config => {
         //!요청시마다 토큰을 넣음
         const token = useUserStore.getState().userAccessToken
-        if (!token) {
-            if (!isRefreshing) {
-                isRefreshing = true
-                try {
-                    const res = await axios.post('/api/refresh')
-                    const newToken = res.data.accessToken
 
-                    if (newToken) {
-                        useUserStore.getState().setUserAccessToken(newToken)
-                        config.headers = config.headers ?? {}
-                        config.headers.Authorization = `Bearer ${newToken}`
-                        processQueue(null, newToken)
-                    }
-                } catch (err) {
-                    processQueue(err as Error, null)
-                    useUserStore.getState().setUserAccessToken(null)
-
-                } finally {
-                    isRefreshing = false
-                }
-            }
-        }
-        if (token && config.headers) {
+        console.log('요청:', config)
+        console.log('현재 accessToken:', token)
+        
+        if (token) {
             config.headers.Authorization = `Bearer ${token}`
         }
+
         return config
     },
     error => Promise.reject(error)
@@ -66,7 +49,6 @@ axiosInstance.interceptors.response.use(
     res => res,
     async (err) => {
         const originalRequest = err.config
-        // console.log('err', err)
 
         if (err.response?.status !== 401 || originalRequest._retry) {
             return Promise.reject(err)
@@ -87,7 +69,11 @@ axiosInstance.interceptors.response.use(
 
         const setUserAccessToken = useUserStore.getState().setUserAccessToken
         try {
+            console.log('🔥 refresh 요청 시작')
+
             const res = await axios.post('/api/refresh')
+
+            console.log('🔥 refresh 응답', res.data)
 
             const newAccessToken = res.data.accessToken
 

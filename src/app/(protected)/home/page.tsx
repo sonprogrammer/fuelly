@@ -11,6 +11,9 @@ import { ReqMsgModal } from "@/app/components/ReqMsgModal"
 
 export default function HomePage() {
     const user = useUserStore(state => state.user)
+    const userAccessToken = useUserStore(state => state.userAccessToken)
+    console.log('access', userAccessToken)
+    console.log('user', user)
     const { recommended, consumed, exceed } = useRemainNutrition(user)
     const [reqModalOpen, setReqModalOpen] = useState(false)
 
@@ -19,7 +22,6 @@ export default function HomePage() {
     const defaultMessage = "오늘의 작은 변화가 더 큰 성장을 만든다.\nNo matter what, just do it.";
     const displayMsg = fetchMsg?.answer ? fetchMsg.answer :  defaultMessage 
 
-console.log('user', user)
     return (
         <div className="flex flex-col gap-5 p-5 md:p-8 max-w-5xl mx-auto min-h-full mb-10 sm:mb-0">
 

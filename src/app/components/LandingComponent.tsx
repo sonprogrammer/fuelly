@@ -29,7 +29,7 @@ export default function LandingComponent({ hasRefreshToken }: { hasRefreshToken:
       }
     }
     autoLogin()
-  }, [router, hasRefreshToken])
+  }, [router, hasRefreshToken, setUserAccessToken])
 
   if (loading) {
     return <Loading />

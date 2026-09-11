@@ -9,7 +9,9 @@ const getSavedFood = async () =>{
 const useGetSavedFood = () => {
     return useQuery({
         queryKey: ['savedFoods'],
-        queryFn: getSavedFood
+        queryFn: getSavedFood,
+        staleTime: 1000 * 60 * 60,
+        gcTime: 1000 * 60 * 60
     })
 }
 

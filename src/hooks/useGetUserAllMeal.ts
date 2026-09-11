@@ -10,7 +10,9 @@ const getUserAllMeal = async(period: number) => {
 const useGetUserAllMeal = (period: number) => {
     return useQuery({
         queryKey: ['allMeals',period],
-        queryFn: () => getUserAllMeal(period)
+        queryFn: () => getUserAllMeal(period),
+        staleTime: 1000 * 60 * 10,
+        gcTime: 1000 * 60 * 30
     })
 }
 

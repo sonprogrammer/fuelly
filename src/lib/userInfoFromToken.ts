@@ -10,6 +10,7 @@ export async function userInfoFromToken(req: NextRequest) {
   try {
 
     const token = header.split(' ')[1]
+    
     const verified = await jwtVerify(token, JWT_SECRET)
     return verified.payload
   } catch (err) {

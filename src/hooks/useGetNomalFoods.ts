@@ -10,7 +10,9 @@ const getNomalFoods = async () => {
 const useGetNomalFoods = () => { 
     return useQuery({
         queryKey: ['nomalFoods'],
-        queryFn: () => getNomalFoods()
+        queryFn: () => getNomalFoods(),
+        staleTime: 1000 * 60 * 60 * 24,
+        gcTime: 1000 * 60 * 60 * 24
     })
 }
 

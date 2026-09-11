@@ -1,6 +1,6 @@
 'use client'
 
-import {  Search, Database, Loader2, AlertCircle, RotateCcw, Plus } from 'lucide-react'
+import {  Search, Database, Loader2, AlertCircle, RotateCcw, Plus, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react';
 import MenuItem from './MenuItem'
 import AddCustomMenuModal from './AddCustomMenuModal'
@@ -143,6 +143,9 @@ export default function AddNomalMenu() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
             />
+            <X 
+                onClick={() => setSearchQuery('')}
+            className='text-gray-600 absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 hover:text-white cursor-pointer'/>
         </div>
 
         <div className="flex gap-1 mb-4 bg-gray-800 p-1 rounded-lg">

@@ -8,10 +8,10 @@ import { LogOut } from 'lucide-react'
 
 
 export default function LogoutComponent() {
-    const user = useUserStore(state => state.user)
+    const userAccessToken = useUserStore(state => state.userAccessToken)
     const clearUser = useUserStore(state => state.clearUser)
     const router = useRouter()
-    if(!user) return null
+    if(!userAccessToken) return null
 
     const handleLogout = async () => {
         await axiosInstance.post('/Logout', {})
