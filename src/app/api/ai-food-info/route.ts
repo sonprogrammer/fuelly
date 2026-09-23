@@ -7,18 +7,24 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 export async function POST(req: Request) {
     const { foodName } = await req.json()
 
-    const prompt = `
-        ${foodName}에 대한 영양 성분을 알려줘 .
-        JSON 형식으로만 대답해줘: { "calorie": number, "protein": number, "unit": string}
-        unit은 영양 단위가 아니라 "제공량"을 의미한다.
+    if (!foodName?.trim()) {
+        return NextResponse.json(
+            { error: '음식명을 입력해주세요.' },
+            { status: 400 }
+        )
+    }
 
-unit에 들어갈 수 있는 값의 예시:
-- "1개"
-- "100g"
-- "1인분(200g)"
-- "1그릇(300g)"
-- "1팩(150g)" 이런식으로 들어갈꺼야.
-        단위는 일반적인 1회 제공량 기준이야. 설명은 생략해
+    const prompt = `
+        ${foodName}에 대한 영양 성분을 알려줘 . 먼저 입력값이 실제 음식인지 판단해.
+        JSON 형식으로만 대답해줘: { "isFood": boolean, "calorie": number | null, "protein": number | null, "unit": string | null}
+        
+        규칙:
+- 실제 음식이면 isFood는 true
+- 음식이 아니거나 음식으로 판단하기 어려우면 isFood는 false
+- isFood가 false면 calorie, protein, unit은 null
+- unit은 영양 단위가 아니라 일반적인 1회 제공량을 의미함
+- 설명은 작성하지 마
+        
     `
 
     try {
@@ -29,8 +35,16 @@ unit에 들어갈 수 있는 값의 예시:
         })
 
         const data = JSON.parse(chatCompletion.choices[0].message.content || "{}")
+
+        if (!data.isFood) {
+            return NextResponse.json({ error: '올바른 음식명을 입력해주세요.' }, { status: 400 })
+        }
         console.log('data', data)
-        return NextResponse.json(data)
+        return NextResponse.json({
+            calorie: data.calorie,
+            protein: data.protein,
+            unit: data.unit
+        })
     } catch (error) {
         return NextResponse.json({ error: 'AI 분석 실패' }, { status: 500 })
     }

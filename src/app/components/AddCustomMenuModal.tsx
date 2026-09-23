@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from 'react'
 import { Food } from '@/types/food'
 import { toast } from 'react-hot-toast'
-import { usePostAiFoodInfo } from "@/hooks/usePostAiFoodInfo";
+import { useAiFoodInfo } from "@/hooks/usePostAiFoodInfo";
 interface ModalProps {
     open: boolean,
     onClose: () => void
@@ -21,7 +21,8 @@ export default function AddCustomMenuModal({ open, onClose, handleSaveDaily, dai
     const [protein, setProtein] = useState<string>('')
     const [unit, setUnit] = useState<string>('')
 
-    const { mutate: foodAiInfo, isPending } = usePostAiFoodInfo()
+    const { getFoodInfo, isFetching} = useAiFoodInfo()
+
 
 
     if (!open) return null;
@@ -44,22 +45,32 @@ export default function AddCustomMenuModal({ open, onClose, handleSaveDaily, dai
     }
 
     // * ai가 자동으로 채워넣기
-    const handleAiAutoFill = () => {
-        console.log('hdafds')
-        if(!foodName.trim()) {
+    const handleAiAutoFill = async () => {
+        if (!foodName.trim()) {
             toast.dismiss()
             toast.error('음식명을 입력하고 요청해주세요')
             return
         }
-        foodAiInfo(foodName.trim(), {
-            onSuccess: (data) => {
-                setCalorie(data.calorie.toString())
-                setProtein(data.protein.toString())
-                setUnit(data.unit || '')
-                toast.success('AI 영양 정보 불러오기 성공')
-            }
-        })
+        const data  = await getFoodInfo(foodName)
+        console.log('data', data)
+
+        if(!data) return 
+
+        setCalorie(data.calorie.toString())
+        setProtein(data.protein.toString())
+        setUnit(data.unit || '')
+        toast.success('AI 영양 정보 불러오기 성공')
+        // foodAiInfo(foodName.trim(), {
+        //     onSuccess: (data) => {
+        //         setCalorie(data.calorie.toString())
+        //         setProtein(data.protein.toString())
+        //         setUnit(data.unit || '')
+        //         toast.success('AI 영양 정보 불러오기 성공')
+        //     }
+        // })
     }
+
+
 
     const handleDailyFoodSubmit = () => {
         if (!foodName || !calorie || !protein || !unit) {
@@ -111,17 +122,22 @@ export default function AddCustomMenuModal({ open, onClose, handleSaveDaily, dai
 
                         <div className="space-y-4">
                             <div>
-                                <label className="text-xs font-medium text-gray-500 mb-1.5 flex justify-between items-center">
+                                <div className="text-xs font-medium text-gray-500 mb-1.5 flex justify-between items-center">
                                     <span>음식 이름</span>
                                     <button
-                                        type="button" 
+                                        type="button"
                                         onClick={handleAiAutoFill}
-                                        disabled={isPending}
-                                        className="text-emerald-400 hover:text-emerald-300 transition-colors text-[10px] font-bold cursor-pointer"
+                                        disabled={isFetching || foodName.length === 0}
+                                        className="text-emerald-400 hover:text-emerald-300 hover:bg-gray-400 transition-colors 
+                                        text-[10px] p-2 border rounded-2xl bg-gray-50/10 font-bold cursor-pointer
+                                        disabled:text-gray-500 disabled:bg-gray-800/30 disabled:border-gray-700
+                                        disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:text-gray-500
+                                        disabled:hover:bg-gray-800/30
+                                        "
                                     >
-                                        {isPending ? '✨ 분석 중...' : '✨ AI 자동 채우기'}
+                                        {isFetching ? '분석 중...' : 'AI 자동 채우기'}
                                     </button>
-                                </label>
+                                </div>
                                 <input
                                     className="w-full bg-gray-800 border border-gray-700 px-3 py-2.5 text-sm text-white placeholder:text-gray-600 rounded-lg focus:outline-none focus:border-emerald-500 transition-all"
                                     type="text"
