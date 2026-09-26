@@ -53,14 +53,33 @@ export default function AISearchPage() {
 
 
     const handleSearch = () => {
-        if (!inputValue.trim() || !user) return
-        const userAndPrompt = { prompt: inputValue, user: user as FixedUser }
+        const prompt = inputValue.trim()
+
+        if(!user){
+            toast.error('로그인을 다시 해주세요')
+            return
+        }
+        if(!prompt){
+            toast.error('내용을 입력해주세요')
+            return 
+        }
+        if (prompt.length < 2) {
+            toast.error('조금 더 구체적으로 입력해주세요.')
+            return
+        }
+
+        if (prompt.length > 100) {
+            toast.error('100자 이내로 입력해주세요.')
+            return
+        }
+        
+        const userAndPrompt = { prompt, user: user as FixedUser }
         aiSearchMutate(userAndPrompt, {
             onSuccess: () => {
                 setInputValue('')
             },
             onError: () => {
-                toast.error('error')
+                toast.error('다시 시도해 주세요')
             }
         })
 
@@ -107,13 +126,14 @@ export default function AISearchPage() {
 
 
             <div className="bg-gradient-animated h-full absolute inset-0 z-0" />
-            <div className="p-5 flex flex-col h-full gap-3 max-w-4xl items-center relative z-10">
+
+            <div className="p-5 sm:p-6 lg:px-8 flex flex-col h-full gap-3 w-full max-w-5xl items-center relative z-10 mx-auto">
                 <header className="pt-8 pb-6 sm:pt-12 sm:pb-10 shrink-0">
                     <h1 className="text-2xl sm:text-4xl font-extrabold text-center bg-clip-text text-transparent bg-linear-to-r from-blue-600 to-purple-600">
                         AI 식단 가이드
                     </h1>
                     <p className="text-center text-gray-500 mt-2 text-sm sm:text-base">
-                        무엇을 드셨나요? AI가 영양 성분을 분석해 드립니다.
+                        AI가 영양 성분을 분석 및 추천을 도와드립니다.
                     </p>
                 </header>
 
@@ -134,8 +154,8 @@ export default function AISearchPage() {
 
                     <button
                         onClick={handleSearch}
-                        disabled={isAnalyzing}
-                        className="h-14 sm:h-auto bg-black text-white px-8 rounded-2xl font-bold flex items-center justify-center hover:bg-zinc-800 transition-all active:scale-95 disabled:bg-gray-400"
+                        disabled={isAnalyzing || !inputValue.trim() || inputValue.trim().length > 100}
+                        className="h-14 sm:h-auto bg-emerald-500 text-white px-8 rounded-2xl font-bold flex items-center justify-center hover:bg-emerald-800 transition-all active:scale-95 disabled:bg-gray-400"
                     >
                         {isAnalyzing ? (
                             <div className="flex gap-1 items-center">
@@ -145,19 +165,18 @@ export default function AISearchPage() {
                             </div>
                         ) : (
                             <>
-                                <Sparkles className="h-4 w-4 mr-2" />
-                                <span className="whitespace-nowrap">분석하기</span>
+                                <span className="whitespace-nowrap ">분석하기</span>
                             </>
                         )}
                     </button>
                 </section>
 
-                {/* //! grok답변 나오는곳 */}
-                <section className="flex-1 min-h-0 mb-6 flex flex-col">
+                {/* //! groq답변 나오는곳 */}
+                <section className="flex-1 min-h-0 mb-6 flex flex-col min-w-[90%]">
                     <div className="flex-1 backdrop-blur-md bg-white/80 rounded-3xl border border-white shadow-xl overflow-hidden flex flex-col">
                         <div className="flex-1 overflow-y-auto p-4 sm:p-8 custom-scrollbar">
                             {isAnalyzing && (
-                                <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
+                                <div className=" absolute inset-0 z-20 flex flex-col items-center justify-center space-y-4 bg-white/70 px-4 text-center backdrop-blur-sm">
                                     <div className="w-16 h-16 border-4 border-blue-100 border-t-blue-500 rounded-full animate-spin" />
                                     <p className="font-medium text-gray-600 animate-pulse">AI 분석관이 데이터를 확인 중입니다...</p>
                                 </div>

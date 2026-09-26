@@ -8,6 +8,7 @@ import { useUserStore } from '@/store/userStore'
 import useRemainNutrition from '@/hooks/useRemainNutrition'
 import { ChevronDown, Loader2, UtensilsCrossed } from 'lucide-react'
 import { useState } from 'react'
+import { useGetFrequentFoods } from '@/hooks/useGetFrequentFoods'
 
 
 
@@ -30,6 +31,10 @@ export default function TodayMenuComponent() {
         }
         return acc
     }, {})
+
+    const hasTodayMeals = foods.length > 0
+
+    const { data: frequentFoods = [], isPending: isFrequentFoodsPending } = useGetFrequentFoods(!hasTodayMeals)
 
     const grouopFoodsArray = Object.values(groupFoods) as GroupFoodsArrayType[]
 
@@ -69,11 +74,66 @@ export default function TodayMenuComponent() {
                     <div className='w-full flex justify-center py-10'>
                         <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
                     </div>
-                ) : !foods || foods.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-10 text-center">
-                        <UtensilsCrossed className="w-10 h-10 text-gray-700 mb-3" />
-                        <p className="text-sm text-gray-500">아직 기록된 음식이 없어요</p>
-                        <p className="text-xs text-gray-700 mt-1">오른쪽에서 음식을 추가해보세요</p>
+                ) : foods.length === 0 ? (
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-col items-center justify-center py-6 text-center">
+                            <UtensilsCrossed className="w-10 h-10 text-gray-700 mb-3" />
+                            <p className="text-sm text-gray-500">아직 기록된 음식이 없어요</p>
+                            <p className="text-xs text-gray-700 mt-1">자주 먹는 음식에서 빠르게 추가해보세요</p>
+                        </div>
+
+                        {isFrequentFoodsPending ? (
+                            <div className="flex justify-center py-4">
+                                <Loader2 className="w-5 h-5 text-emerald-500 animate-spin" />
+                            </div>
+                        ) : frequentFoods.length > 0 ? (
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <p className="text-xs font-medium text-gray-400">자주 먹는 음식</p>
+                                    <span className="text-[10px] text-gray-600">최근 30일 기준</span>
+                                </div>
+
+                                <div className="flex justify-center  gap-2">
+                                    {frequentFoods.map(food => (
+                                        <div
+                                            key={food.foodId || food.name}
+                                            className="flex items-center justify-between gap-3 rounded-xl border border-gray-800 bg-gray-800/40 px-4 py-3"
+                                        >
+                                            <div className="min-w-0">
+                                                <p className="text-sm font-medium text-gray-200 truncate">
+                                                    {food.name}
+                                                </p>
+
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    <span className="text-xs text-gray-500">
+                                                        {food.unit}
+                                                    </span>
+
+                                                    <span className="text-xs text-orange-400">
+                                                        {food.calorie}kcal
+                                                    </span>
+
+                                                    <span className="text-xs text-blue-400">
+                                                        단백질 {food.protein}g
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                className="shrink-0 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-xs font-medium text-emerald-400 hover:bg-emerald-500/20 transition-colors"
+                                            >
+                                                + 추가
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        ) : (
+                            <p className="text-xs text-center text-gray-700 py-2">
+                                아직 자주 먹는 음식 데이터가 없어요
+                            </p>
+                        )}
                     </div>
                 ) : (
                     <div className="border border-gray-800 rounded-xl overflow-hidden">
@@ -93,7 +153,7 @@ export default function TodayMenuComponent() {
 
 
                                     <div key={food._id} >
-                                        <MenuItem food={food} type='delete' onDelete={handleDeleteBtnClick} count={food.quantity}/>
+                                        <MenuItem food={food} type='delete' onDelete={handleDeleteBtnClick} count={food.quantity} />
                                     </div>
 
                                 ))}

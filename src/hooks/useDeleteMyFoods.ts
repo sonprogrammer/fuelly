@@ -5,7 +5,6 @@ import toast from 'react-hot-toast';
 
 const deleteFood = async (food: Food) => {
     const res = await axiosInstance.delete('/delete-food', {data: food})
-    console.log('res', res)
     return res.data
 }
 

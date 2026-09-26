@@ -21,9 +21,19 @@ export async function POST(req: NextRequest) {
     try {
         const { prompt, user } = await req.json()
 
+        if(!user){
+            return NextResponse.json({message:'로그인이 필요합니다'}, {status: 401})
+        }
 
-        if (!prompt || !user) {
-            return NextResponse.json({ message: 'info is not provided' }, { status: 400 })
+        if(!prompt){
+            return NextResponse.json({message:'프롬프트가 비었습니다.'},{status:400})
+        }
+
+        if (prompt.length > 100) {
+            return NextResponse.json({ message: 'prompt is too long' }, { status: 400 })
+        }
+        if (prompt.length < 2) {
+            return NextResponse.json({ message: 'prompt is too short' }, { status: 400 })
         }
 
         const userInfo = `
