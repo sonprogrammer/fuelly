@@ -10,7 +10,6 @@ export async function POST(req:NextRequest){
         await dbConnect()
 
         const userInfo = await userInfoFromToken(req)
-        console.error('userInfo', userInfo)
 
         if(!userInfo){
             return NextResponse.json({message:'로그인이 필요합니다'}, {status: 401})
