@@ -69,11 +69,8 @@ axiosInstance.interceptors.response.use(
 
         const setUserAccessToken = useUserStore.getState().setUserAccessToken
         try {
-            console.log('🔥 refresh 요청 시작')
 
             const res = await axios.post('/api/refresh')
-
-            console.log('🔥 refresh 응답', res.data)
 
             const newAccessToken = res.data.accessToken
 

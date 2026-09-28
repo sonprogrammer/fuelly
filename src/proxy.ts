@@ -22,21 +22,27 @@ export async function proxy(req: NextRequest) {
   const header = req.headers.get('Authorization')
   const accessToken = header?.split(' ')[1]
   const refreshToken = req.cookies.get('refreshToken')?.value
-
+console.error("proxy debug", {
+    pathname,
+    header,
+    hasAccessToken: !!accessToken,
+    hasRefreshToken: !!refreshToken
+})
 
   if (!refreshToken) {
     return NextResponse.json({ message: 'no refreshtoken' }, { status: 401 })
   }
 
   if (!accessToken) {
-    return NextResponse.json({message: 'no accessToken'}, { status: 401})
+    return NextResponse.json({message: 'no accessToken proxy'}, { status: 401})
   }
   // !엑세스토큰 검증
   try {
     await jwtVerify(accessToken, JWT_SECRET);
     return NextResponse.next();
 
-  } catch {
+  } catch (err) {
+    console.error("proxy jwt error:", err)
     return NextResponse.json({message:'invalid access token'}, {status: 401})
   }
 }
