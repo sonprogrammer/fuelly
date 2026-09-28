@@ -6,12 +6,14 @@ import useDeleteDailyFood from '@/hooks/useDeleteDailyFood'
 import { Food, GroupFoodsArrayType } from '@/types/food'
 import { useUserStore } from '@/store/userStore'
 import useRemainNutrition from '@/hooks/useRemainNutrition'
-import { ChevronDown, Loader2, UtensilsCrossed } from 'lucide-react'
+import { ChevronDown, Loader2, UtensilsCrossed, Share2 } from 'lucide-react'
 import { useState } from 'react'
 import { useGetFrequentFoods } from '@/hooks/useGetFrequentFoods'
 import usePostFoodToDailyMeal from '@/hooks/usePostFoodToDailyMeal'
 import toast from 'react-hot-toast'
 import { FrequentFoodList } from '@/app/components/FrequentFoodList'
+import { useCreateSharedMeal } from '@/hooks/useCreateSharedMeal'
+import { shareDailyMeal } from '@/lib/shareDailyMeal'
 
 
 
@@ -36,11 +38,24 @@ export default function TodayMenuComponent() {
         return acc
     }, {})
 
+    //* 카카오톡 공유
+    const { mutate: createSharedMeal, isPending: isSharing } = useCreateSharedMeal()
+
 
     const { data: frequentFoods = [], isPending: isFrequentFoodsPending } = useGetFrequentFoods()
 
 
     const grouopFoodsArray = Object.values(groupFoods) as GroupFoodsArrayType[]
+
+    const handleShareMeal = () => {
+        shareDailyMeal({
+            foods: grouopFoodsArray,
+            totalCalorie: consumed.dailyCalorie,
+            totalProtein: consumed.dailyProtein,
+            createSharedMeal,
+            onError: message => toast.error(message)
+        })
+    }
 
     const handleDeleteBtnClick = (food: Food) => {
         deleteFood(food, {
@@ -67,11 +82,30 @@ export default function TodayMenuComponent() {
 
     return (
         <div className="rounded-2xl border border-gray-800 bg-gray-900 overflow-hidden">
-            <div className="px-5 py-4 border-b border-gray-800">
-                <h2 className="text-base font-semibold text-white">오늘 먹은 음식</h2>
-                <p className="text-xs text-gray-600 mt-0.5">
-                    {new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' })}
-                </p>
+            <div className="px-5 py-4 border-b border-gray-800 flex items-center justify-between">
+                <div>
+                    <h2 className="text-base font-semibold text-white">오늘 먹은 음식</h2>
+                    <p className="text-xs text-gray-600 mt-0.5">
+                        {new Date().toLocaleDateString('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' })}
+                    </p>
+                </div>
+
+                {foods.length > 0 && (
+                    <button
+                        type="button"
+                        onClick={handleShareMeal}
+                        disabled={isSharing}
+                        aria-label="오늘 식단 공유"
+                        title="카카오톡 식단 공유"
+                        className="w-9 h-9 flex items-center justify-center rounded-xl border border-gray-700 bg-gray-800 text-gray-400 hover:text-yellow-300 hover:border-yellow-400/40 hover:bg-yellow-400/10 transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100"
+                    >
+                        {isSharing ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                            <Share2 className="w-4 h-4" />
+                        )}
+                    </button>
+                )}
             </div>
 
             <div className="p-5 space-y-3">

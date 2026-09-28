@@ -5,6 +5,7 @@ import LogoutComponent from './components/LogoutComponent'
 import NavbarComponent from './components/NavbarComponent'
 import HomeComponent from './components/HomeComponent'
 import { Toaster } from 'react-hot-toast'
+import KakaoScript from "@/app/components/KakaoScript";
 
 
 
@@ -12,8 +13,8 @@ export const metadata: Metadata = {
   title: "Fuelly - 스마트한 식단 관리",
   description: "나에게 딱 맞는 영양 목표와 식단을 추천받으세요.",
   icons: {
-    icon: '/favicon_fuelly.png',
-    apple: '/fuelly_192.png'
+    icon: '/favicon.png',
+    apple: '/favicon_192.png'
   },
   openGraph: {
     title: 'Fuelly - 스마트한 식단 관리',
@@ -72,6 +73,7 @@ export default function RootLayout({
 
 
         <NavbarComponent />
+        <KakaoScript />
 
       </body>
     </html>
