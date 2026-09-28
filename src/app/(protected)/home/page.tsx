@@ -8,16 +8,17 @@ import useRemainNutrition from '@/hooks/useRemainNutrition'
 import { useState } from "react"
 import { useGetDailyMessage } from "@/hooks/useGetDailyMessage"
 import { ReqMsgModal } from "@/app/components/ReqMsgModal"
+import { ProgressBarSkeleton } from "@/app/components/ProgressBarSkeleton"
 
 export default function HomePage() {
     const user = useUserStore(state => state.user)
-    const { recommended, consumed, exceed } = useRemainNutrition(user)
+    const { recommended, consumed, exceed, isPending } = useRemainNutrition(user)
     const [reqModalOpen, setReqModalOpen] = useState(false)
 
     const { data: fetchMsg, isPending: fetchingMsg } = useGetDailyMessage()
 
     const defaultMessage = "오늘의 작은 변화가 더 큰 성장을 만든다.\nNo matter what, just do it.";
-    const displayMsg = fetchMsg?.answer ? fetchMsg.answer :  defaultMessage 
+    const displayMsg = fetchMsg?.answer ? fetchMsg.answer : defaultMessage
 
     return (
         <div className="flex flex-col gap-5 p-5 md:p-8 max-w-5xl mx-auto min-h-full mb-10 sm:mb-0">
@@ -36,25 +37,37 @@ export default function HomePage() {
             </header>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-gray-900 rounded-2xl p-1 border border-gray-800 hover:border-gray-700 transition-colors">
-                    <AmountComponent
-                        name='칼로리'
-                        targetGrams={recommended.calorie ?? 0}
-                        icon={<Flame className="h-5 w-5 text-orange-500" />}
-                        currentGrams={consumed.dailyCalorie}
-                        exceed={exceed.calorie}
-                    />
-                </div>
-                <div className="bg-gray-900 rounded-2xl p-1 border border-gray-800 hover:border-gray-700 transition-colors">
-                    <AmountComponent
-                        name='단백질'
-                        targetGrams={recommended.protein ?? 0}
-                        icon={<Beef className="h-5 w-5 text-red-500" />}
-                        currentGrams={consumed.dailyProtein}
-                        exceed={exceed.protein}
-                    />
-                </div>
-            </div>
+                {isPending ? (
+                    <>
+                        <ProgressBarSkeleton />
+                        <ProgressBarSkeleton />
+                    </>
+                )
+                    : (
+                        <>
+                            <div className="bg-gray-900 rounded-2xl p-1 border border-gray-800 hover:border-gray-700 transition-colors">
+
+                                <AmountComponent
+                                    name='칼로리'
+                                    targetGrams={recommended.calorie ?? 0}
+                                    icon={<Flame className="h-5 w-5 text-orange-500" />}
+                                    currentGrams={consumed.dailyCalorie}
+                                    exceed={exceed.calorie}
+                                />
+                            </div>
+                            <div className="bg-gray-900 rounded-2xl p-1 border border-gray-800 hover:border-gray-700 transition-colors">
+                                <AmountComponent
+                                    name='단백질'
+                                    targetGrams={recommended.protein ?? 0}
+                                    icon={<Beef className="h-5 w-5 text-red-500" />}
+                                    currentGrams={consumed.dailyProtein}
+                                    exceed={exceed.protein}
+                                />
+                            </div>
+                        </>
+                    )
+                }
+            </div >
 
 
             <section className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
@@ -86,15 +99,15 @@ export default function HomePage() {
 
                     {reqModalOpen &&
 
-                            <ReqMsgModal
-                                onClose={() => setReqModalOpen(false)}
-                            />
+                        <ReqMsgModal
+                            onClose={() => setReqModalOpen(false)}
+                        />
 
                     }
 
                 </div>
             </section>
-        </div>
+        </div >
 
     )
 }
