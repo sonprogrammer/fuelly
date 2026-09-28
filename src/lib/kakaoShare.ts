@@ -1,5 +1,4 @@
 
-
 interface ShareDailyMealParams {
     shareId: string
     totalCalorie: number
