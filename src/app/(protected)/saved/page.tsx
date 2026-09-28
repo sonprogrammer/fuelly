@@ -15,7 +15,7 @@ interface SavedFood {
 
 export default function FoodTable() {
     const { data: savedFoods, isPending } = useGetSavedFood()
-    // ! 이렇게 이름을 지정한 이유는 어차피 해당 유저로 해당 음식에 저장이 있으면 삭제되는 기능을 서버에서 구현해놈
+
     const { mutate: deleteSave } = useToggleSaveFood()
     const { mutate: addToDaily } = usePostFoodToDailyMeal()
 

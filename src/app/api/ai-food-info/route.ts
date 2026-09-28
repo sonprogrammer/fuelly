@@ -1,11 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import Groq from "groq-sdk"
+import { userInfoFromToken } from "@/lib/userInfoFromToken";
 
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     const { foodName } = await req.json()
+
+    const userInfo = await userInfoFromToken(req)
+
+    if(!userInfo){
+        return NextResponse.json({message: '로그인이 필요합니다.'}, {status: 401})
+    }
 
     if (!foodName?.trim()) {
         return NextResponse.json(
@@ -46,6 +53,7 @@ export async function POST(req: Request) {
             unit: data.unit
         })
     } catch (error) {
+        console.error(error)
         return NextResponse.json({ error: 'AI 분석 실패' }, { status: 500 })
     }
 }

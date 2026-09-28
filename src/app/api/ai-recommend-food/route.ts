@@ -1,16 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Groq from "groq-sdk"
+import { userInfoFromToken } from '@/lib/userInfoFromToken'
 
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
-export async function POST(req: NextRequest){
-    try{
+export async function POST(req: NextRequest) {
+    try {
         const data = await req.json()
-        const { user, remain} = data
+        const { user, remain } = data
 
-        if(!user || !remain){
-            return NextResponse.json({message: 'there is no info '}, {status: 400})
+        const userInfo = await userInfoFromToken(req)
+
+        if (!userInfo) {
+            return NextResponse.json({ message: '로그인이 필요합니다.' }, { status: 401 })
+        }
+
+        if (!user || !remain) {
+            return NextResponse.json({ message: 'there is no info ' }, { status: 400 })
         }
 
         const prompt = `
@@ -66,27 +73,27 @@ export async function POST(req: NextRequest){
                     content: prompt
                 }
             ],
-            response_format: {type: 'json_object'}
+            response_format: { type: 'json_object' }
         })
-        
-        const rawAnswer = completion.choices[0].message?.content 
-        if (!rawAnswer){
+
+        const rawAnswer = completion.choices[0].message?.content
+        if (!rawAnswer) {
             return NextResponse.json(
-                { message: 'AI가 응답을 생성하지 못했습니다. 잠시 후 다시 시도해주세요.' }, 
+                { message: 'AI가 응답을 생성하지 못했습니다. 잠시 후 다시 시도해주세요.' },
                 { status: 503 }
             );
         }
-        try{
+        try {
 
             const parsedAnswer = JSON.parse(rawAnswer)
-            
+
             return NextResponse.json({ message: 'success', answer: parsedAnswer }, { status: 200 });
-        }catch(parseError){
+        } catch (parseError) {
             console.log('err', parseError)
-            return NextResponse.json({message: 'responding error'},{status: 402})
+            return NextResponse.json({ message: 'responding error' }, { status: 402 })
         }
-    }catch(err){
+    } catch (err) {
         console.log('err', err)
-        return NextResponse.json({message:'internal server error', answer: '서버오류 다시한번 시도 해주세요'}, {status: 500})
+        return NextResponse.json({ message: 'internal server error', answer: '서버오류 다시한번 시도 해주세요' }, { status: 500 })
     }
 }

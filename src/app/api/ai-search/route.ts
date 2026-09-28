@@ -1,5 +1,7 @@
+import { userInfoFromToken } from '@/lib/userInfoFromToken';
 import { NextRequest, NextResponse } from 'next/server'
 import Groq from "groq-sdk"
+
 
 
 const activityMap: Record<string, string> = {
@@ -21,8 +23,14 @@ export async function POST(req: NextRequest) {
     try {
         const { prompt, user } = await req.json()
 
-        if(!user){
+        const userInfo = await userInfoFromToken(req)
+
+        if(!userInfo){
             return NextResponse.json({message:'로그인이 필요합니다'}, {status: 401})
+        }
+
+        if(!user){
+            return NextResponse.json({message:'사용자 정보가 필요합니다'}, {status: 400})
         }
 
         if(!prompt){
@@ -36,7 +44,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: 'prompt is too short' }, { status: 400 })
         }
 
-        const userInfo = `
+        const userbodyInfo = `
         - 성별/나이: ${user.gender === 'male' ? '남성' : '여성'}, ${user.age}세
         - 신체정보: 키 ${user.height}cm, 몸무게 ${user.weight}kg
         - 활동 수준: ${activityMap[user.activity] || user.activity}
@@ -46,7 +54,7 @@ export async function POST(req: NextRequest) {
         const serverPrompt = `
             당신은 영양 전문가입니다. 꼭 한국어로 보내줘.
             유저 정보를 바탕으로 ${prompt}에 대해 분석하고, 건강한 식단을 위해 3가지 추천 음식을 제안하세요.
-            유저 정보는 ${userInfo}
+            유저 정보는 ${userbodyInfo}
             분석 시 유저의 활동량과 목표를 고려하여 칼로리 조절 및 영양 성분 조언을 description에 포함해줘
             [응답 규칙 및 제약 조건]
             1. 반드시 아래의 JSON 형식을 엄격히 지켜서 응답하세요. 텍스트 설명은 JSON의 "description" 필드 안에만 넣으세요.

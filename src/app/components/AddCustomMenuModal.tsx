@@ -52,7 +52,6 @@ export default function AddCustomMenuModal({ open, onClose, handleSaveDaily, dai
             return
         }
 
-        const start = performance.now()
         const data  = await getFoodInfo(foodName)
         
         
@@ -61,11 +60,6 @@ export default function AddCustomMenuModal({ open, onClose, handleSaveDaily, dai
         setCalorie(data.calorie.toString())
         setProtein(data.protein.toString())
         setUnit(data.unit || '')
-
-        requestAnimationFrame(() => {
-        const end = performance.now()
-        console.log(`결과 표시까지: ${(end - start).toFixed(2)}ms`)
-    })
         
         
         toast.success('AI 영양 정보 불러오기 성공')
