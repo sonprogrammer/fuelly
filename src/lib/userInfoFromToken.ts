@@ -14,7 +14,7 @@ export async function userInfoFromToken(req: NextRequest) {
     const verified = await jwtVerify(token, JWT_SECRET)
     return verified.payload
   } catch (err) {
-    console.log('userInfoFromToken.ts error', err)
+    console.error('userInfoFromToken.ts error', err)
     return null
   }
 }

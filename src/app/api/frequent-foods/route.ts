@@ -66,7 +66,6 @@ export async function GET(req: NextRequest) {
                 }
             }
         ])
-        console.log('frequentsfoods', frequentFoods)
 
         return NextResponse.json({ message: "success", frequentFoods }, { status: 200 })
     } catch (error) {

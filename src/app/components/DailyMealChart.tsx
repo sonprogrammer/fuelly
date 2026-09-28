@@ -33,14 +33,13 @@ export function DailyMealChart({ sortedMeals, CAL_LIMIT, PRO_LIMIT }: DailyMealC
     const totalPages = Math.ceil(sortedData.length / PAGE_SIZE)
 
     const endIndex = sortedData.length - page * PAGE_SIZE
-    console.log('end', endIndex)
 
     const startIndex = Math.max(0, endIndex - PAGE_SIZE)
     const isFirst = endIndex === PAGE_SIZE || startIndex === 0
     const isLast = page === 0
 
     const pageData = sortedData.slice(startIndex, endIndex)
-    console.log('page', pageData)
+
 
 
     return (

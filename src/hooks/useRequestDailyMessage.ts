@@ -10,9 +10,7 @@ interface ErrorResponse {
 
 
 const requestDailyMsg = async(userPrompt: string) => {
-    console.log('usePormpont', userPrompt)
     const res = await axiosInstance.post('/groq', {prompt: userPrompt})
-    console.log('res', res.data)
     return res.data
 }
 

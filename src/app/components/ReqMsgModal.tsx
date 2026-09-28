@@ -10,15 +10,11 @@ export function ReqMsgModal({onClose} : {onClose: () => void}) {
 
     const { mutate, isPending } = useRequestDailyMessage()
 
-    console.log('hifdasf')
 
     const handleSubmitToAi = () => {
-        console.log('pompt', prompt)
         if (!prompt) return toast('응원받고 싶은 내용을 적어주세요')
-            console.log('clicek', prompt)
         mutate(prompt, {
             onSuccess: (res) => {
-                console.log('res fsdf', res)
                 onClose()
             }
         })

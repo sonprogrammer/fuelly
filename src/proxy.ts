@@ -22,12 +22,7 @@ export async function proxy(req: NextRequest) {
   const header = req.headers.get('Authorization')
   const accessToken = header?.split(' ')[1]
   const refreshToken = req.cookies.get('refreshToken')?.value
-console.error("proxy debug", {
-    pathname,
-    header,
-    hasAccessToken: !!accessToken,
-    hasRefreshToken: !!refreshToken
-})
+
 
   if (!refreshToken) {
     return NextResponse.json({ message: 'no refreshtoken' }, { status: 401 })

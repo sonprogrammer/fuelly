@@ -10,7 +10,6 @@ interface UpdateData{
 
 const updateUserInfo = async(update:UpdateData) => {
     const res = await axiosInstance.patch('/updated-userinfo', update)
-    console.log('res', res.data)
     return res.data
 }
 

@@ -17,7 +17,6 @@ interface FrequentFoodsResponse {
 
 const getFrequentFoods = async():Promise<FrequentFood[]> => {
     const res = await axiosInstance.get<FrequentFoodsResponse>('/frequent-foods')
-    console.log('res', res.data)
     return res.data.frequentFoods
 }
 

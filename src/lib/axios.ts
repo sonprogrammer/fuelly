@@ -13,9 +13,6 @@ axiosInstance.interceptors.request.use(
     async config => {
         //!요청시마다 토큰을 넣음
         const token = useUserStore.getState().userAccessToken
-
-        console.log('요청:', config)
-        console.log('현재 accessToken:', token)
         
         if (token) {
             config.headers.Authorization = `Bearer ${token}`

@@ -37,7 +37,7 @@ const usePostUserInfo = () => {
             }
           },
         onError: (err) => {
-            console.log('사용자 정보 전송 시패', err)
+            console.error('사용자 정보 전송 시패', err)
             toast.error('에러가 발생하였습니다. 잠시후 다시 이용해주세요')
         }
     })

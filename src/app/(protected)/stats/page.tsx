@@ -68,7 +68,7 @@ export default function StatsPage() {
         return { ...day, meals: groupMealsArray} 
     })
 
-    console.log('filtered', filteredData)
+
     if (pendingtoGetMeal) return
     <div className="p-10 text-center animate-pulse">
         데이터 로딩 중...

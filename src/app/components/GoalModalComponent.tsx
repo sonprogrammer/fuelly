@@ -60,7 +60,6 @@ export default function GoalModalComponent({ type, onClose, recentWeight }: Moda
         }
 
         if (type === 'weight' && weight) {
-            console.log('updatedWeigh', weight)
             updateMutate(
                 { weight: Number(weight) },
                 {

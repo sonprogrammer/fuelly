@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
         if (!data.isFood) {
             return NextResponse.json({ error: '올바른 음식명을 입력해주세요.' }, { status: 400 })
         }
-        console.log('data', data)
+
         return NextResponse.json({
             calorie: data.calorie,
             protein: data.protein,

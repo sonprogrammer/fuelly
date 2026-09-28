@@ -5,7 +5,6 @@ import { toast } from 'react-hot-toast'
 
 const postCustomFood = async (data: Food)=> {
     const res = await axiosInstance.post('/add-nomalFood', data)
-    console.log('res', res)
     return res.data
 }
 
@@ -18,7 +17,7 @@ const usePostAddCustomFood = () => {
             queryClient.invalidateQueries({queryKey: ['nomalFoods']})
         },
         onError: (err) => {
-            console.log('err', err)
+            console.error('err', err)
             toast.error('err occured')
         }
     })

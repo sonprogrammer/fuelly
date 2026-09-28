@@ -11,12 +11,7 @@ export async function GET(req: NextRequest){
         }
 
         const user = await userModel.findById(payload.objectId)
-        console.log('user from server', user )
-
-        // if(!user){
-        //     return NextResponse.json({message:'user can not find'}, { status: 404})
-        // }
-
+  
         return NextResponse.json({user})
     } catch (error) {
         console.log(error)
