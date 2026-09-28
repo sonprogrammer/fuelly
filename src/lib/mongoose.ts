@@ -7,13 +7,13 @@ if(!MONGODB_URI){
     throw new Error('there is no mongodb uri')
 }
 
-let cached = global.mongoose
+const cached = global.mongoose ?? {
+    conn: null,
+    promise: null
+}
 
-if(!cached){
-    cached = global.mongoose = {
-        conn: null,
-        promise: null
-    }
+if (!global.mongoose) {
+    global.mongoose = cached
 }
 
 async function dbConnect() {
