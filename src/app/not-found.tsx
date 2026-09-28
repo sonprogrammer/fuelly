@@ -1,6 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowLeft, Home } from "lucide-react"
+import {  Home } from "lucide-react"
+import BackBtn from "@/app/components/BackBtn"
 
 export default function NotFound() {
     return (
@@ -44,13 +45,7 @@ export default function NotFound() {
                         홈으로
                     </Link>
 
-                    <Link
-                        href="/"
-                        className="flex flex-1 items-center justify-center gap-2 rounded-xl border border-gray-700 bg-gray-900 px-4 py-3 text-sm font-semibold text-gray-300 transition-all hover:border-gray-600 hover:bg-gray-800 active:scale-[0.98]"
-                    >
-                        <ArrowLeft className="h-4 w-4" />
-                        돌아가기
-                    </Link>
+                    <BackBtn />
                 </div>
 
                 <div className="mt-10 h-px w-full max-w-xs bg-linear-to-r from-transparent via-emerald-500/20 to-transparent" />

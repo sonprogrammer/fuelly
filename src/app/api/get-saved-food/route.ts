@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({message:'invalid user'},{status:401})
         }
 
-        const savedFoods = await savedModel.find({savedUser: userInfo.objectId}).populate('foodId')
+        const savedFoods = await savedModel.find({savedUser: userInfo.objectId}).populate('foodId').lean()
 
         return NextResponse.json(savedFoods, {status:200})
     }catch(err){
