@@ -1,6 +1,7 @@
 import { axiosInstance } from "@/lib/axios";
 import { useQuery } from "@tanstack/react-query";
 
+
 const getDailyMsg = async() => {
     const res = await axiosInstance.get('/daily-msg')
     return res.data

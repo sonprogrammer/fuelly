@@ -77,9 +77,6 @@ export default function AISearchPage() {
         aiSearchMutate(userAndPrompt, {
             onSuccess: () => {
                 setInputValue('')
-            },
-            onError: () => {
-                toast.error('다시 시도해 주세요')
             }
         })
 

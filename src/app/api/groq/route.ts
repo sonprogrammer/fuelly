@@ -65,7 +65,12 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ answer }, { status: 200 })
     } catch (err) {
         console.log('Groqqq  errr', err)
-        const message = '오늘의 작은 변화가 더 큰 성장을 만든다 \n No matter what, JUST DO IT '
-        return NextResponse.json(message, { status: 500 })
+        if (err instanceof Groq.APIError && err.status === 429) {
+            return NextResponse.json(
+                { message: 'AI 요청 한도에 도달했습니다. 잠시 후 다시 시도해주세요.' },
+                { status: 429 }
+            )
+        }
+        return NextResponse.json({ message: 'AI 메시지 생성에 실패했습니다.' }, { status: 500 })
     }
 }

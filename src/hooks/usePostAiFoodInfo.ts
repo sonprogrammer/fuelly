@@ -1,6 +1,7 @@
 
 import { axiosInstance } from "@/lib/axios";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -11,6 +12,10 @@ interface FoodAiInfo {
     unit?: string
 }
 
+
+interface ErrorResponse {
+    message: string
+}
 
 const getAiFoodInfo = async (foodName: string) => {
     const res = await axiosInstance.post<FoodAiInfo>('/ai-food-info', { foodName })
@@ -40,7 +45,27 @@ export function useAiFoodInfo() {
             queryClient.setQueryData(queryKey, data)
             return data
         } catch(error){
-            toast.error('올바른 음식명을 입력해주세요')
+            if (error instanceof AxiosError) {
+                const status = error.response?.status
+                const message = (error.response?.data as ErrorResponse)?.message
+
+                if (status === 429) {
+                    toast.error(message || 'AI 요청 한도에 도달했습니다. 잠시 후 다시 시도해주세요.')
+                    return
+                }
+
+                if (status === 400) {
+                    toast.error(message || '올바른 음식명을 입력해주세요.')
+                    return
+                }
+
+                if (status === 401) {
+                    toast.error('로그인이 필요합니다.')
+                    return
+                }
+            }
+
+            toast.error('AI 분석에 실패했습니다. 다시 시도해주세요.')
         } finally {
             setIsFetching(false)
         }

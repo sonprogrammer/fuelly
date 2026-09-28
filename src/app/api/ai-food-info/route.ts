@@ -10,8 +10,8 @@ export async function POST(req: NextRequest) {
 
     const userInfo = await userInfoFromToken(req)
 
-    if(!userInfo){
-        return NextResponse.json({message: '로그인이 필요합니다.'}, {status: 401})
+    if (!userInfo) {
+        return NextResponse.json({ message: '로그인이 필요합니다.' }, { status: 401 })
     }
 
     if (!foodName?.trim()) {
@@ -54,6 +54,12 @@ export async function POST(req: NextRequest) {
         })
     } catch (error) {
         console.error(error)
+        if (error instanceof Groq.APIError && error.status === 429) {
+            return NextResponse.json(
+                { message: 'AI 사용량 한도에 도달했습니다. 잠시 후 다시 시도해주세요.' },
+                { status: 429 }
+            )
+        }
         return NextResponse.json({ error: 'AI 분석 실패' }, { status: 500 })
     }
 }

@@ -94,6 +94,12 @@ export async function POST(req: NextRequest) {
         }
     } catch (err) {
         console.log('err', err)
+        if (err instanceof Groq.APIError && err.status === 429) {
+        return NextResponse.json(
+            { message: 'AI 사용량 한도에 도달했습니다. 잠시 후 다시 시도해주세요.' },
+            { status: 429 }
+        )
+    }
         return NextResponse.json({ message: 'internal server error', answer: '서버오류 다시한번 시도 해주세요' }, { status: 500 })
     }
 }
