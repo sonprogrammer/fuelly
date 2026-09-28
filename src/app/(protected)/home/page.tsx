@@ -11,9 +11,6 @@ import { ReqMsgModal } from "@/app/components/ReqMsgModal"
 
 export default function HomePage() {
     const user = useUserStore(state => state.user)
-    const userAccessToken = useUserStore(state => state.userAccessToken)
-    console.log('access', userAccessToken)
-    console.log('user', user)
     const { recommended, consumed, exceed } = useRemainNutrition(user)
     const [reqModalOpen, setReqModalOpen] = useState(false)
 

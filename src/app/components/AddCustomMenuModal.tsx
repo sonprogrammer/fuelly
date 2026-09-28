@@ -51,23 +51,24 @@ export default function AddCustomMenuModal({ open, onClose, handleSaveDaily, dai
             toast.error('음식명을 입력하고 요청해주세요')
             return
         }
-        const data  = await getFoodInfo(foodName)
-        console.log('data', data)
 
+        const start = performance.now()
+        const data  = await getFoodInfo(foodName)
+        
+        
         if(!data) return 
 
         setCalorie(data.calorie.toString())
         setProtein(data.protein.toString())
         setUnit(data.unit || '')
+
+        requestAnimationFrame(() => {
+        const end = performance.now()
+        console.log(`결과 표시까지: ${(end - start).toFixed(2)}ms`)
+    })
+        
+        
         toast.success('AI 영양 정보 불러오기 성공')
-        // foodAiInfo(foodName.trim(), {
-        //     onSuccess: (data) => {
-        //         setCalorie(data.calorie.toString())
-        //         setProtein(data.protein.toString())
-        //         setUnit(data.unit || '')
-        //         toast.success('AI 영양 정보 불러오기 성공')
-        //     }
-        // })
     }
 
 
