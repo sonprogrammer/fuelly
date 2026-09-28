@@ -1,3 +1,5 @@
+
+import Food from '@/models/foodModel'
 import { NextRequest, NextResponse } from "next/server"
 import dbConnect from "@/lib/mongoose";
 import savedModel from '@/models/savedModel'
@@ -19,7 +21,8 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({message:'invalid user'},{status:401})
         }
 
-        const savedFoods = await savedModel.find({savedUser: userInfo.objectId}).populate('foodId').lean()
+        const savedFoods = await savedModel.find({savedUser: userInfo.objectId}).populate({
+            path: 'foodId', model: Food}).lean()
 
         console.log("4. savedFoods", savedFoods.length)
         return NextResponse.json(savedFoods, {status:200})
