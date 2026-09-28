@@ -6,7 +6,7 @@ export interface ISaved extends Document{
     createdAt: Date;
 }
 
-const SavedSchema: Schema = new Schema({
+const SavedSchema = new Schema<ISaved>({
     savedUser: {
         type: Schema.Types.ObjectId,
         ref: 'User', 
