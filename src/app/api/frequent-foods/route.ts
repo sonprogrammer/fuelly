@@ -17,11 +17,8 @@ export async function GET(req: NextRequest) {
 
         const userId = new mongoose.Types.ObjectId(userInfo.objectId as string)
 
-        console.log('userid', userId)
-        console.log('userId type', typeof userId)
-        const thirtyDaysAgo = format(subDays(new Date(), 30), 'yyyy-MM-dd')
 
-        console.log('thirtydaysago', thirtyDaysAgo)
+        const thirtyDaysAgo = format(subDays(new Date(), 30), 'yyyy-MM-dd')
 
         const frequentFoods = await dailyMeal.aggregate([
             {
@@ -55,7 +52,7 @@ export async function GET(req: NextRequest) {
                 }
             },
             {
-                $limit: 3
+                $limit: 5
             },
             {
                 $project: {

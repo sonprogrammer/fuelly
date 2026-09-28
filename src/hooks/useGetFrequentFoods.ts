@@ -21,11 +21,10 @@ const getFrequentFoods = async():Promise<FrequentFood[]> => {
     return res.data.frequentFoods
 }
 
-export function useGetFrequentFoods(enabled: boolean){
+export function useGetFrequentFoods(){
     return useQuery({
         queryKey: ['frequent-foods'],
         queryFn: getFrequentFoods,
-        enabled,
         staleTime: 1_000 * 60 * 30,
         gcTime: 1_000 * 60 * 60
     })

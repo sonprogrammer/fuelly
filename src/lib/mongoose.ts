@@ -24,7 +24,6 @@ async function dbConnect() {
     if(!cached.promise){
         cached.promise = mongoose
             .connect(MONGODB_URI!) 
-            //느낌표로 절대 언디 파인드가 아니라는걸 알려주기
             .then((mongoose) => mongoose)
     }
 
