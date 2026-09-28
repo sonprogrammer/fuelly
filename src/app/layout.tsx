@@ -19,11 +19,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Fuelly - 스마트한 식단 관리',
     description: '당신의 건강한 식습관, Fuelly가 함께합니다',
-    url: 'https://fuelly.onrender.com',
+    url: 'https://fuelly-mauve.vercel.app/',
     siteName: 'Fuelly',
     images: [
       {
-        url: 'https://res.cloudinary.com/dqrsksfho/image/upload/v1766412013/ax2jb6d2zkn6ybvz3fnd.png',
+        url: 'https://res.cloudinary.com/dqrsksfho/image/upload/v1790594928/aavgn8uo61mu7teesndp.png',
         width: 1200,
         height: 630,
         alt: 'Fuelly - AI 식단 관리 서비스 소개'
