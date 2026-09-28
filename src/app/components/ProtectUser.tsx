@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useUserStore } from '@/store/userStore'
 import { useRouter } from 'next/navigation'
 import Loading from './Loading'
@@ -12,19 +12,21 @@ import { axiosInstance } from '@/lib/axios'
 export default function ProtectUser({ children }: { children: React.ReactNode }) {
     const [loading, setLoading] = useState<boolean>(true)
     const router = useRouter()
-    const { user, setUser, userAccessToken, setUserAccessToken, clearUser } = useUserStore(useShallow(state => ({
-        user: state.user,
+    const initialized = useRef(false)
+    const { setUser, setUserAccessToken, clearUser } = useUserStore(useShallow(state => ({
         setUser: state.setUser,
-        userAccessToken: state.userAccessToken,
         setUserAccessToken: state.setUserAccessToken,
         clearUser: state.clearUser
     })))
 
 
     useEffect(() => {
+        if(initialized.current) return
+        initialized.current = true
         const initToken = async () => {
 
             try {
+                const { userAccessToken , user} = useUserStore.getState()
                 if (!userAccessToken) {
                     const res = await axios.post('/api/refresh')
                     setUserAccessToken(res.data.accessToken)
@@ -46,7 +48,7 @@ export default function ProtectUser({ children }: { children: React.ReactNode })
             }
         }
         initToken()
-    }, [setUserAccessToken, clearUser, router, userAccessToken, user, setUser])
+    }, [setUserAccessToken, clearUser, router, setUser])
 
     if (loading) {
         return (
