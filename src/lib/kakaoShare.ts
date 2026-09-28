@@ -20,7 +20,7 @@ export function shareMealToKakao({ shareId, totalCalorie, totalProtein }: ShareD
         content: {
             title: "오늘의 Fuelly 식단",
             description: `${totalCalorie.toLocaleString()} kcal · 단백질 ${totalProtein}g`,
-            imageUrl: `${window.location.origin}/fav.png`,
+            imageUrl: `${window.location.origin}/favicon.png`,
             link: {
                 mobileWebUrl: shareUrl,
                 webUrl: shareUrl
