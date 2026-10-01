@@ -1,6 +1,17 @@
-import mongoose, {Schema, Document} from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-export interface IUser extends Document{
+interface IPolicyAgreement {
+    version: string;
+    agreed: boolean;
+    agreedAt?: Date;
+}
+
+interface IUserPolicy {
+    terms?: IPolicyAgreement;
+    privacy?: IPolicyAgreement;
+    serviceImprovement?: IPolicyAgreement;
+}
+export interface IUser extends Document {
     nickName?: string; //일반회원일 때
     password?: string; //일반회원일 때
     kakaoId?: string; //카카오일때
@@ -12,7 +23,28 @@ export interface IUser extends Document{
     activity?: 'sedentary' | 'light' | 'moderate' | 'active';
     goal?: 'bulk' | 'diet' | 'maintain';
     createdAt: Date;
+    policy?: IUserPolicy;
 }
+
+const PolicyAgreementSchema = new Schema(
+    {
+        version: {
+            type: String,
+            required: true,
+        },
+        agreed: {
+            type: Boolean,
+            required: true,
+        },
+        agreedAt: {
+            type: Date,
+            default: null,
+        },
+    },
+    {
+        _id: false,
+    }
+);
 
 const UserSchema: Schema = new Schema({
     nickName: {
@@ -42,7 +74,7 @@ const UserSchema: Schema = new Schema({
     },
     gender: {
         type: String,
-        enum: ['male' , 'female']
+        enum: ['male', 'female']
     },
     goal: {
         type: String,
@@ -51,6 +83,22 @@ const UserSchema: Schema = new Schema({
     activity: {
         type: String,
         enum: ['sedentary', 'light', 'moderate', 'active'],
+    },
+    policy: {
+        terms: {
+            type: PolicyAgreementSchema,
+            required: false,
+        },
+
+        privacy: {
+            type: PolicyAgreementSchema,
+            required: false,
+        },
+
+        serviceImprovement: {
+            type: PolicyAgreementSchema,
+            required: false,
+        },
     },
     createdAt: {
         type: Date,

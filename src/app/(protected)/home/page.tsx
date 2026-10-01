@@ -10,6 +10,7 @@ import { useGetDailyMessage } from "@/hooks/useGetDailyMessage"
 import { ReqMsgModal } from "@/app/components/ReqMsgModal"
 import { ProgressBarSkeleton } from "@/app/components/ProgressBarSkeleton"
 
+
 export default function HomePage() {
     const user = useUserStore(state => state.user)
     const { recommended, consumed, exceed, isPending } = useRemainNutrition(user)
@@ -20,9 +21,9 @@ export default function HomePage() {
     const defaultMessage = "오늘의 작은 변화가 더 큰 성장을 만든다.\nNo matter what, just do it.";
     const displayMsg = fetchMsg?.answer ? fetchMsg.answer : defaultMessage
 
+    
     return (
         <div className="flex flex-col gap-5 p-5 md:p-8 max-w-5xl mx-auto min-h-full mb-10 sm:mb-0">
-
             <header className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>

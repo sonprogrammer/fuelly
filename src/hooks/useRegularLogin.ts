@@ -31,7 +31,6 @@ const useRegularLogin = () => {
                     activity: res.data.user.activity,
                     age: res.data.user.age,
                     _id: res.data.user._id
-                    //!이번엔 토큰 상태에 넣어서 관리해보기
                 }
                 const accessToken = res.data.accessToken 
                 setUserAccessToken(accessToken)

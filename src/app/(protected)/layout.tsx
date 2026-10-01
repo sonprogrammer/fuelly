@@ -1,3 +1,4 @@
+
 import ProtectUser from '../components/ProtectUser'
 
 export default function ProtectedLayout({ children }:{children: React.ReactNode}) {
@@ -6,6 +7,7 @@ export default function ProtectedLayout({ children }:{children: React.ReactNode}
       <section className="overflow-y-auto h-full">
         {children}
       </section>
+      
     </ProtectUser>
   );
 }

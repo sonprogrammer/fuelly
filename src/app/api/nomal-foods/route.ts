@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/mongoose";
 import Food from '@/models/foodModel'
 import { NextRequest, NextResponse } from "next/server";
-import { basicFoods } from '../../store/basicFoods'
+import { basicFoods } from '../../../store/basicFoods'
 import { userInfoFromToken } from '@/lib/userInfoFromToken'
 
 

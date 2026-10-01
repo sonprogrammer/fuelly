@@ -8,6 +8,7 @@ const JWT_SECRET = new TextEncoder().encode(
     process.env.JWT_SECRET
 );
 
+
 export async function POST(req: NextRequest) {
     try {
         await dbConnect()
@@ -35,6 +36,8 @@ export async function POST(req: NextRequest) {
             await user.save()
         }
 
+        const needsAgreement = !user.policy?.terms?.agreed || !user.policy?.privacy?.agreed
+
         const accessToken = await new SignJWT({
             objectId: user._id.toString(),
             nickName: user.nickName
@@ -55,7 +58,7 @@ export async function POST(req: NextRequest) {
 
         const res = NextResponse.json({
             success: true, 
-            user, accessToken
+            user, accessToken, needsAgreement
         })
         const isProduction = process.env.NODE_ENV === 'production'
 
