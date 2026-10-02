@@ -16,36 +16,22 @@ import { NutritionTooltip } from "@/app/components/daily-meal-chart/NutritionToo
 
 export function DailyMealChart({ sortedMeals, CAL_LIMIT, PRO_LIMIT }: DailyMealChartProps) {
   const [page, setPage] = useState(0)
-  const [metric, setMetric] =
-    useState<Metric>("calorie")
+  const [metric, setMetric] = useState<Metric>("calorie")
 
   const sortedData = useMemo(() => {
     return [...(sortedMeals || [])].sort(
       (a, b) =>
-        compareAsc(
-          parseISO(a.date),
-          parseISO(b.date)
-        )
+        compareAsc(parseISO(a.date), parseISO(b.date))
     )
   }, [sortedMeals])
 
-  const totalPages = Math.max(
-    1,
-    Math.ceil(sortedData.length / PAGE_SIZE)
-  )
+  const totalPages = Math.max(1, Math.ceil(sortedData.length / PAGE_SIZE))
 
-  const endIndex =
-    sortedData.length - page * PAGE_SIZE
+  const endIndex = sortedData.length - page * PAGE_SIZE
 
-  const startIndex = Math.max(
-    0,
-    endIndex - PAGE_SIZE
-  )
+  const startIndex = Math.max(0, endIndex - PAGE_SIZE)
 
-  const pageData = sortedData.slice(
-    startIndex,
-    endIndex
-  )
+  const pageData = sortedData.slice(startIndex, endIndex)
 
   const isFirst = startIndex === 0
   const isLast = page === 0
@@ -64,45 +50,22 @@ export function DailyMealChart({ sortedMeals, CAL_LIMIT, PRO_LIMIT }: DailyMealC
       return 0
     }
 
-    const total = pageData.reduce(
-      (sum, item) =>
-        sum + item[current.dataKey],
-      0
-    )
+    const total = pageData.reduce((sum, item) => sum + item[current.dataKey], 0)
 
-    return Math.round(
-      total / pageData.length
-    )
+    return Math.round(total / pageData.length)
   }, [pageData, current.dataKey])
 
-  const percentage =
-    current.target > 0
-      ? Math.round(
-        (average / current.target) * 100
-      )
-      : 0
+  const percentage =current.target > 0 ? Math.round((average / current.target) * 100) : 0
 
-  const maxValue = Math.max(
-    current.target,
-    ...pageData.map(
-      (item) => item[current.dataKey]
-    ),
-    0
-  )
+  const maxValue = Math.max(current.target, ...pageData.map((item) => item[current.dataKey]),0)
 
   const handlePrevious = () => {
     setPage((prev) =>
-      Math.min(
-        totalPages - 1,
-        prev + 1
-      )
-    )
+      Math.min(totalPages - 1,prev + 1))
   }
 
   const handleNext = () => {
-    setPage((prev) =>
-      Math.max(0, prev - 1)
-    )
+    setPage((prev) => Math.max(0, prev - 1))
   }
 
   return (
@@ -146,10 +109,7 @@ export function DailyMealChart({ sortedMeals, CAL_LIMIT, PRO_LIMIT }: DailyMealC
                   fontSize: 11,
                 }}
                 tickFormatter={(value) =>
-                  format(
-                    parseISO(value),
-                    "M/d"
-                  )
+                  format(parseISO(value),"M.d")
                 }
                 dy={8}
               />
@@ -165,9 +125,7 @@ export function DailyMealChart({ sortedMeals, CAL_LIMIT, PRO_LIMIT }: DailyMealC
                   0,
                   Math.ceil(maxValue * 1.2),
                 ]}
-                tickFormatter={(value) =>
-                  value.toLocaleString()
-                }
+                tickFormatter={(value) =>value.toLocaleString()}
                 width={48}
               />
 
