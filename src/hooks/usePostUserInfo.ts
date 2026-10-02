@@ -8,10 +8,13 @@ import { useRouter } from "next/navigation"
 import { toast } from 'react-hot-toast'
 
 
-interface UserInfo{
-        weight: number | null,
-        height: number | null,
-        goal: 'bulk' | 'diet' | 'maintain' | null
+interface UserInfo {
+  weight: number
+  height: number
+  goal: 'bulk' | 'diet' | 'maintain'
+  gender: 'male' | 'female'
+  activity: 'sedentary' | 'light' | 'moderate' | 'active'
+  age: number
 }
 
 
