@@ -1,4 +1,5 @@
-import {ActivityLevel } from '@/types/user'
+import { ActivityLevel } from "@/types/goal"
+
 
 export interface AiRecommendFood{
     user:{

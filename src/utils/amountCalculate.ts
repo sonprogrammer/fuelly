@@ -1,4 +1,5 @@
-import {FixedUser, ActivityLevel} from '@/types/user'
+import { ActivityLevel } from '@/types/goal'
+import {FixedUser} from '@/types/user'
 import { differenceInYears, parseISO } from 'date-fns'
 
 
