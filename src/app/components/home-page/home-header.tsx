@@ -22,6 +22,7 @@ export function HomeHeader() {
                     goal={user?.goal}
                     weight={user?.weight}
                     activity={user?.activity}
+                    height={user?.height}
                 />
             </div>
         </header>

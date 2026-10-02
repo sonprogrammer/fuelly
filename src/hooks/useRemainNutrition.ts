@@ -8,7 +8,7 @@ const isNutritionUser = (user: User): user is FixedUser => {
     return (
       user.height != null &&
       user.weight != null &&
-      user.age != null &&
+      user.birthDate != null &&
       user.gender != null &&
       user.activity != null &&
       user.goal != null

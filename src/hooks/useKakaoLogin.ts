@@ -32,6 +32,7 @@ const useKakaoLogin = () => {
                     gender: res.data.user.gender,
                     activity: res.data.user.activity,
                     age: res.data.user.age,
+                    birthDate: res.data.user.birthDate,
                     _id: res.data.user._id
                 })
                 const accessToken = res.data.accessToken

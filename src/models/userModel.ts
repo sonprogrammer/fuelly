@@ -19,6 +19,7 @@ export interface IUser extends Document {
     height?: number;
     weight?: number;
     age?: number;
+    birthDate?: Date
     gender?: 'male' | 'female';
     activity?: 'sedentary' | 'light' | 'moderate' | 'active';
     goal?: 'bulk' | 'diet' | 'maintain';
@@ -71,6 +72,9 @@ const UserSchema: Schema = new Schema({
     },
     age: {
         type: Number
+    },
+    birthDate: {
+        type: Date
     },
     gender: {
         type: String,

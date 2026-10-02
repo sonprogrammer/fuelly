@@ -12,6 +12,7 @@ interface User{
     weight?: number;
     height?: number;
     age?: number;
+    birthDate?: string
     gender?: 'male' | 'female';
     activity?: 'sedentary' | 'light' | 'moderate' | 'active';
     goal?: 'bulk' | 'diet' | 'maintain'

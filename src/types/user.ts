@@ -1,6 +1,4 @@
-type Gender = 'male' | 'female'
-export type ActivityLevel = 'sedentary' | 'light' | 'moderate' | 'active'
-type GoalLabel = 'bulk' | 'diet' | 'maintain'
+import { ActivityLevel, Gender, GoalLabel } from "@/types/goal"
 
 export interface User {
     height?: number
@@ -9,12 +7,14 @@ export interface User {
     activity?: ActivityLevel
     goal?: GoalLabel
     age?: number
+    birthDate?: string
 }
 
 export type FixedUser = {
     height: number
     weight: number
-    age: number
+    age?: number
+    birthDate: string
     gender: Gender
     activity: ActivityLevel
     goal: GoalLabel

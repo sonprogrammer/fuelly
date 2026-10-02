@@ -1,19 +1,21 @@
-import {useMutation, useQueryClient} from '@tanstack/react-query'
-import {axiosInstance} from '@/lib/axios'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { axiosInstance } from '@/lib/axios'
 import { useUserStore } from "@/store/userStore"
 
-interface UpdateData{
+interface UpdateData {
     weight?: number
-    goal?: string
-    activity?: string
+    height?: number
+    goal?: 'bulk' | 'diet' | 'maintain'
+    activity?: 'sedentary' | 'light' | 'moderate' | 'active'
+    birthDate?: string
 }
 
-const updateUserInfo = async(update:UpdateData) => {
+const updateUserInfo = async (update: UpdateData) => {
     const res = await axiosInstance.patch('/updated-userinfo', update)
     return res.data
 }
 
-const useUpdatedUserInfo =() => {
+const useUpdatedUserInfo = () => {
     const queryClient = useQueryClient()
     const setUser = useUserStore(state => state.setUser)
     return useMutation({

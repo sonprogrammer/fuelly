@@ -1,14 +1,20 @@
 import {FixedUser, ActivityLevel} from '@/types/user'
+import { differenceInYears, parseISO } from 'date-fns'
 
 
 const amountCalculate = (data: FixedUser) => {
-    const { height, weight, gender, activity, goal, age} = data
+    const { height, weight, gender, activity, goal, birthDate} = data
+    const calculatedAge = differenceInYears(new Date(), parseISO(birthDate))
+
+    if(calculatedAge === null){
+        throw new Error('나이 정보가 없습니다.')
+    }
 
     // 남성 BMR=10W+6.25H−5A+5, 
     // 여성 BMR=10W+6.25H−5A−161(W=체중, H=키, A=나이)
     const BMR = gender === 'male' 
-    ? 10 * weight + 6.25 * height - 5 * age + 5
-    : 10 * weight + 6.25 * height - 5 * age - 161
+    ? 10 * weight + 6.25 * height - 5 * calculatedAge + 5
+    : 10 * weight + 6.25 * height - 5 * calculatedAge - 161
 
     const activityFactorMap: Record<ActivityLevel, number> ={
         sedentary: 1.2,

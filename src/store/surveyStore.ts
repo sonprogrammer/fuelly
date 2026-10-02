@@ -1,9 +1,8 @@
+import {  ActivityLevel, Gender, GoalLabel } from "@/types/goal";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
-export type GoalLabel = "bulk" | "diet" | "maintain"
-export type Gender = "male" | "female"
-export type ActivityLevel = "sedentary" | "light" | "moderate" | "active"
+
 
 interface SurveyData {
   goal: GoalLabel | null

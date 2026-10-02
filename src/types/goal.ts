@@ -1,12 +1,15 @@
-type GoalLabel = 'bulk' | 'diet' | 'maintain'
+export type GoalLabel = 'bulk' | 'diet' | 'maintain'
+export type Gender = "male" | "female"
+export type ActivityLevel = "sedentary" | "light" | "moderate" | "active"
 
-interface Goal{
-    name: string;
+export interface Goal {
+    name: string
+    description: string
     label: GoalLabel
 }
 
-export const goals:Goal[] = [
-    { name: '벌그업(근육 증가)', label: 'bulk' },
-    { name: '다이어트(체지방 감소)', label: 'diet' },
-    { name: '유지', label: 'maintain' }
-]
+export interface Activity {
+    name: string
+    description: string
+    label: ActivityLevel
+}
