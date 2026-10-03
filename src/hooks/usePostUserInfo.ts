@@ -14,7 +14,7 @@ interface UserInfo {
   goal: 'bulk' | 'diet' | 'maintain'
   gender: 'male' | 'female'
   activity: 'sedentary' | 'light' | 'moderate' | 'active'
-  age: number
+  birthDate: string
 }
 
 

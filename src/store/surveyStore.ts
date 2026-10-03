@@ -7,7 +7,8 @@ import { createJSONStorage, persist } from "zustand/middleware";
 interface SurveyData {
   goal: GoalLabel | null
   gender: Gender | null
-  age: number | null
+//   age: number | null
+  birthDate: string
   height: number | null
   weight: number | null
   activity: ActivityLevel | null
@@ -24,7 +25,7 @@ interface SurveyStore {
 const initialSurvey: SurveyData = {
   goal: null,
   gender: null,
-  age: null,
+  birthDate: '',
   height: null,
   weight: null,
   activity: null
