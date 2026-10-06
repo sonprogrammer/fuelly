@@ -12,6 +12,7 @@ declare global {
             Auth: {
                 authorize: (options: {
                     redirectUri: string
+                    throughTalk: boolean
                 }) => void
             }
             Share: {

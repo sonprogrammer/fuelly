@@ -11,8 +11,13 @@ export function LoginSection() {
     const handleKakaoLogin = () => {
         if(!window.Kakao.isInitialized()) return
 
+        console.log('Kakao', !!window.Kakao)
+console.log('initialized', window.Kakao?.isInitialized())
+console.log('Auth', !!window.Kakao?.Auth)
+
         window.Kakao.Auth.authorize({
-            redirectUri: `${window.location.origin}/callback`
+            redirectUri: `${window.location.origin}/callback`,
+            throughTalk: false
         })
     }
 
