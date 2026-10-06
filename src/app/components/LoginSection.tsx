@@ -9,11 +9,11 @@ export function LoginSection() {
     const termOpen = useAgreementStore(state => state.termOpen)
 
     const handleKakaoLogin = () => {
-        if(!window.Kakao.isInitialized()) return
-
         console.log('Kakao', !!window.Kakao)
-console.log('initialized', window.Kakao?.isInitialized())
-console.log('Auth', !!window.Kakao?.Auth)
+        console.log('initialized', window.Kakao?.isInitialized())
+        console.log('Auth', !!window.Kakao?.Auth)
+        if (!window.Kakao.isInitialized()) return
+
 
         window.Kakao.Auth.authorize({
             redirectUri: `${window.location.origin}/callback`,

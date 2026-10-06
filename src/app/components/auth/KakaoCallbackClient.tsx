@@ -1,5 +1,6 @@
 'use client'
 
+import { KakaoLoginFallback } from "@/app/components/auth/KakaoLoginFallback"
 import { TermBottomSheet } from "@/app/components/term-bottomsheet"
 import { useAgreementStore } from "@/store/agreementsStore"
 import { useUserStore } from "@/store/userStore"
@@ -74,6 +75,7 @@ export function KakaoCallbackClient() {
 
     return (
         <>
+        {!termOpen && <KakaoLoginFallback />}
             <TermBottomSheet open={termOpen}/>
         </>
     )
