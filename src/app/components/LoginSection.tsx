@@ -1,18 +1,20 @@
 'use client'
 
 import { TermBottomSheet } from '@/app/components/term-bottomsheet'
-import useKakaoLogin from '@/hooks/useKakaoLogin'
 import { useAgreementStore } from '@/store/agreementsStore'
 import { MoveRight } from 'lucide-react'
-import dynamic from 'next/dynamic'
 
+export function LoginSection() {
 
-const KakaoLogin = dynamic(() => import('react-kakao-login'), { ssr: false })
-
-export default function LoginSection() {
-
-    const { kakaoOnSuccess, kakaoOnFailure } = useKakaoLogin()
     const termOpen = useAgreementStore(state => state.termOpen)
+
+    const handleKakaoLogin = () => {
+        if(!window.Kakao.isInitialized()) return
+
+        window.Kakao.Auth.authorize({
+            redirectUri: `${window.location.origin}/callback`
+        })
+    }
 
     return (
         <>
@@ -46,19 +48,12 @@ export default function LoginSection() {
                         >
                             로그인
                         </a>
-                        <KakaoLogin
-                            token={process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID as string}
-                            onSuccess={kakaoOnSuccess}
-                            onFail={kakaoOnFailure}
-                            render={(renderProps: { onClick: () => void }) => (
-                                <button
-                                    onClick={renderProps.onClick}
-                                    className="cursor-pointer w-full mt-5 py-3 bg-[#FEE500] text-[#191919] rounded-xl text-sm font-medium hover:brightness-95 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-                                >
-                                    카카오로 시작하기
-                                </button>
-                            )}
-                        />
+                        <button
+                            onClick={handleKakaoLogin}
+                            className="cursor-pointer w-full mt-5 py-3 bg-[#FEE500] text-[#191919] rounded-xl text-sm font-medium hover:brightness-95 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                        >
+                            카카오로 시작하기
+                        </button>
                     </div>
 
                     <div className="flex items-center gap-6 mt-12 text-xs text-gray-600">
@@ -72,7 +67,7 @@ export default function LoginSection() {
             </section>
 
             <TermBottomSheet open={termOpen} />
-            
+
         </>
     )
 }

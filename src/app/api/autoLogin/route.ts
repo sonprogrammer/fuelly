@@ -21,7 +21,6 @@ export async function POST() {
 
         const accessToken = await new SignJWT({
             objectId: payload.objectId,
-            nickName: payload.nickName
         })
             .setProtectedHeader({ alg: 'HS256' })
             .setExpirationTime('5m')

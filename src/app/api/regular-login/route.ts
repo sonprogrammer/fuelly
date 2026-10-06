@@ -28,7 +28,6 @@ export async function POST(req: NextRequest) {
 
         const accessToken = await new SignJWT({
             objectId: user._id.toString(),
-            nickName: user.nickName
         })
             .setProtectedHeader({ alg: 'HS256'})
             .setExpirationTime('5m')
@@ -37,7 +36,6 @@ export async function POST(req: NextRequest) {
 
         const refreshToken = await new SignJWT({
                 objectId: user._id.toString(),
-                nickName: user.nickName
             })
                 .setProtectedHeader({ alg: 'HS256' })
                 .setExpirationTime('7d')

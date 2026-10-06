@@ -1,12 +1,9 @@
 'use client'
 
-import useKakaoLogin from "@/hooks/useKakaoLogin"
 import { useEffect, useState } from "react"
-import dynamic from "next/dynamic"
 import useRegularLogin from "@/hooks/useRegularLogin"
 import { Mail, Lock, LogIn } from 'lucide-react'
 
-const KakaoLogin = dynamic(() => import('react-kakao-login'), { ssr: false })
 
 export default function LoginPage() {
     const [email, setEmail] = useState<string>('')
@@ -14,7 +11,6 @@ export default function LoginPage() {
     const [remember, setRemember] = useState<boolean>(false)
 
     const { login } = useRegularLogin()
-    const { kakaoOnSuccess, kakaoOnFailure } = useKakaoLogin()
 
     useEffect(() => {
         const getEmailFromLocal = localStorage.getItem('email')
@@ -88,28 +84,7 @@ export default function LoginPage() {
                         로그인
                     </button>
 
-                    <div className="relative my-2">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-gray-800" />
-                        </div>
-                        <div className="relative flex justify-center">
-                            <span className="bg-gray-950 px-3 text-xs text-gray-600 tracking-widest uppercase">or</span>
-                        </div>
-                    </div>
 
-                    <KakaoLogin
-                        token={process.env.NEXT_PUBLIC_KAKAO_CLIENT_ID as string}
-                        onSuccess={kakaoOnSuccess}
-                        onFail={kakaoOnFailure}
-                        render={(renderProps: { onClick: () => void }) => (
-                            <button
-                                onClick={renderProps.onClick}
-                                className="cursor-pointer w-full py-3 bg-[#FEE500] text-[#191919] rounded-xl text-sm font-medium hover:brightness-95 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-                            >
-                                카카오로 시작하기
-                            </button>
-                        )}
-                    />
                 </div>
 
                 <p className="text-center text-xs text-gray-600 mt-8">

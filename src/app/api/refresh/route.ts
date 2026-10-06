@@ -17,11 +17,10 @@ export async function POST(req: NextRequest) {
         }
 
         const verified = await jwtVerify(refreshToken, JWT_SECRET)
-        const payload = verified.payload as { objectId: string, nickName: string }
+        const payload = verified.payload as { objectId: string }
 
         const newAccessToken = await new SignJWT({
             objectId: payload.objectId,
-            nickName: payload.nickName
         })
             .setProtectedHeader({ alg: 'HS256' })
             .setExpirationTime('5m')

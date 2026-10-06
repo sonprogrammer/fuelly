@@ -1,14 +1,19 @@
 import mongoose from "mongoose";
 
 declare global {
-  var mongoose: {
-    conn: mongoose.Mongoose | null;
-    promise: Promise<mongoose.Mongoose> | null;
-  }| undefined
-  interface Window {
+    var mongoose: {
+        conn: mongoose.Mongoose | null;
+        promise: Promise<mongoose.Mongoose> | null;
+    } | undefined
+    interface Window {
         Kakao: {
             isInitialized: () => boolean
             init: (key: string) => void
+            Auth: {
+                authorize: (options: {
+                    redirectUri: string
+                }) => void
+            }
             Share: {
                 sendDefault: (options: KakaoShareOptions) => void
             }
