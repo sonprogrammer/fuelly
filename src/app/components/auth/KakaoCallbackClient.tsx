@@ -63,7 +63,6 @@ export function KakaoCallbackClient() {
                     router.replace('/survey')
                 }
 
-                console.log('res.data', res.data)
             } catch (error) {
                 console.error('카카오 로그인 실패', error)
             }

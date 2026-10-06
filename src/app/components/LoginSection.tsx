@@ -9,9 +9,6 @@ export function LoginSection() {
     const termOpen = useAgreementStore(state => state.termOpen)
 
     const handleKakaoLogin = () => {
-        console.log('Kakao', !!window.Kakao)
-        console.log('initialized', window.Kakao?.isInitialized())
-        console.log('Auth', !!window.Kakao?.Auth)
         if (!window.Kakao.isInitialized()) return
 
 

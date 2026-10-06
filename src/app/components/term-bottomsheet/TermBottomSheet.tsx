@@ -27,7 +27,6 @@ export function TermBottomSheet({ open }: TermBottomSheetProps) {
   })))
 
   const user = useUserStore(state => state.user)
-  console.log('agreements', agreements)
 
   const { mutate: agreePolicy, isPending } = useAgreePolicy()
 

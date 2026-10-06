@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
         const refreshToken = req.cookies.get('refreshToken')?.value
 
         if (!refreshToken) {
-            console.log('refresh token not ')
+            console.error('refresh token not ')
             return NextResponse.json({ message: 'no refrsh token' }, { status: 401 })
         }
 
@@ -26,17 +26,17 @@ export async function POST(req: NextRequest) {
             .setExpirationTime('5m')
             .setIssuedAt()
             .sign(JWT_SECRET)
-        console.log('리프레시토큰 검중중 ')
+
         return NextResponse.json({ success: true, accessToken: newAccessToken, message: '엑세스토큰 발급' })
     } catch (err) {
-        console.log('refreshtoken error', err)
+        console.error('refreshtoken error', err)
 
         const res = NextResponse.json(
             { success: false, message: '리프레시토큰 유효하지 않다' },
             { status: 401 }
         )
         res.cookies.delete('refreshToken')
-        console.log('리프레시토큰 검중 실패')
+        console.error('리프레시토큰 검중 실패')
         return res
     }
 }
