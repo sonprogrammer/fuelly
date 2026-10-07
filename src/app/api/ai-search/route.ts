@@ -1,6 +1,8 @@
 import { userInfoFromToken } from '@/lib/userInfoFromToken';
 import { NextRequest, NextResponse } from 'next/server'
 import Groq from "groq-sdk"
+import userModel from '@/models/userModel';
+import { differenceInYears } from 'date-fns';
 
 
 
@@ -21,7 +23,7 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
 export async function POST(req: NextRequest) {
     try {
-        const { prompt, user } = await req.json()
+        const { prompt } = await req.json()
 
         const userInfo = await userInfoFromToken(req)
 
@@ -29,8 +31,10 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: '로그인이 필요합니다' }, { status: 401 })
         }
 
+        const user = await userModel.findById(userInfo.objectId)
+
         if (!user) {
-            return NextResponse.json({ message: '사용자 정보가 필요합니다' }, { status: 400 })
+            return NextResponse.json({ message: '사용자 정보가 필요합니다' }, { status: 404 })
         }
 
         if (!prompt) {
@@ -44,8 +48,10 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: 'prompt is too short' }, { status: 400 })
         }
 
+        const age = differenceInYears(new Date(), new Date(user.birthDate))
+
         const userbodyInfo = `
-        - 성별/나이: ${user.gender === 'male' ? '남성' : '여성'}, ${user.age}세
+        - 성별/나이: ${user.gender === 'male' ? '남성' : '여성'}, ${age}세
         - 신체정보: 키 ${user.height}cm, 몸무게 ${user.weight}kg
         - 활동 수준: ${activityMap[user.activity] || user.activity}
         - 현재 목표: ${goalMap[user.goal] || user.goal}

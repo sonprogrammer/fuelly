@@ -11,7 +11,6 @@ import usePostFoodToDailyMeal from "@/hooks/usePostFoodToDailyMeal";
 import useToggleSaveFood from "@/hooks/useToggleSaveFood";
 import { useUserStore } from "@/store/userStore";
 import { Food } from "@/types/food";
-import { FixedUser } from "@/types/user";
 import toast from "react-hot-toast";
 
 export function AISearchSection(){
@@ -65,8 +64,7 @@ export function AISearchSection(){
         }
         
         try {
-            const userAndPrompt = { prompt, user: user as FixedUser }
-            await aiSearch(userAndPrompt)
+            await aiSearch(prompt)
             return true
         } catch (error) {
             toast.error('서버 오류, 다시 시도해 주세요.')

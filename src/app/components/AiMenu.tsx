@@ -15,6 +15,7 @@ import usePostAiFood from '@/hooks/usePostAiFood'
 import { Heart } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { Food } from '@/types/food'
+import { useState } from 'react';
 
 interface SavedFood {
     _id: string
@@ -22,8 +23,16 @@ interface SavedFood {
     savedUser: string
 }
 
+const categories = [
+    { label: '전체', value: 'all' },
+    { label: '배달', value: 'delivery' },
+    { label: '편의점', value: 'convenience' },
+    { label: '집밥', value: 'home' }
+] as const
+
 export default function AiMenu() {
     const user = useUserStore(state => state.user)
+    const [category, setCategory] = useState<(typeof categories)[number]['value']>('all')
     const { remain } = useRemainNutrition(user)
     const { data, mutate: recommendFood, isPending: recommending } = usePostAiRecommendFood()
     const { mutate: postCustomFood } = usePostAddCustomFood()
@@ -40,26 +49,14 @@ export default function AiMenu() {
     )
 
 
-
     const handleClickAi = () => {
         if (!user) return
 
-        recommendFood(
-            {
-                user: {
-                    gender: user.gender!,
-                    age: user.age!,
-                    height: user.height!,
-                    weight: user.weight!,
-                    goal: user.goal!,
-                    activity: user.activity!
-                },
-                remain: {
-                    calorie: remain.calorie,
-                    protein: remain.protein
-                }
-            }
-        )
+        recommendFood({
+            remain,
+            category
+
+        })
     }
     const handleSaveToggle = (food: AiRecommendResultFood) => {
         const savedFoodId = savedFoodMap.get(food?.name)
@@ -128,13 +125,36 @@ export default function AiMenu() {
                 </div>
             </div>
 
+            <div className="mb-4">
+                <p className="text-xs font-medium text-gray-400 mb-2">어디서 먹을까요?</p>
+                <div className="flex gap-2">
+                    {categories.map((item) => {
+                        const selected = category === item.value
+
+                        return (
+                            <button
+                                key={item.value}
+                                type="button"
+                                onClick={() => setCategory(item.value)}
+                                className={`flex-1 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${selected
+                                        ? 'bg-emerald-500 text-white'
+                                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200'
+                                    }`}
+                            >
+                                {item.label}
+                            </button>
+                        )
+                    })}
+                </div>
+            </div>
+
             {data && (
                 <div className="border border-gray-800 rounded-xl overflow-hidden mb-4">
                     {data.meals.map((food) => {
                         const savedFoodId = savedFoodMap.get(food.name)
                         const isSaved = Boolean(savedFoodId)
-                        const caloriePercent = Math.min((food.calorie / remain.calorie) * 100, 100)
-                        const proteinPercent = Math.min((food.protein / remain.protein) * 100, 100)
+                        const caloriePercent = remain.calorie > 0 ? Math.min((food.calorie / remain.calorie) * 100, 100) : 100
+                        const proteinPercent = remain.protein > 0 ?  Math.min((food.protein / remain.protein) * 100, 100) : 100
                         return (
                             <AiRecommandMenu
                                 key={food.name}
@@ -167,7 +187,7 @@ export default function AiMenu() {
                     }`}
             >
                 <Sparkles className={`w-4 h-4 ${recommending ? 'animate-pulse' : ''}`} />
-                <span>{recommending ? 'AI가 분석 중...' : 'AI 맞춤 추천 받기'}</span>
+                <span>{recommending ? 'AI 분석 중...' : 'AI 맞춤 추천 받기'}</span>
             </button>
         </>
 

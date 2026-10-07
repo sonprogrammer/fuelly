@@ -1,20 +1,14 @@
 import { useMutation } from '@tanstack/react-query'
 import { axiosInstance } from '@/lib/axios'
-import { FixedUser } from '@/types/user'
 import { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
-
-interface AiSearch {
-    prompt: string;
-    user: FixedUser;
-}
 
 interface ErrorResponse {
     message: string
 }
 
-const aiSearch = async (userAndPrompt: AiSearch) => {
-    const res = await axiosInstance.post('/ai-search', userAndPrompt)
+const aiSearch = async (prompt: string) => {
+    const res = await axiosInstance.post('/ai-search', prompt)
     return res.data.answer
 }
 
@@ -22,7 +16,7 @@ const aiSearch = async (userAndPrompt: AiSearch) => {
 const usePostAiSearch = () => {
 
     return useMutation({
-        mutationFn: (userAndPrompt: AiSearch) => aiSearch(userAndPrompt),
+        mutationFn: (prompt: string) => aiSearch(prompt),
         onSuccess: (data) => { console.log('success', data) },
         onError: error => {
             if (error instanceof AxiosError) {

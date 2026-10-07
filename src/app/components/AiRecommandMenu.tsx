@@ -53,17 +53,17 @@ export default function AiRecommendMenu({
         <div className="space-y-2">
             <div className="space-y-1">
                 <div className="flex justify-between text-xs text-gray-600">
-                    <span>칼로리 충족률</span>
+                    <span>남은 칼로리 대비</span>
                     <span>{Math.round(caloriePercent)}%</span>
                 </div>
-                <AiRecommendProgressBar percent={caloriePercent} />
+                <AiRecommendProgressBar percent={caloriePercent} type='calorie' />
             </div>
             <div className="space-y-1">
                 <div className="flex justify-between text-xs text-gray-600">
-                    <span>단백질 충족률</span>
+                    <span>남은 단백질 대비</span>
                     <span>{Math.round(proteinPercent)}%</span>
                 </div>
-                <AiRecommendProgressBar percent={proteinPercent} />
+                <AiRecommendProgressBar percent={proteinPercent} type='protein'/>
             </div>
         </div>
 

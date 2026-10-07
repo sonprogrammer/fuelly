@@ -1,19 +1,11 @@
-import { ActivityLevel } from "@/types/goal"
-
+export type RecommendMealCategory = 'all' | 'delivery' | 'convenience' | 'home'
 
 export interface AiRecommendFood{
-    user:{
-        gender: 'male' | 'female'
-        age: number
-        height: number
-        weight: number
-        goal: 'diet' | 'maintain' | 'bulk'
-        activity: ActivityLevel
-    },
     remain:{
         calorie: number
         protein: number
-    }
+    },
+    category: RecommendMealCategory
 }
 
 export interface AiRecommendResult{
