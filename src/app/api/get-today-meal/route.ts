@@ -15,7 +15,7 @@ export async function GET(req: NextRequest){
             return NextResponse.json({message:'user token required'}, { status: 401})
         }
 
-        const today = dayjs().format('YYYY-MM-DD')
+        const today = dayjs().tz().format('YYYY-MM-DD')
         
 
         const userDailyMeal = await dailyMeal.findOne({

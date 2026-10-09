@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: 'info is not proviede' }, { status: 400 })
         }
 
-        const today = dayjs().format('YYYY-MM-DD')
+        const today = dayjs().tz().format('YYYY-MM-DD')
 
         let todayMeal = await dailyMeal.findOne({
             userId: userInfo.objectId,
