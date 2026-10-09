@@ -42,7 +42,7 @@ export function StatsPageSection() {
     
     return (
         <>
-            <StatsChartSection isPendingMeal={pendingtoGetMeal} allMeal={allMeal} range={range} CAL_LIMIT={CAL_LIMIT} PRO_LIMIT={PRO_LIMIT}/>
+            <StatsChartSection  key={range} isPendingMeal={pendingtoGetMeal} allMeal={allMeal} range={range} CAL_LIMIT={CAL_LIMIT} PRO_LIMIT={PRO_LIMIT}/>
             <StatsMealsSection isPendingMeal={pendingtoGetMeal} CAL_LIMIT={CAL_LIMIT} PRO_LIMIT={PRO_LIMIT} range={range} setRange={setRange} filteredData={filteredData}/>
         </>
     )
