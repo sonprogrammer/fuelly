@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation'
 import { useUserStore } from '@/store/userStore'
 import { toast } from 'react-hot-toast'
+import Image from 'next/image'
 
 export default function HomeComponent() {
     const router = useRouter()
@@ -22,10 +23,11 @@ export default function HomeComponent() {
     return (
         <button
             onClick={handleClick}
-            className="cursor-pointer text-base font-bold tracking-tight text-emerald-500 hover:opacity-70 transition-opacity"
+            className="cursor-pointer flex items-center gap-2 font-bold tracking-tight text-emerald-500 hover:opacity-70 transition-opacity"
 
         >
-            FUELLY
+            <Image src='/fuellyRun.png' width={40} height={40} alt='로고'/>
+            <h1>FUELLY</h1>
         </button>
     )
 }

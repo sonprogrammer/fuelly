@@ -32,3 +32,10 @@ export interface CreateFoodFromAi {
     protein: number
     unit: string
   }
+
+export interface AiPreference {
+  allergies: string[]
+  dislikedFoods: string[]
+  preferredFoods: string[]
+  customRequest: string
+}

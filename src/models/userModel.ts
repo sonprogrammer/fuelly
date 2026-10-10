@@ -11,6 +11,13 @@ interface IUserPolicy {
     privacy?: IPolicyAgreement;
     serviceImprovement?: IPolicyAgreement;
 }
+
+interface IAiPreference {
+    allergies: string[]
+    dislikedFoods: string[]
+    preferredFoods: string[]
+    customRequest: string
+}
 export interface IUser extends Document {
     nickName?: string; //일반회원일 때
     password?: string; //일반회원일 때
@@ -23,6 +30,7 @@ export interface IUser extends Document {
     gender?: 'male' | 'female';
     activity?: 'sedentary' | 'light' | 'moderate' | 'active';
     goal?: 'bulk' | 'diet' | 'maintain';
+    aiPreference?: IAiPreference
     createdAt: Date;
     policy?: IUserPolicy;
 }
@@ -46,6 +54,30 @@ const PolicyAgreementSchema = new Schema(
         _id: false,
     }
 );
+
+const AiPreferenceSchema = new Schema(
+    {
+        allergies: {
+            type: [String],
+            default: []
+        },
+        dislikedFoods: {
+            type: [String],
+            default: []
+        },
+        preferredFoods: {
+            type: [String],
+            default: []
+        },
+        customRequest: {
+            type: String,
+            default: ''
+        }
+    },
+    {
+        _id: false
+    }
+)
 
 const UserSchema: Schema = new Schema({
     nickName: {
@@ -82,11 +114,29 @@ const UserSchema: Schema = new Schema({
     },
     goal: {
         type: String,
-        enum: ['bulk', 'diet'],
+        enum: ['bulk', 'diet', 'maintain'],
     },
     activity: {
         type: String,
         enum: ['sedentary', 'light', 'moderate', 'active'],
+    },
+    aiPreference: {
+        allergies: {
+            type: AiPreferenceSchema,
+            default: []
+        },
+        dislikedFoods: {
+            type: AiPreferenceSchema,
+            default: []
+        },
+        preferredFoods: {
+            type: AiPreferenceSchema,
+            default: []
+        },
+        customRequest: {
+            type: String,
+            default: ''
+        }
     },
     policy: {
         terms: {
