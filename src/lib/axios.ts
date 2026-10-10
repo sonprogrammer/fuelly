@@ -75,7 +75,7 @@ axiosInstance.interceptors.response.use(
             if (newAccessToken) {
                 setUserAccessToken(newAccessToken)
 
-                originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
+                originalRequest.headers.set('Authorization',`Bearer ${newAccessToken}`)
 
                 processQueue(null, newAccessToken)
 
