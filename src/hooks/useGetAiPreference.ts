@@ -9,7 +9,8 @@ interface GetAiPreferenceRes{
 
 
 const getAiPreference = async():Promise<GetAiPreferenceRes> => {
-    const res = await axiosInstance.get<GetAiPreferenceRes>('/api/ai-preference')
+    const res = await axiosInstance.get<GetAiPreferenceRes>('/ai-preference')
+    console.log('res', res.data)
     return res.data
 }
 
@@ -17,6 +18,7 @@ export function useGetAiPreference(userId?: string) {
     return useQuery({
         queryKey: ['aiPreference', userId],
         queryFn: () => getAiPreference(),
+        enabled: !!userId,
         staleTime: 1000 * 60 * 30,
         gcTime: 1000 * 60 * 60,
         refetchOnWindowFocus: false

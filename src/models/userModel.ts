@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document } from "mongoose";
 
 interface IPolicyAgreement {
-    version: string;
+    version?: string;
     agreed: boolean;
     agreedAt?: Date;
 }
@@ -39,7 +39,7 @@ const PolicyAgreementSchema = new Schema(
     {
         version: {
             type: String,
-            required: true,
+            required: false,
         },
         agreed: {
             type: Boolean,
@@ -121,22 +121,8 @@ const UserSchema: Schema = new Schema({
         enum: ['sedentary', 'light', 'moderate', 'active'],
     },
     aiPreference: {
-        allergies: {
-            type: AiPreferenceSchema,
-            default: []
-        },
-        dislikedFoods: {
-            type: AiPreferenceSchema,
-            default: []
-        },
-        preferredFoods: {
-            type: AiPreferenceSchema,
-            default: []
-        },
-        customRequest: {
-            type: String,
-            default: ''
-        }
+        type: AiPreferenceSchema,
+        default: () => ({})
     },
     policy: {
         terms: {

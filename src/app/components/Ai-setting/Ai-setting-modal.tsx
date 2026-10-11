@@ -1,6 +1,7 @@
 'use client'
 
 import { SettingContent } from '@/app/components/Ai-setting/setting-content'
+import { AiPreference } from '@/types/ai'
 import { AlertTriangle, ChevronLeft, ChevronRight, Heart, MessageSquareText, UtensilsCrossed, X } from 'lucide-react'
 import { useState } from 'react'
 
@@ -13,6 +14,7 @@ type SettingStep =
 
 interface MyAiSettingModalProps {
   onClose: () => void
+  initialPreference: AiPreference
 }
 
 const settingItems = [
@@ -46,7 +48,7 @@ const settingItems = [
   }
 ] as const
 
-export function MyAiSettingModal({ onClose }: MyAiSettingModalProps) {
+export function MyAiSettingModal({ onClose, initialPreference }: MyAiSettingModalProps) {
   const [step, setStep] = useState<SettingStep>('menu')
 
   return (
@@ -126,7 +128,7 @@ export function MyAiSettingModal({ onClose }: MyAiSettingModalProps) {
           )}
 
           {step !== 'menu' && (
-            <SettingContent step={step} />
+            <SettingContent step={step} initialPreference={initialPreference} onClose={onClose}/>
           )}
         </div>
       </div>

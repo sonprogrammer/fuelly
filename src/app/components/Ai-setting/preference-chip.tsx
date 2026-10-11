@@ -91,7 +91,7 @@ export function PreferenceChipEditor({ description, suggestions, values, onChang
                     <button
                         type="button"
                         onClick={handleAdd}
-                        disabled={!input.trim()}
+                        disabled={!input.trim() || values.includes(input.trim())}
                         className="flex h-11 w-11 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-emerald-500 text-white transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:bg-gray-800 disabled:text-gray-600"
                     >
                         <Plus className="h-4 w-4" />

@@ -8,7 +8,7 @@ import { ACTIVITIES, GOALS } from "@/config/survey-goals"
 import usePostUserInfo from "@/hooks/usePostUserInfo"
 import { useSurveyStore } from "@/store/surveyStore"
 import { useUserStore } from "@/store/userStore"
-import { ArrowLeft, ArrowRight, Check } from "lucide-react"
+import { ArrowLeft, ArrowRight } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { toast } from "react-hot-toast"
 
@@ -203,7 +203,7 @@ export default function SurveyComponent() {
                     className="flex h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-500 text-sm font-semibold text-white transition hover:bg-emerald-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
                 >
                     {isPending ? "저장 중..." : step === TOTAL_STEP - 1 ? "Fuelly 시작하기" : "다음"}
-                    {!isPending && (step === TOTAL_STEP - 1 ? <Check className="h-4 w-4" /> : <ArrowRight className="h-4 w-4" />)}
+                    {!isPending && (step === TOTAL_STEP - 1 ? '' : <ArrowRight className="h-4 w-4" />)}
                 </button>
             </div>
         </section>

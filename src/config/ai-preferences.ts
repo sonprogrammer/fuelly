@@ -1,12 +1,9 @@
 export const ALLERGY_SUGGESTIONS = [
-  '땅콩',
   '견과류',
   '우유',
   '계란',
   '갑각류',
   '생선',
-  '대두',
-  '밀'
 ] as const
 
 export const DISLIKED_FOOD_SUGGESTIONS = [
