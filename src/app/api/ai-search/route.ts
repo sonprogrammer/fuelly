@@ -3,15 +3,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import Groq from "groq-sdk"
 import userModel from '@/models/userModel';
 import { differenceInYears } from 'date-fns';
+import { userInfoContext } from '@/lib/ai/prompts/mealRecommendation';
+import { activityMap } from '@/config/activity';
+import { mealTime } from '@/utils/koreaMealTime';
+import { searchSystemPrompt } from '@/lib/ai/prompts/aiSearchPrompt';
 
 
-
-const activityMap: Record<string, string> = {
-    'sedentary': '거의 운동을 하지 않고 주로 앉아서 생활함',
-    'light': '주 1~2회 정도 가벼운 운동을 함',
-    'moderate': '주 3~5회 정도 적당한 강도의 운동을 규칙적으로 함',
-    'active': '주 6회 이상 강도 높은 운동을 즐기며 활동량이 매우 많음'
-};
 
 const goalMap: Record<string, string> = {
     'diet': '체중 감량 및 다이어트',
@@ -23,7 +20,9 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
 export async function POST(req: NextRequest) {
     try {
-        const { prompt } = await req.json()
+        const { remain, prompt } = await req.json()
+
+        const trimmedPrompt = prompt.trim()
 
         const userInfo = await userInfoFromToken(req)
 
@@ -37,60 +36,95 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: '사용자 정보가 필요합니다' }, { status: 404 })
         }
 
-        if (!prompt) {
+        if (!remain || typeof remain.calorie !== 'number' || typeof remain.protein !== 'number') {
+            return NextResponse.json({ message: '남은 영양 정보가 올바르지 않습니다.' }, { status: 400 })
+        }
+
+        if (!trimmedPrompt) {
             return NextResponse.json({ message: '프롬프트가 비었습니다.' }, { status: 400 })
         }
 
-        if (prompt.length > 100) {
+        if (trimmedPrompt.length > 100) {
             return NextResponse.json({ message: 'prompt is too long' }, { status: 400 })
         }
-        if (prompt.length < 2) {
+        if (trimmedPrompt.length < 2) {
             return NextResponse.json({ message: 'prompt is too short' }, { status: 400 })
         }
 
         const age = differenceInYears(new Date(), new Date(user.birthDate))
 
-        const userbodyInfo = `
-        - 성별/나이: ${user.gender === 'male' ? '남성' : '여성'}, ${age}세
-        - 신체정보: 키 ${user.height}cm, 몸무게 ${user.weight}kg
-        - 활동 수준: ${activityMap[user.activity] || user.activity}
-        - 현재 목표: ${goalMap[user.goal] || user.goal}
-        `
 
-        const serverPrompt = `
-            당신은 영양 전문가입니다. 꼭 한국어로 보내줘.
-            유저 정보를 바탕으로 ${prompt}에 대해 분석하고, 건강한 식단을 위해 3가지 추천 음식을 제안하세요.
-            유저 정보는 ${userbodyInfo}
-            분석 시 유저의 활동량과 목표를 고려하여 칼로리 조절 및 영양 성분 조언을 description에 포함해줘
-            [응답 규칙 및 제약 조건]
-            1. 반드시 아래의 JSON 형식을 엄격히 지켜서 응답하세요. 텍스트 설명은 JSON의 "description" 필드 안에만 넣으세요.
-            2. "description"에는 유저의 목표와 활동량을 고려한 구체적인 영양 조언을 포함하세요. (예: "활동량이 많으시니 단백질 보충이 중요합니다.")
-            3. "foods" 배열에는 [사용자 입력 음식]을 포함하여 총 3개의 연관된 추천 음식을 넣으세요.
-            4. 모든 숫자는 순수 숫자(number) 타입으로 작성하세요.
 
-            [JSON 응답 형식 예시]
-            {
-                "description": "유저의 목표와 입력을 고려한 맞춤 멘트",
-                "foods": [
-                    { "name": "음식명", "protein": 0, "calorie": 0, "unit": "기준 단위(예시: 1개, 100g)" },
-                ]
-            }
-            
-        `
+
+        const userContext = userInfoContext({
+            gender: user.gender,
+            age,
+            height: user.height,
+            weight: user.weight,
+            goal: goalMap[user.goal] || user.goal,
+            activity: activityMap[user.activity] || user.activity,
+            remainCalorie: remain.calorie,
+            remainProtein: remain.protein,
+            mealTime,
+            allergies: user.aiPreference?.allergies ?? [],
+            dislikedFoods: user.aiPreference?.dislikedFoods ?? [],
+            preferredFoods: user.aiPreference?.preferredFoods ?? [],
+            customRequest: user.aiPreference?.customRequest ?? ''
+        })
 
         const completion = await groq.chat.completions.create({
             model: 'openai/gpt-oss-20b',
             messages: [
                 {
                     role: 'system',
-                    content: serverPrompt
+                    content: searchSystemPrompt
                 },
                 {
                     role: 'user',
-                    content: prompt
+                    content: `${userContext} 사용자 질문 : ${trimmedPrompt}`
                 }
             ],
-            response_format: { type: 'json_object' }
+            response_format: {
+                type: 'json_schema',
+                json_schema: {
+                    name: 'ai_search',
+                    strict: true,
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            description: {
+                                type: 'string'
+                            },
+                            foods: {
+                                type: 'array',
+                                minItems: 3,
+                                maxItems: 3,
+                                items: {
+                                    type: 'object',
+                                    properties: {
+                                        name: {
+                                            type: 'string'
+                                        },
+                                        protein: {
+                                            type: 'number'
+                                        },
+                                        calorie: {
+                                            type: 'number'
+                                        },
+                                        unit: {
+                                            type: 'string'
+                                        }
+                                    },
+                                    required: ['name', 'protein', 'calorie', 'unit'],
+                                    additionalProperties: false
+                                }
+                            }
+                        },
+                        required: ['description', 'foods'],
+                        additionalProperties: false
+                    }
+                }
+            }
         })
         const rawAnswer = completion.choices[0].message?.content
         if (!rawAnswer) {

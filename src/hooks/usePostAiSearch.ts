@@ -7,8 +7,16 @@ interface ErrorResponse {
     message: string
 }
 
-const aiSearch = async (prompt: string) => {
-    const res = await axiosInstance.post('/ai-search', prompt)
+interface AiSearchPayload {
+    prompt: string;
+    remain: {
+        calorie: number;
+        protein: number
+    }
+}
+
+const aiSearch = async ({prompt, remain}: AiSearchPayload) => {
+    const res = await axiosInstance.post('/ai-search', {prompt, remain})
     return res.data.answer
 }
 
@@ -16,7 +24,7 @@ const aiSearch = async (prompt: string) => {
 const usePostAiSearch = () => {
 
     return useMutation({
-        mutationFn: (prompt: string) => aiSearch(prompt),
+        mutationFn: aiSearch,
         onSuccess: (data) => { console.log('success', data) },
         onError: error => {
             if (error instanceof AxiosError) {

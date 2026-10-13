@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import Groq from "groq-sdk"
 import { userInfoFromToken } from "@/lib/userInfoFromToken";
+import { foodNutritionSystemPrompt } from "@/lib/ai/prompts/foodNutritionInfo";
+
 
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
@@ -21,24 +23,41 @@ export async function POST(req: NextRequest) {
         )
     }
 
-    const prompt = `
-        ${foodName}에 대한 영양 성분을 알려줘 . 먼저 입력값이 실제 음식인지 판단해.
-        JSON 형식으로만 대답해줘: { "isFood": boolean, "calorie": number | null, "protein": number | null, "unit": string | null}
-        
-        규칙:
-- 실제 음식이면 isFood는 true
-- 음식이 아니거나 음식으로 판단하기 어려우면 isFood는 false
-- isFood가 false면 calorie, protein, unit은 null
-- unit은 영양 단위가 아니라 일반적인 1회 제공량을 의미함
-- 설명은 작성하지 마
-        
-    `
+    const uesrContext = `분석할 음식명 : ${foodName.trim()}`
 
     try {
         const chatCompletion = await groq.chat.completions.create({
-            messages: [{ role: 'user', content: prompt }],
+            messages: [
+                { role: 'user', content: uesrContext },
+                { role: 'system', content: foodNutritionSystemPrompt}
+            ],
             model: 'openai/gpt-oss-20b',
-            response_format: { type: 'json_object' }
+            response_format: { 
+                type: 'json_schema',
+                json_schema: {
+                    name: 'food_nutrition',
+                    strict: true,
+                    schema: {
+                        type: 'object',
+                        properties: {
+                            isFood: {
+                                type: 'boolean'
+                            },
+                            calorie: {
+                                type: ['number', 'null']
+                            },
+                            protein: {
+                                type: ['number', 'null']
+                            },
+                            unit: {
+                                type: ['string', 'null']
+                            },
+                        },
+                        required: ['isFood', 'calorie', 'protein', 'unit'],
+                        additionalProperties: false
+                    }
+                }
+            }
         })
 
         const data = JSON.parse(chatCompletion.choices[0].message.content || "{}")

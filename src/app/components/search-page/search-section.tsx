@@ -8,6 +8,7 @@ import usePostAddCustomFood from "@/hooks/usePostAddCustomFood";
 import usePostAiFood from "@/hooks/usePostAiFood";
 import usePostAiSearch from "@/hooks/usePostAiSearch";
 import usePostFoodToDailyMeal from "@/hooks/usePostFoodToDailyMeal";
+import useRemainNutrition from "@/hooks/useRemainNutrition";
 import useToggleSaveFood from "@/hooks/useToggleSaveFood";
 import { useUserStore } from "@/store/userStore";
 import { Food } from "@/types/food";
@@ -17,7 +18,7 @@ export function AISearchSection(){
 
 
     const user = useUserStore(state => state.user)
-
+    const { remain } = useRemainNutrition(user)
     // *일반음식저장훅
     const { mutate: saveNomalFood } = usePostAddCustomFood()
     // *오늘 식단 저장훅
@@ -64,10 +65,9 @@ export function AISearchSection(){
         }
         
         try {
-            await aiSearch(prompt)
+            await aiSearch({prompt, remain})
             return true
         } catch (error) {
-            toast.error('서버 오류, 다시 시도해 주세요.')
             console.error(error)
             return false
         }

@@ -8,6 +8,8 @@ import dailyMsg from "@/models/dailyMsgModel"
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
+
+// TODO 쓸모가 없어졌당게
 export async function POST(req: NextRequest) {
 
     try {
