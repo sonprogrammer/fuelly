@@ -11,7 +11,7 @@ export async function POST() {
     try {
         const cookieStore = await cookies()
 
-        const refreshToken = cookieStore.get('refreshToken')?.value
+        const refreshToken = cookieStore.get('fuellyRefreshToken')?.value
 
         if (!refreshToken) {
             return NextResponse.json({ message: 'no refreshToken' }, { status: 401 })

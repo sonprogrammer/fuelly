@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export function POST(req:NextRequest){
     const response = NextResponse.json({success: true})
 
-    response.cookies.set("refreshToken", "", {
+    response.cookies.set("fuellyRefreshToken", "", {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",

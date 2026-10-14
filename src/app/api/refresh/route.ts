@@ -9,7 +9,7 @@ const JWT_SECRET = new TextEncoder().encode(
 
 export async function POST(req: NextRequest) {
     try {
-        const refreshToken = req.cookies.get('refreshToken')?.value
+        const refreshToken = req.cookies.get('fuellyRefreshToken')?.value
 
         if (!refreshToken) {
             console.error('refresh token not ')
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
             { success: false, message: '리프레시토큰 유효하지 않다' },
             { status: 401 }
         )
-        res.cookies.delete('refreshToken')
+        res.cookies.delete('fuellyRefreshToken')
         console.error('리프레시토큰 검중 실패')
         return res
     }

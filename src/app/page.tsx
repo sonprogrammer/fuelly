@@ -1,5 +1,3 @@
-
-
 import { jwtVerify } from 'jose'
 
 import { cookies } from 'next/headers'
@@ -13,7 +11,7 @@ const JWT_SECRET = new TextEncoder().encode(
 
 export default async function LandingPage() {
   const cookie = await cookies()
-  const refreshToken = cookie.get('refreshToken')?.value
+  const refreshToken = cookie.get('fuellyRefreshToken')?.value
 
   let isValidRefresh = false
 

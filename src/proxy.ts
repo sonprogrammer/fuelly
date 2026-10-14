@@ -21,7 +21,7 @@ export async function proxy(req: NextRequest) {
   }
   const header = req.headers.get('Authorization')
   const accessToken = header?.split(' ')[1]
-  const refreshToken = req.cookies.get('refreshToken')?.value
+  const refreshToken = req.cookies.get('fuellyRefreshToken')?.value
 
 
   if (!refreshToken) {

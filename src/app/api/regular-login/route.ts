@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
         const res = NextResponse.json({ success: true, user: userWithoutSensitive, accessToken })
         const isProduction = process.env.NODE_ENV === 'production'
         
-        res.cookies.set('refreshToken', refreshToken, {
+        res.cookies.set('fuellyRefreshToken', refreshToken, {
             httpOnly: true,
             secure: isProduction,
             sameSite: isProduction ? 'none' : 'lax',
