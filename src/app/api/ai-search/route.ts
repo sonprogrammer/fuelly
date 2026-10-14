@@ -7,6 +7,8 @@ import { userInfoContext } from '@/lib/ai/prompts/mealRecommendation';
 import { activityMap } from '@/config/activity';
 import { mealTime } from '@/utils/koreaMealTime';
 import { searchSystemPrompt } from '@/lib/ai/prompts/aiSearchPrompt';
+import { validateAiSearchRequest } from '@/lib/ai/validation/aiSearch';
+import { isValidAiSearchRes } from '@/lib/ai/validation/aiSearchRes';
 
 
 
@@ -20,36 +22,28 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
 export async function POST(req: NextRequest) {
     try {
-        const { remain, prompt } = await req.json()
+        const body = await req.json()
 
-        const trimmedPrompt = prompt.trim()
-
+        
         const userInfo = await userInfoFromToken(req)
-
+        
         if (!userInfo) {
             return NextResponse.json({ message: '로그인이 필요합니다' }, { status: 401 })
         }
-
+        
         const user = await userModel.findById(userInfo.objectId)
-
+        
         if (!user) {
             return NextResponse.json({ message: '사용자 정보가 필요합니다' }, { status: 404 })
         }
-
-        if (!remain || typeof remain.calorie !== 'number' || typeof remain.protein !== 'number') {
-            return NextResponse.json({ message: '남은 영양 정보가 올바르지 않습니다.' }, { status: 400 })
+        
+        const validation = validateAiSearchRequest(body)
+        
+        if(!validation.valid){
+            return NextResponse.json({message: validation.message}, {status: 400})
         }
 
-        if (!trimmedPrompt) {
-            return NextResponse.json({ message: '프롬프트가 비었습니다.' }, { status: 400 })
-        }
-
-        if (trimmedPrompt.length > 100) {
-            return NextResponse.json({ message: 'prompt is too long' }, { status: 400 })
-        }
-        if (trimmedPrompt.length < 2) {
-            return NextResponse.json({ message: 'prompt is too short' }, { status: 400 })
-        }
+        const { prompt, remain } = validation.data
 
         const age = differenceInYears(new Date(), new Date(user.birthDate))
 
@@ -81,7 +75,7 @@ export async function POST(req: NextRequest) {
                 },
                 {
                     role: 'user',
-                    content: `${userContext} 사용자 질문 : ${trimmedPrompt}`
+                    content: `${userContext} 사용자 질문 : ${prompt}`
                 }
             ],
             response_format: {
@@ -136,6 +130,10 @@ export async function POST(req: NextRequest) {
         try {
 
             const parsedAnswer = JSON.parse(rawAnswer)
+
+            if(!isValidAiSearchRes(parsedAnswer)){
+                return NextResponse.json({message: 'Ai응답 형식이 올바르지 않습니다.'}, {status: 500})
+            }
 
             return NextResponse.json({ message: 'success', answer: parsedAnswer }, { status: 200 });
         } catch (parseError) {

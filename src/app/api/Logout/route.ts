@@ -1,7 +1,7 @@
 
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export function POST(req:NextRequest){
+export function POST(){
     const response = NextResponse.json({success: true})
 
     response.cookies.set("fuellyRefreshToken", "", {
@@ -9,7 +9,7 @@ export function POST(req:NextRequest){
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         path: "/",
-        maxAge: 0, // 🔥 삭제하는 핵심!
+        maxAge: 0,
     });
 
     return response
