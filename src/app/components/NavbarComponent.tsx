@@ -1,13 +1,13 @@
 'use client'
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Utensils, Heart, AudioWaveform, ChartColumnBig } from 'lucide-react'
+import { Utensils, Heart, AudioLines, ChartColumnBig } from 'lucide-react'
 import { useUserStore } from '@/store/userStore'
 
 const navItems = [
     { path: 'meals', icon: Utensils, label: 'Today' },
     { path: 'saved', icon: Heart, label: 'Saved' },
-    { path: 'search', icon: AudioWaveform, label: 'AI Search' },
+    { path: 'search', icon: AudioLines, label: 'AI Search' },
     { path: 'stats', icon: ChartColumnBig, label: 'Stats' },
 ]
 

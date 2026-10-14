@@ -2,6 +2,7 @@ import { useMutation } from '@tanstack/react-query'
 import { axiosInstance } from '@/lib/axios'
 import { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
+import { AiSearchRes } from '@/types/ai';
 
 interface ErrorResponse {
     message: string
@@ -15,7 +16,9 @@ interface AiSearchPayload {
     }
 }
 
-const aiSearch = async ({prompt, remain}: AiSearchPayload) => {
+
+
+const aiSearch = async ({prompt, remain}: AiSearchPayload):Promise<AiSearchRes> => {
     const res = await axiosInstance.post('/ai-search', {prompt, remain})
     return res.data.answer
 }

@@ -86,7 +86,7 @@ export function SettingContent({ step, initialPreference, onClose }: SettingCont
                     AI는 입력한 알레르기 정보를 추천 시 참고합니다. 실제 섭취 전 제품의 원재료와 알레르기 정보를 직접 확인해주세요.
                 </p>
 
-                <SubmitBtn  isDisabled={isDisabled} submit={handleSubmit} isPending={false} />
+                <SubmitBtn  isDisabled={isDisabled} submit={handleSubmit} isPending={false} pendingText='저장 중...' defaultText='저장' />
             </>
         )
     }
@@ -107,7 +107,7 @@ export function SettingContent({ step, initialPreference, onClose }: SettingCont
                     placeholder="예: 토마토"
                 />
 
-                <SubmitBtn  isDisabled={isDisabled} submit={handleSubmit} isPending={false} />
+                <SubmitBtn  isDisabled={isDisabled} submit={handleSubmit} isPending={false} pendingText='저장 중...' defaultText='저장'/>
             </>
         )
     }
@@ -128,7 +128,7 @@ export function SettingContent({ step, initialPreference, onClose }: SettingCont
                     placeholder="예: 닭가슴살"
                 />
 
-                <SubmitBtn  isDisabled={isDisabled} submit={handleSubmit} isPending={false} />
+                <SubmitBtn  isDisabled={isDisabled} submit={handleSubmit} isPending={false} pendingText='저장 중...' defaultText='저장'/>
             </>
         )
     }
@@ -160,7 +160,7 @@ export function SettingContent({ step, initialPreference, onClose }: SettingCont
                 </div>
             </div>
 
-            <SubmitBtn submit={handleSubmit} isPending={false}  isDisabled={isDisabled} />
+            <SubmitBtn submit={handleSubmit} isPending={false}  isDisabled={isDisabled} pendingText='저장 중...' defaultText='저장'/>
         </>
     )
 }

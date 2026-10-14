@@ -39,3 +39,15 @@ export interface AiPreference {
   preferredFoods: string[]
   customRequest: string
 }
+
+export interface AiFood {
+    name: string
+    calorie: number
+    protein: number
+    unit: string
+}
+
+export interface AiSearchRes {
+    description: string
+    foods: AiFood[]
+}

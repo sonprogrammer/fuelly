@@ -2,7 +2,7 @@
 
 
 import { Sparkles } from 'lucide-react';
-import AiRecommandMenu from './AiRecommandMenu'
+import AiRecommandMenu from './AiRecommendMenu'
 import useRemainNutrition from '@/hooks/useRemainNutrition'
 import { useUserStore } from '@/store/userStore'
 import usePostAiRecommendFood from '@/hooks/usePostAiRecommendFood'
@@ -16,6 +16,9 @@ import { Heart } from 'lucide-react'
 import { toast } from 'react-hot-toast'
 import { Food } from '@/types/food'
 import { useState } from 'react';
+import { useAiRecommendStore } from '@/store/aiRecommendMealsStore';
+import { useShallow } from 'zustand/react/shallow';
+import { SubmitBtn } from '@/app/components/submit-button';
 
 interface SavedFood {
     _id: string
@@ -34,7 +37,11 @@ export default function AiMenu() {
     const user = useUserStore(state => state.user)
     const [category, setCategory] = useState<(typeof categories)[number]['value']>('all')
     const { remain } = useRemainNutrition(user)
-    const { data, mutate: recommendFood, isPending: recommending } = usePostAiRecommendFood()
+    const { mutate: recommendFood, isPending: recommending } = usePostAiRecommendFood()
+    const { recommendation, setRecommendation } = useAiRecommendStore(useShallow(state => ({
+        recommendation: state.recommendation,
+        setRecommendation: state.setRecommendation
+    })))
     const { mutate: postCustomFood } = usePostAddCustomFood()
     const { mutate: dailyMutate } = usePostFoodToDailyMeal()
     const { mutate: toggleSave } = useToggleSaveFood()
@@ -55,8 +62,12 @@ export default function AiMenu() {
         recommendFood({
             remain,
             category
-
+        }, {
+            onSuccess: data => {
+                setRecommendation(data)
+            }
         })
+
     }
     const handleSaveToggle = (food: AiRecommendResultFood) => {
         const savedFoodId = savedFoodMap.get(food?.name)
@@ -67,13 +78,13 @@ export default function AiMenu() {
                 protein: food.protein,
                 unit: food.amount
             }, {
-                onSuccess: () => toast.success('즐겨찾기에 저장되었습니다!')
+                onSuccess: () => toast.success('즐겨찾기에 저장 성공')
             })
             return
         }
         toggleSave(savedFoodId, {
             onSuccess: () => {
-                toast.success('즐겨찾기에서 삭제되었습니다!')
+                toast.success('삭제 성공')
             }
         })
     }
@@ -137,8 +148,8 @@ export default function AiMenu() {
                                 type="button"
                                 onClick={() => setCategory(item.value)}
                                 className={`flex-1 py-2 rounded-lg text-xs font-medium transition-colors cursor-pointer ${selected
-                                        ? 'bg-emerald-500 text-white'
-                                        : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200'
+                                    ? 'bg-emerald-500 text-white'
+                                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700 hover:text-gray-200'
                                     }`}
                             >
                                 {item.label}
@@ -147,14 +158,23 @@ export default function AiMenu() {
                     })}
                 </div>
             </div>
+            <SubmitBtn
+                submit={handleClickAi}
+                isDisabled={recommending}
+                isPending={recommending}
+                pendingText='AI 분석 중...'
+                defaultText={recommendation ? '다시 추천받기' : 'AI 맞춤 추천 받기'}
+                icon={<Sparkles className='w-4 h-4' />}
 
-            {data && (
-                <div className="border border-gray-800 rounded-xl overflow-hidden mb-4">
-                    {data.meals.map((food) => {
+            />
+
+            {recommendation && (
+                <div className="border border-gray-800 rounded-xl overflow-hidden my-4">
+                    {recommendation.meals.map((food) => {
                         const savedFoodId = savedFoodMap.get(food.name)
                         const isSaved = Boolean(savedFoodId)
                         const caloriePercent = remain.calorie > 0 ? Math.min((food.calorie / remain.calorie) * 100, 100) : 100
-                        const proteinPercent = remain.protein > 0 ?  Math.min((food.protein / remain.protein) * 100, 100) : 100
+                        const proteinPercent = remain.protein > 0 ? Math.min((food.protein / remain.protein) * 100, 100) : 100
                         return (
                             <AiRecommandMenu
                                 key={food.name}
@@ -177,18 +197,7 @@ export default function AiMenu() {
                 </div>
             )}
 
-            <button
-                onClick={handleClickAi}
-                disabled={recommending}
-                className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-medium transition-all duration-200
-                ${recommending
-                        ? 'bg-gray-800 text-gray-600 cursor-not-allowed'
-                        : 'bg-emerald-500 text-white hover:bg-emerald-400 active:scale-[0.98] cursor-pointer'
-                    }`}
-            >
-                <Sparkles className={`w-4 h-4 ${recommending ? 'animate-pulse' : ''}`} />
-                <span>{recommending ? 'AI 분석 중...' : 'AI 맞춤 추천 받기'}</span>
-            </button>
+
         </>
 
     )

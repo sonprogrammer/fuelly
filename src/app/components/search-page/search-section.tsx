@@ -1,8 +1,12 @@
 'use client'
 
 import { SavedFood } from "@/app/components/save-page/types";
+import { AiSearchHistoryChips } from "@/app/components/search-page/history-search-chips";
+import { AiSearchHistoryPanel } from "@/app/components/search-page/history-search-panel";
 import { SearchInputSection } from "@/app/components/search-page/search-input-section";
+import { SearchLoading } from "@/app/components/search-page/search-loading";
 import { SearchResultSection } from "@/app/components/search-page/search-result-section";
+import SearchGuide from "@/app/components/SearchGuide";
 import useGetSavedFood from "@/hooks/useGetSavedFood";
 import usePostAddCustomFood from "@/hooks/usePostAddCustomFood";
 import usePostAiFood from "@/hooks/usePostAiFood";
@@ -10,12 +14,17 @@ import usePostAiSearch from "@/hooks/usePostAiSearch";
 import usePostFoodToDailyMeal from "@/hooks/usePostFoodToDailyMeal";
 import useRemainNutrition from "@/hooks/useRemainNutrition";
 import useToggleSaveFood from "@/hooks/useToggleSaveFood";
+import { useAiSearchHistoryStore } from "@/store/aiSearchHistoryStore";
 import { useUserStore } from "@/store/userStore";
 import { Food } from "@/types/food";
+import { useState } from "react";
 import toast from "react-hot-toast";
+import { useShallow } from "zustand/react/shallow";
 
-export function AISearchSection(){
 
+export function AISearchSection() {
+    const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null)
+    const [historyOpen, setHistoryOpen] = useState(false)
 
     const user = useUserStore(state => state.user)
     const { remain } = useRemainNutrition(user)
@@ -32,6 +41,13 @@ export function AISearchSection(){
 
     // *ai 응답 요청 훅 
     const { mutateAsync: aiSearch, data: result, isPending: isAnalyzing, } = usePostAiSearch()
+    const { histories, addHistory } = useAiSearchHistoryStore(useShallow(state => ({
+        histories: state.histories,
+        addHistory: state.addHistory
+    })))
+
+    const selectedHistory = histories.find(item => item.id === selectedHistoryId)
+    const displayRes = selectedHistory?.answer ?? result
 
 
 
@@ -43,14 +59,14 @@ export function AISearchSection(){
     )
 
 
-    const handleSearch = async(userPrompt: string):Promise<boolean> => {
+    const handleSearch = async (userPrompt: string): Promise<boolean> => {
         const prompt = userPrompt.trim()
 
-        if(!user){
+        if (!user) {
             toast.error('로그인을 다시 해주세요')
             return false
         }
-        if(!prompt){
+        if (!prompt) {
             toast.error('내용을 입력해주세요')
             return false
         }
@@ -63,9 +79,18 @@ export function AISearchSection(){
             toast.error('100자 이내로 입력해주세요.')
             return false
         }
-        
+
         try {
-            await aiSearch({prompt, remain})
+            const answer = await aiSearch({ prompt, remain })
+            addHistory({
+                id: crypto.randomUUID(),
+                prompt,
+                answer,
+                createdAt: new Date().toISOString()
+            })
+
+            setSelectedHistoryId(null)
+
             return true
         } catch (error) {
             console.error(error)
@@ -107,11 +132,34 @@ export function AISearchSection(){
             })
         }
     }
-    
-    return(
+
+    return (
         <>
-            <SearchInputSection isAnalyzing={isAnalyzing} onSearch={handleSearch}/>
-            <SearchResultSection addToDaily={handleSaveToDaily} result={result} isAnalyzing={isAnalyzing} />
+            <div className=" flex justify-end">
+                <AiSearchHistoryPanel
+                    onSelect={setSelectedHistoryId}
+                    open={historyOpen}
+                    onClose={() => setHistoryOpen(false)}
+                />
+            </div>
+
+            <section className='w-full md:w-[90%] flex flex-col gap-3'>
+
+
+                <SearchInputSection isAnalyzing={isAnalyzing} onSearch={handleSearch} />
+
+                <AiSearchHistoryChips
+                    histories={histories}
+                    onSelect={setSelectedHistoryId}
+                    onOpenAll={() => setHistoryOpen(true)}
+                />
+            </section>
+
+            {!displayRes && !isAnalyzing && <SearchGuide />}
+            {isAnalyzing && <SearchLoading />}
+            {displayRes && !isAnalyzing && (
+                <SearchResultSection addToDaily={handleSaveToDaily} result={displayRes} />
+            )}
         </>
     )
 }
