@@ -1,22 +1,19 @@
 'use client'
 
+import { AiSearchHistory } from '@/types/ai'
 import { Trash2, X } from 'lucide-react'
-import { useAiSearchHistoryStore } from '@/store/aiSearchHistoryStore'
-import { useShallow } from 'zustand/react/shallow'
-
 interface AiSearchHistoryPanelProps {
+    histories: AiSearchHistory[]
+    isLoading: boolean
+    isDeleting: boolean
+    onDelete: (id: string) => void
     onSelect: (id: string) => void
     open: boolean
     onClose: () => void
 }
 
-export function AiSearchHistoryPanel({ onSelect, open, onClose }: AiSearchHistoryPanelProps) {
+export function AiSearchHistoryPanel({ histories, isLoading, isDeleting, onDelete, onSelect, open, onClose }: AiSearchHistoryPanelProps) {
 
-    const { histories, removeHistory, clearHistory } = useAiSearchHistoryStore(useShallow(state => ({
-        histories: state.histories,
-        removeHistory: state.removeHistory,
-        clearHistory: state.clearHistory
-    })))
 
     return (
         <>
@@ -46,7 +43,11 @@ export function AiSearchHistoryPanel({ onSelect, open, onClose }: AiSearchHistor
                             </button>
                         </div>
 
-                        {histories.length === 0 ? (
+                        {isLoading ? (
+                            <div className="flex h-40 items-center justify-center">
+                                <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-200 border-t-emerald-500" />
+                            </div>
+                        ) : histories.length === 0 ? (
                             <div className="flex h-40 items-center justify-center text-sm text-gray-400">
                                 아직 검색 기록이 없습니다
                             </div>
@@ -54,13 +55,13 @@ export function AiSearchHistoryPanel({ onSelect, open, onClose }: AiSearchHistor
                             <div className="space-y-2">
                                 {histories.map(item => (
                                     <div
-                                        key={item.id}
+                                        key={item._id}
                                         className="flex items-center gap-2 rounded-xl border border-gray-200 p-3 hover:bg-gray-50"
                                     >
                                         <button
                                             type="button"
                                             onClick={() => {
-                                                onSelect(item.id)
+                                                onSelect(item._id)
                                                 onClose()
                                             }}
                                             className="min-w-0 flex-1 text-left"
@@ -76,8 +77,9 @@ export function AiSearchHistoryPanel({ onSelect, open, onClose }: AiSearchHistor
 
                                         <button
                                             type="button"
-                                            onClick={() => removeHistory(item.id)}
-                                            className="shrink-0 rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500"
+                                            disabled={isDeleting}
+                                            onClick={() => onDelete(item._id)}
+                                            className="shrink-0 rounded-lg p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-40"
                                         >
                                             <Trash2 className="h-4 w-4" />
                                         </button>
@@ -86,15 +88,6 @@ export function AiSearchHistoryPanel({ onSelect, open, onClose }: AiSearchHistor
                             </div>
                         )}
 
-                        {histories.length > 0 && (
-                            <button
-                                type="button"
-                                onClick={clearHistory}
-                                className="mt-5 w-full rounded-xl border border-red-200 py-2.5 text-sm font-medium text-red-500 hover:bg-red-50"
-                            >
-                                전체 기록 삭제
-                            </button>
-                        )}
                     </aside>
                 </div>
             )}

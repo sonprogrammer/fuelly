@@ -1,5 +1,6 @@
 'use client'
-import { AiSearchHistory } from '@/store/aiSearchHistoryStore'
+
+import { AiSearchHistory } from "@/types/ai"
 
 interface AiSearchChipsProps {
     histories: AiSearchHistory[]
@@ -27,9 +28,9 @@ export function AiSearchHistoryChips({ histories, onSelect, onOpenAll }: AiSearc
 
                 {visibleHistories.map(history => (
                     <button
-                        key={history.id}
+                        key={history._id}
                         type="button"
-                        onClick={() => onSelect(history.id)}
+                        onClick={() => onSelect(history._id)}
                         className="max-w-44 shrink-0 truncate rounded-full border border-gray-200 bg-white/80 px-3 py-1.5 text-xs font-medium text-gray-600 shadow-sm transition hover:border-emerald-200 hover:bg-emerald-50 hover:text-emerald-500"
                     >
                         {history.prompt}

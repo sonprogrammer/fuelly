@@ -51,3 +51,10 @@ export interface AiSearchRes {
     description: string
     foods: AiFood[]
 }
+
+export interface AiSearchHistory{
+    _id: string
+    prompt: string
+    answer: AiSearchRes
+    createdAt: string
+}

@@ -7,19 +7,20 @@ import { SearchInputSection } from "@/app/components/search-page/search-input-se
 import { SearchLoading } from "@/app/components/search-page/search-loading";
 import { SearchResultSection } from "@/app/components/search-page/search-result-section";
 import SearchGuide from "@/app/components/SearchGuide";
+import { useDeleteUserAiHistory } from "@/hooks/useDeleteUserAiHistory";
 import useGetSavedFood from "@/hooks/useGetSavedFood";
+import { useGetUserAiHistory } from "@/hooks/useGetUserAiHistory";
 import usePostAddCustomFood from "@/hooks/usePostAddCustomFood";
 import usePostAiFood from "@/hooks/usePostAiFood";
 import usePostAiSearch from "@/hooks/usePostAiSearch";
 import usePostFoodToDailyMeal from "@/hooks/usePostFoodToDailyMeal";
+import { usePostUserAiHistory } from "@/hooks/usePostUserAiHistory";
 import useRemainNutrition from "@/hooks/useRemainNutrition";
 import useToggleSaveFood from "@/hooks/useToggleSaveFood";
-import { useAiSearchHistoryStore } from "@/store/aiSearchHistoryStore";
 import { useUserStore } from "@/store/userStore";
 import { Food } from "@/types/food";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useShallow } from "zustand/react/shallow";
 
 
 export function AISearchSection() {
@@ -41,12 +42,17 @@ export function AISearchSection() {
 
     // *ai 응답 요청 훅 
     const { mutateAsync: aiSearch, data: result, isPending: isAnalyzing, } = usePostAiSearch()
-    const { histories, addHistory } = useAiSearchHistoryStore(useShallow(state => ({
-        histories: state.histories,
-        addHistory: state.addHistory
-    })))
 
-    const selectedHistory = histories.find(item => item.id === selectedHistoryId)
+    // *ai search history
+    const { data: searchHistory = [], isPending: isHistoryLoading } = useGetUserAiHistory(user?._id)
+
+    // * upload ai search history
+    const { mutate: postHistory } = usePostUserAiHistory(user?._id)
+
+    //* delte ai search history
+    const { mutate: deleteHistory, isPending: deletingHistory } = useDeleteUserAiHistory(user?._id)
+
+    const selectedHistory = searchHistory.find(item => item._id === selectedHistoryId)
     const displayRes = selectedHistory?.answer ?? result
 
 
@@ -82,12 +88,7 @@ export function AISearchSection() {
 
         try {
             const answer = await aiSearch({ prompt, remain })
-            addHistory({
-                id: crypto.randomUUID(),
-                prompt,
-                answer,
-                createdAt: new Date().toISOString()
-            })
+            postHistory({ prompt, answer })
 
             setSelectedHistoryId(null)
 
@@ -137,8 +138,12 @@ export function AISearchSection() {
         <>
             <div className=" flex justify-end">
                 <AiSearchHistoryPanel
-                    onSelect={setSelectedHistoryId}
+                    histories={searchHistory}
                     open={historyOpen}
+                    isLoading={isHistoryLoading}
+                    isDeleting={deletingHistory}
+                    onSelect={setSelectedHistoryId}
+                    onDelete={deleteHistory}
                     onClose={() => setHistoryOpen(false)}
                 />
             </div>
@@ -148,11 +153,14 @@ export function AISearchSection() {
 
                 <SearchInputSection isAnalyzing={isAnalyzing} onSearch={handleSearch} />
 
-                <AiSearchHistoryChips
-                    histories={histories}
-                    onSelect={setSelectedHistoryId}
-                    onOpenAll={() => setHistoryOpen(true)}
-                />
+                {!isHistoryLoading && searchHistory.length > 0 && (
+
+                    <AiSearchHistoryChips
+                        histories={searchHistory}
+                        onSelect={setSelectedHistoryId}
+                        onOpenAll={() => setHistoryOpen(true)}
+                    />
+                )}
             </section>
 
             {!displayRes && !isAnalyzing && <SearchGuide />}
