@@ -1,6 +1,8 @@
 import { userInfoFromToken } from "@/lib/userInfoFromToken";
 import userModel from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
+import mongoose from 'mongoose'
+
 
 export async function PATCH(req: NextRequest) {
     try {
@@ -58,9 +60,11 @@ export async function GET(req: NextRequest) {
     try {
         const userInfo = await userInfoFromToken(req)
 
-        if (!userInfo) {
+        if (!userInfo?.objectId) {
             return NextResponse.json({ message: '로그인이 필요합니다' }, { status: 401 })
         }
+        
+        
         const user = await userModel.findById(userInfo.objectId)
 
 
@@ -69,7 +73,7 @@ export async function GET(req: NextRequest) {
         }
 
         return NextResponse.json({
-            meessage: 'success',
+            mssage: 'success',
             aiPreference: user.aiPreference ?? {
                 allergies: [],
                 dislikedFoods: [],
