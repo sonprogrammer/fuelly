@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Groq from "groq-sdk"
 import { userInfoFromToken } from "@/lib/userInfoFromToken";
 import { foodNutritionSystemPrompt } from "@/lib/ai/prompts/foodNutritionInfo";
+import { requestWithRetry } from "@/lib/ai/requestWithRetry";
 
 
 
@@ -26,13 +27,13 @@ export async function POST(req: NextRequest) {
     const uesrContext = `분석할 음식명 : ${foodName.trim()}`
 
     try {
-        const chatCompletion = await groq.chat.completions.create({
+        const chatCompletion = await requestWithRetry(() => groq.chat.completions.create({
             messages: [
                 { role: 'user', content: uesrContext },
-                { role: 'system', content: foodNutritionSystemPrompt}
+                { role: 'system', content: foodNutritionSystemPrompt }
             ],
             model: 'openai/gpt-oss-20b',
-            response_format: { 
+            response_format: {
                 type: 'json_schema',
                 json_schema: {
                     name: 'food_nutrition',
@@ -59,6 +60,8 @@ export async function POST(req: NextRequest) {
                 }
             }
         })
+            , { retries: 1, timeoutMs: 10000 }
+        )
 
         const data = JSON.parse(chatCompletion.choices[0].message.content || "{}")
 

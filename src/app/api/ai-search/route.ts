@@ -5,10 +5,11 @@ import userModel from '@/models/userModel';
 import { differenceInYears } from 'date-fns';
 import { userInfoContext } from '@/lib/ai/prompts/mealRecommendation';
 import { activityMap } from '@/config/activity';
-import { mealTime } from '@/utils/koreaMealTime';
+import {getMealTime}  from '@/utils/koreaMealTime';
 import { searchSystemPrompt } from '@/lib/ai/prompts/aiSearchPrompt';
 import { validateAiSearchRequest } from '@/lib/ai/validation/aiSearch';
 import { isValidAiSearchRes } from '@/lib/ai/validation/aiSearchRes';
+import { requestWithRetry } from '@/lib/ai/requestWithRetry';
 
 
 
@@ -47,8 +48,7 @@ export async function POST(req: NextRequest) {
 
         const age = differenceInYears(new Date(), new Date(user.birthDate))
 
-
-
+        const mealTime = getMealTime()
 
         const userContext = userInfoContext({
             gender: user.gender,
@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
             customRequest: user.aiPreference?.customRequest ?? ''
         })
 
-        const completion = await groq.chat.completions.create({
+        const completion = await requestWithRetry(() => groq.chat.completions.create({
             model: 'openai/gpt-oss-20b',
             messages: [
                 {
@@ -119,7 +119,9 @@ export async function POST(req: NextRequest) {
                     }
                 }
             }
-        })
+        }),{retries: 1, timeoutMs:10000})
+
+
         const rawAnswer = completion.choices[0].message?.content
         if (!rawAnswer) {
             return NextResponse.json(
