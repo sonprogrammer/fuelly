@@ -65,7 +65,7 @@ export async function DELETE(req: NextRequest) {
     try {
 
         const { deletedId } = await req.json()
-        console.log('daeteid', deletedId)
+
         const userInfo = await userInfoFromToken(req)
 
         if (!userInfo) {
