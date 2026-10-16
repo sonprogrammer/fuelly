@@ -27,7 +27,7 @@ export function MyAiSetting() {
                 <div className="flex min-w-0 items-center gap-3">
                     <div className="shrink-0">
                         <Image
-                            src="/fuellyRun.png"
+                            src="/fuelly-check.png"
                             width={40}
                             height={40}
                             alt="로고"

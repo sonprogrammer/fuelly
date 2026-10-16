@@ -4,20 +4,23 @@ import { GroupedMealData, StatsMealsSectionProps } from "@/app/components/stats-
 export function StatsMealsSection({ isPendingMeal, range, setRange, filteredData, CAL_LIMIT, PRO_LIMIT }: StatsMealsSectionProps) {
     return (
         <>
-            <section className="flex gap-3 pl-5">
-                <button
-                    className={`px-4 py-2 rounded-lg border ${range === 7 ? "bg-blue-600 text-white" : "bg-white"} cursor-pointer`}
-                    onClick={() => setRange(7)}
-                >
-                    최근 7일
-                </button>
-
-                <button
-                    className={`px-4 py-2 rounded-lg border ${range === 30 ? "bg-blue-600 text-white" : "bg-white"} cursor-pointer`}
-                    onClick={() => setRange(30)}
-                >
-                    최근 30일
-                </button>
+            <section className="px-5">
+                <div className="inline-flex gap-1 rounded-2xl bg-emerald-50 p-1.5">
+                    {([7, 30] as const).map(days => (
+                        <button
+                            key={days}
+                            type="button"
+                            aria-pressed={range === days}
+                            onClick={() => setRange(days)}
+                            className={`cursor-pointer rounded-xl px-5 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 ${range === days
+                                    ? "bg-emerald-500 text-white shadow-sm"
+                                    : "text-emerald-700 hover:bg-emerald-100"
+                                }`}
+                        >
+                            최근 {days}일
+                        </button>
+                    ))}
+                </div>
             </section>
 
 

@@ -89,7 +89,7 @@ axiosInstance.interceptors.response.use(
             useUserStore.getState().clearUser()
             if (typeof window !== 'undefined') {
                 toast.error('세션 만료 재로그인하세요')
-                window.location.href = '/login'
+                window.location.href = '/'
             }
             return Promise.reject(err)
         } finally {
