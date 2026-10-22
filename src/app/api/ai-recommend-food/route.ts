@@ -20,9 +20,14 @@ const categoryMap = {
 
 type RecommendMealCategory = keyof typeof categoryMap
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
-
 export async function POST(req: NextRequest) {
+
+    const apiKey = process.env.GROQ_API_KEY
+    if (!apiKey) {
+        return NextResponse.json({ message: "AI 키확인" }, { status: 500 })
+    }
+    const groq = new Groq({ apiKey })
+    
     try {
         const data = await req.json()
         const { remain, category } = data
@@ -90,7 +95,7 @@ export async function POST(req: NextRequest) {
                 {
                     role: 'system',
                     content: mealRecommendationSystemPrompt
-                },{
+                }, {
                     role: 'user',
                     content: userContext
                 }
@@ -133,7 +138,7 @@ export async function POST(req: NextRequest) {
                     }
                 }
             }
-        }),{retries: 1, timeoutMs: 10000})
+        }), { retries: 1, timeoutMs: 10000 })
 
         const rawAnswer = completion.choices[0].message?.content
         if (!rawAnswer) {

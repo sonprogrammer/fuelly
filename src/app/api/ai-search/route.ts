@@ -19,9 +19,15 @@ const goalMap: Record<string, string> = {
     'maintain': '현재 체중 유지 및 건강 관리'
 };
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
 export async function POST(req: NextRequest) {
+
+    const apiKey = process.env.GROQ_API_KEY
+        if (!apiKey) {
+            return NextResponse.json({ message: "AI 키확인" },{ status: 500 })
+        }
+        const groq = new Groq({ apiKey })
+        
     try {
         const body = await req.json()
 

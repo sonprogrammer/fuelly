@@ -1,12 +1,5 @@
 import mongoose from "mongoose";
 
-
-const MONGODB_URI = process.env.MONGODB_URI
-
-if(!MONGODB_URI){
-    throw new Error('there is no mongodb uri')
-}
-
 const cached = global.mongoose ?? {
     conn: null,
     promise: null
@@ -22,9 +15,11 @@ async function dbConnect() {
     }
 
     if(!cached.promise){
-        cached.promise = mongoose
-            .connect(MONGODB_URI!) 
-            .then((mongoose) => mongoose)
+        const uri = process.env.MONGODB_URI
+        if (!uri) {
+            throw new Error('there is no mongodb uri')
+        }
+        cached.promise = mongoose.connect(uri).then((mongoose) => mongoose)
     }
 
     cached.conn = await cached.promise
