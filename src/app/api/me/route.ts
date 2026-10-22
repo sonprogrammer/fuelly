@@ -1,3 +1,4 @@
+import dbConnect from "@/lib/mongoose";
 import { userInfoFromToken } from "@/lib/userInfoFromToken";
 import userModel from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
@@ -5,6 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest){
     try {
         const payload = await userInfoFromToken(req)
+        await dbConnect()
 
         if(!payload?.objectId){
             return NextResponse.json({message:'인증되지 않은 사용자입니다.'}, {status: 401})

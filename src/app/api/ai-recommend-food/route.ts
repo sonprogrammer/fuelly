@@ -7,6 +7,7 @@ import { mealRecommendationSystemPrompt, userInfoContext } from '@/lib/ai/prompt
 import { activityMap } from '@/config/activity'
 import { getMealTime } from '@/utils/koreaMealTime'
 import { requestWithRetry } from '@/lib/ai/requestWithRetry'
+import dbConnect from '@/lib/mongoose'
 
 
 
@@ -27,6 +28,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ message: "AI 키확인" }, { status: 500 })
     }
     const groq = new Groq({ apiKey })
+    await dbConnect()
     
     try {
         const data = await req.json()
