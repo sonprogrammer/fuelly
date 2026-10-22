@@ -1,7 +1,7 @@
 import { userInfoFromToken } from "@/lib/userInfoFromToken";
 import userModel from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
-import mongoose from 'mongoose'
+
 
 
 export async function PATCH(req: NextRequest) {

@@ -30,7 +30,7 @@ export async function POST(req: NextRequest){
         user.birthDate = birthDate
         
         await user.save()
-        
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password:_password, ...userWithoutSensitive } = user.toObject()
 
 

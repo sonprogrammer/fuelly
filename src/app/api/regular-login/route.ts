@@ -23,6 +23,7 @@ export async function POST(req: NextRequest) {
         if (!isMatchPW) {
             return NextResponse.json({ success: false, message: '비밀번호를 확인해주세요' })
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { password:_password, ...userWithoutSensitive } = user.toObject()
 
 

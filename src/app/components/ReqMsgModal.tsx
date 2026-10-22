@@ -14,7 +14,7 @@ export function ReqMsgModal({onClose} : {onClose: () => void}) {
     const handleSubmitToAi = () => {
         if (!prompt) return toast('응원받고 싶은 내용을 적어주세요')
         mutate(prompt, {
-            onSuccess: (res) => {
+            onSuccess: () => {
                 onClose()
             }
         })
