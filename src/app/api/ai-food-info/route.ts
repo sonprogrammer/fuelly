@@ -6,9 +6,14 @@ import { requestWithRetry } from "@/lib/ai/requestWithRetry";
 
 
 
-const groq = new Groq({ apiKey: process.env.GROQ_API_KEY })
 
 export async function POST(req: NextRequest) {
+    const apiKey = process.env.GROQ_API_KEY
+    if (!apiKey) {
+        return NextResponse.json({ message: "AI 키확인" },{ status: 500 })
+    }
+    const groq = new Groq({ apiKey })
+    
     const { foodName } = await req.json()
 
     const userInfo = await userInfoFromToken(req)
