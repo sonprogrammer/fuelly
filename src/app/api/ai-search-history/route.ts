@@ -1,3 +1,4 @@
+import dbConnect from "@/lib/mongoose";
 import { userInfoFromToken } from "@/lib/userInfoFromToken";
 import UserAiSearchHistoryModel from "@/models/userAiSearchHistory";
 import userModel from "@/models/userModel";
@@ -10,6 +11,7 @@ export async function GET(req: NextRequest) {
         if (!userInfo) {
             return NextResponse.json({ message: '로그인이 필요합니다' }, { status: 401 })
         }
+        await dbConnect()
 
         const user = await userModel.findById(userInfo.objectId)
 

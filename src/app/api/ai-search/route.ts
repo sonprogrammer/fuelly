@@ -10,6 +10,7 @@ import { searchSystemPrompt } from '@/lib/ai/prompts/aiSearchPrompt';
 import { validateAiSearchRequest } from '@/lib/ai/validation/aiSearch';
 import { isValidAiSearchRes } from '@/lib/ai/validation/aiSearchRes';
 import { requestWithRetry } from '@/lib/ai/requestWithRetry';
+import dbConnect from '@/lib/mongoose';
 
 
 
@@ -30,6 +31,7 @@ export async function POST(req: NextRequest) {
         
     try {
         const body = await req.json()
+        await dbConnect()
 
         
         const userInfo = await userInfoFromToken(req)

@@ -1,3 +1,4 @@
+import dbConnect from "@/lib/mongoose";
 import { userInfoFromToken } from "@/lib/userInfoFromToken";
 import userModel from "@/models/userModel";
 import { NextRequest, NextResponse } from "next/server";
@@ -13,6 +14,7 @@ export async function PATCH(req: NextRequest) {
         }
 
         const data = await req.json()
+        await dbConnect()
 
         const updateData: Record<string, unknown> = {}
 
