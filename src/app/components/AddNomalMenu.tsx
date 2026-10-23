@@ -9,16 +9,17 @@ import usePostFoodToDailyMeal from '@/hooks/usePostFoodToDailyMeal'
 import useToggleSaveFood from '@/hooks/useToggleSaveFood'
 import useGetSavedFood from '@/hooks/useGetSavedFood'
 import usePostAddCustomFood from '@/hooks/usePostAddCustomFood'
-import { Food } from '@/types/food'
+import { Food, FoodInfo } from '@/types/food'
 import { toast } from 'react-hot-toast'
 import { useUserStore } from '@/store/userStore';
 import { useDeleteMyFoods } from '@/hooks/useDeleteMyFoods';
 import { DeleteConfimModal } from '@/app/components/DeleteConfimModal';
+import { AddDailyMealReq } from '@/types/dailyMeal';
 
 interface SavedFood {
     _id: string;
     savedUser: string;
-    foodId: Food
+    food: Food
 }
 
 export default function AddNomalMenu() {
@@ -67,7 +68,9 @@ export default function AddNomalMenu() {
     }
 
     const savedFoodIdSet = new Set(
-        savedFoods?.map((item: SavedFood) => item.foodId._id)
+        (savedFoods ?? [])
+        .map((item: SavedFood) => item.food._id)
+        .filter((foodId: string): foodId is string => typeof foodId === 'string')
     )
 
 
@@ -83,6 +86,7 @@ export default function AddNomalMenu() {
     // !이름은 세이브지만 토글 기증임 좋아요 취소 등록 둘다 가능
     const handleSaveToggle = (foodId: string) => {
         const isCurrentlySaved = savedFoodIdSet.has(foodId)
+        console.log('saveding', foodId)
         toggleSave(foodId, {
             onSuccess: () => {
                 if (isCurrentlySaved) {
@@ -94,7 +98,7 @@ export default function AddNomalMenu() {
         })
     }
 
-    const handleSaveNomal = (food: Food) => {
+    const handleSaveNomal = (food: FoodInfo) => {
         saveNomalFood(food, {
             onSuccess: () => {
                 handleModalClose()
@@ -103,7 +107,7 @@ export default function AddNomalMenu() {
         });
     };
 
-    const handleSaveDaily = (food: Food) => {
+    const handleSaveDaily = (food: AddDailyMealReq) => {
         saveDailyFoods(food, {
             onSuccess: () => {
                 handleModalClose()
@@ -202,18 +206,20 @@ export default function AddNomalMenu() {
                                 <p className="text-sm text-gray-600">검색 결과가 없습니다</p>
                             </div>
                         ) : (
-                            filteredFoods?.map((food: Food) => (
+                            filteredFoods?.map((food: Food) => {
+                                const foodId = food._id
+                                return (
                                 <MenuItem
-                                    food={food}
+                                    key={foodId ?? food.name}
+                                    item={food}
                                     type="add"
-                                    key={food._id}
-                                    add={handleSaveDaily}
-                                    handleSaveToggle={handleSaveToggle}
-                                    isSaved={savedFoodIdSet.has(food._id!)}
+                                    add={() =>handleSaveDaily(food)}
+                                    handleSaveToggle={() => handleSaveToggle(foodId)}
+                                    isSaved={savedFoodIdSet.has(food._id)}
                                     isMine={isMine(food.createdBy ?? '')}
                                     foodDelete={() => setTargetFood(food)}
                                 />
-                            ))
+                            )})
                         )}
                     </div>
                 </div>

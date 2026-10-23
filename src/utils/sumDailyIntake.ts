@@ -1,6 +1,7 @@
-import {Food} from '@/types/food'
+import { DailyMealItem } from '@/types/dailyMeal'
 
-export const sumDailyIntake = (dailyMeal: Food[]) => {
+
+export const sumDailyIntake = (dailyMeal: DailyMealItem[]) => {
     if(!dailyMeal || dailyMeal.length === 0){
         return {
             dailyCalorie: 0,

@@ -1,6 +1,6 @@
 'use client'
 
-import { SavedFood } from "@/app/components/save-page/types";
+
 import { AiSearchHistoryChips } from "@/app/components/search-page/history-search-chips";
 import { AiSearchHistoryPanel } from "@/app/components/search-page/history-search-panel";
 import { SearchInputSection } from "@/app/components/search-page/search-input-section";
@@ -18,7 +18,8 @@ import { usePostUserAiHistory } from "@/hooks/usePostUserAiHistory";
 import useRemainNutrition from "@/hooks/useRemainNutrition";
 import useToggleSaveFood from "@/hooks/useToggleSaveFood";
 import { useUserStore } from "@/store/userStore";
-import { Food } from "@/types/food";
+import { AiFood } from "@/types/ai";
+import { SavedFood } from "@/types/food";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
@@ -57,12 +58,16 @@ export function AISearchSection() {
 
 
 
-    const savedFoodMap = new Map<string, string>(
-        savedFoods?.map((item: SavedFood) => [
-            item.foodId.name,
-            item.foodId._id
-        ])
-    )
+    const findSavedFood = (food: AiFood) => {
+        return savedFoods?.find((item: SavedFood) => {
+            const savedFood = item.food
+            return savedFood != null &&
+                savedFood.name === food.name &&
+                savedFood.unit === food.unit &&
+                savedFood.calorie === food.calorie &&
+                savedFood.protein === food.protein
+        })
+    }
 
 
     const handleSearch = async (userPrompt: string): Promise<boolean> => {
@@ -100,38 +105,42 @@ export function AISearchSection() {
 
     }
 
-    // !여기서 받는 타입에 따라 오늘 식단이나 일반 음식에 저장하기
-    const handleSaveToDaily = (type: string, food: Food) => {
-        if (type === 'liked') {
-            const savedFoodId = savedFoodMap.get(food?.name)
-
-            if (!savedFoodId) {
-                saveAiFood({
-                    name: food.name,
-                    calorie: food.calorie,
-                    protein: food.protein,
-                    unit: food.unit
-                }, {
-                    onSuccess: () => toast.success('즐겨찾기에 저장되었습니다!')
-                })
-                return
-            }
-            toggleSave(savedFoodId, {
-                onSuccess: () => toast.success('즐겨찾기에서 삭제되었습니다!')
-            })
-        } else if (type === 'daily') {
-            saveDailyFoods(food, {
+    const handleToggleSave = (food: AiFood) => {
+        const savedFood = findSavedFood(food)?.food
+        if (savedFood) {
+            toggleSave(savedFood._id, {
                 onSuccess: () => {
-                    toast.success(`${food.name}이(가) 식단에 추가되었습니다!`)
+                    toast.success('즐겨찾기에서 삭제되었습니다!')
                 }
             })
-        } else if (type === 'nomal') {
-            saveNomalFood(food, {
-                onSuccess: () => {
-                    toast.success(`${food.name}이(가) 새로운 음식이 등록되었습니다!`)
-                }
-            })
+            return
         }
+        saveAiFood(food, {
+            onSuccess: () => {
+                toast.success('즐겨찾기에 저장되었습니다!')
+            }
+        })
+    }
+
+    const handleAddToDaily = (food: AiFood) => {
+        saveDailyFoods({
+            name: food.name,
+            calorie: food.calorie,
+            protein: food.protein,
+            unit: food.unit
+        }, {
+            onSuccess: () => {
+                toast.success(`${food.name}이(가) 식단에 추가되었습니다!`)
+            }
+        })
+    }
+
+    const handleSaveNomal = (food: AiFood) => {
+        saveNomalFood(food, {
+            onSuccess: () => {
+                toast.success(`${food.name}이(가) 새로운 음식으로 등록되었습니다!`)
+            }
+        })
     }
 
     return (
@@ -166,7 +175,12 @@ export function AISearchSection() {
             {!displayRes && !isAnalyzing && <SearchGuide />}
             {isAnalyzing && <SearchLoading />}
             {displayRes && !isAnalyzing && (
-                <SearchResultSection addToDaily={handleSaveToDaily} result={displayRes} />
+                <SearchResultSection
+                    onToggleSave={handleToggleSave}
+                    onAddToDaily={handleAddToDaily}
+                    onSaveNomal={handleSaveNomal}
+                    isFoodSaved={food => findSavedFood(food) !== undefined}
+                    result={displayRes} />
             )}
         </>
     )

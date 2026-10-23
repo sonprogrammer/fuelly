@@ -4,25 +4,30 @@ import dbConnect from "@/lib/mongoose";
 import dailyMeal from '@/models/dailyModel'
 import { userInfoFromToken } from "@/lib/userInfoFromToken"
 import dayjs from "@/lib/dayjs";
+import { addDailyReqSchema } from "@/schemas/food/addDailyMeal";
+
 
 
 export async function POST(req: NextRequest) {
     try {
 
-        await dbConnect()
         const userInfo = await userInfoFromToken(req)
-        const food = await req.json()
-
-
         if (!userInfo) {
             return NextResponse.json({ message: 'user token invalid' }, { status: 401 })
         }
+        const body: unknown = await req.json()
 
-        if (!food) {
-            return NextResponse.json({ message: 'info is not proviede' }, { status: 400 })
+        const res = addDailyReqSchema.safeParse(body)
+
+        if(!res.success){
+            return NextResponse.json({message: res.error.issues[0].message ?? '음식데이터가 필요합니다'},{status: 400})
         }
 
+        const food = res.data
+
         const today = dayjs().tz().format('YYYY-MM-DD')
+
+        await dbConnect()
 
         let todayMeal = await dailyMeal.findOne({
             userId: userInfo.objectId,
@@ -31,7 +36,7 @@ export async function POST(req: NextRequest) {
 
         if (todayMeal) {
             todayMeal.meals.push({
-                foodId: food._id,
+                foodId: food.foodId ?? null, //음식문서에 저장이 안된 음식도 있음
                 name: food.name,
                 protein: food.protein,
                 calorie: food.calorie,
@@ -44,7 +49,7 @@ export async function POST(req: NextRequest) {
                 userId:userInfo.objectId,
                 date: today,
                 meals:[{
-                    foodId: food._id,
+                    foodId: food.foodId ?? null,
                     name: food.name,
                     protein: food.protein,
                     calorie: food.calorie,

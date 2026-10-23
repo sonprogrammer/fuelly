@@ -3,18 +3,17 @@
 import MenuItem from './MenuItem'
 import useGetDailyMeal from '@/hooks/useGetDailyMeal'
 import useDeleteDailyFood from '@/hooks/useDeleteDailyFood'
-import { Food, GroupFoodsArrayType } from '@/types/food'
 import { useUserStore } from '@/store/userStore'
 import useRemainNutrition from '@/hooks/useRemainNutrition'
 import { ChevronDown, Loader2, UtensilsCrossed, Share2 } from 'lucide-react'
 import { useState } from 'react'
-import { useGetFrequentFoods } from '@/hooks/useGetFrequentFoods'
+import { FrequentFood, useGetFrequentFoods } from '@/hooks/useGetFrequentFoods'
 import usePostFoodToDailyMeal from '@/hooks/usePostFoodToDailyMeal'
 import toast from 'react-hot-toast'
 import { FrequentFoodList } from '@/app/components/FrequentFoodList'
 import { useCreateSharedMeal } from '@/hooks/useCreateSharedMeal'
 import { shareDailyMeal } from '@/lib/shareDailyMeal'
-
+import { DailyMealItem, GroupMealsArrayType } from '@/types/dailyMeal'
 
 
 export default function TodayMenuComponent() {
@@ -25,9 +24,9 @@ export default function TodayMenuComponent() {
 
     const { mutate: addToDaily } = usePostFoodToDailyMeal()
     const { mutate: deleteFood } = useDeleteDailyFood()
-    const foods = dailyFoods?.meals ?? []
+    const dailyMeals = dailyFoods?.meals ?? []
 
-    const groupFoods = foods.reduce((acc: Record<string, Food & { quantity: number }>, cur: Food) => {
+    const groupMeals = dailyMeals.reduce((acc: Record<string, DailyMealItem & { quantity: number }>, cur: DailyMealItem) => {
         const key = cur.foodId || cur.name
 
         if (acc[key]) {
@@ -45,11 +44,17 @@ export default function TodayMenuComponent() {
     const { data: frequentFoods = [], isPending: isFrequentFoodsPending } = useGetFrequentFoods()
 
 
-    const grouopFoodsArray = Object.values(groupFoods) as GroupFoodsArrayType[]
+    // console.log('dailyfoods', dailyFoods)
+    // console.log('dailymeals', dailyMeals)
+    // console.log('gruopMelas', groupMeals)
+
+    // console.log('frequentFoods', frequentFoods)
+    const grouopMealsArray = Object.values(groupMeals) as GroupMealsArrayType[]
+    // console.log('grouopMealsArray', grouopMealsArray)
 
     const handleShareMeal = () => {
         shareDailyMeal({
-            foods: grouopFoodsArray,
+            foods: grouopMealsArray,
             totalCalorie: consumed.dailyCalorie,
             totalProtein: consumed.dailyProtein,
             createSharedMeal,
@@ -57,10 +62,11 @@ export default function TodayMenuComponent() {
         })
     }
 
-    const handleDeleteBtnClick = (food: Food) => {
-        deleteFood(food, {
+    // 식단에서 음식 삭제
+    const handleDeleteBtnClick = (meal: DailyMealItem) => {
+        deleteFood(meal._id, {
             onSuccess: () => {
-                toast.success(`${food.name} 삭제`)
+                toast.success(`${meal.name} 삭제`)
             },
             onError: () => {
                 toast.error('다시 시도해주세요')
@@ -69,9 +75,16 @@ export default function TodayMenuComponent() {
         )
     }
 
-    const handleAddToToday = (food: Food) => {
-        addToDaily(food, {
-            onSuccess: () => {
+    // 많이 먹음 음식 추가니깐
+    const handleAddToToday = (food: FrequentFood) => {
+        addToDaily({
+            foodId: food.foodId ?? undefined,
+            name: food.name,
+            calorie: food.calorie,
+            protein: food.protein,
+            unit: food.unit
+        }, {
+        onSuccess: () => {
                 toast.success(`${food.name} 등록`)
             },
             onError: () => {
@@ -90,7 +103,7 @@ export default function TodayMenuComponent() {
                     </p>
                 </div>
 
-                {foods.length > 0 && (
+                {dailyMeals.length > 0 && (
                     <button
                         type="button"
                         onClick={handleShareMeal}
@@ -131,7 +144,7 @@ export default function TodayMenuComponent() {
                     <div className='w-full flex justify-center py-10'>
                         <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
                     </div>
-                ) : foods.length === 0 ? (
+                ) : dailyMeals.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-6 text-center">
                         <UtensilsCrossed className="w-10 h-10 text-gray-700 mb-3" />
                         <p className="text-sm text-gray-500">아직 기록된 음식이 없어요</p>
@@ -145,17 +158,16 @@ export default function TodayMenuComponent() {
                         >
                             <div className="flex items-center gap-2">
                                 <span className="text-sm font-medium text-gray-300">목록 보기</span>
-                                <span className="text-xs bg-gray-700 text-gray-400 rounded-full px-2 py-0.5">{foods.length}개</span>
+                                <span className="text-xs bg-gray-700 text-gray-400 rounded-full px-2 py-0.5">{dailyMeals.length}개</span>
                             </div>
                             <ChevronDown className={`w-4 h-4 text-gray-500 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
                         </button>
                         {isOpen && (
                             <div className="flex flex-col divide-y divide-gray-800 max-h-80 overflow-y-auto">
-                                {grouopFoodsArray.map((food: GroupFoodsArrayType) => (
+                                {grouopMealsArray.map((meal: GroupMealsArrayType) => (
 
-
-                                    <div key={food._id} >
-                                        <MenuItem food={food} type='delete' onDelete={handleDeleteBtnClick} count={food.quantity} />
+                                    <div key={meal._id} >
+                                        <MenuItem item={meal} type='delete' dailyFoodDelete={() =>handleDeleteBtnClick(meal)} count={meal.quantity} />
                                     </div>
 
                                 ))}

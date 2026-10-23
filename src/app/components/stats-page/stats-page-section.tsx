@@ -6,6 +6,7 @@ import { MealData } from "@/app/components/stats-page/types";
 import useGetUserAllMeal from "@/hooks/useGetUserAllMeal";
 import useRemainNutrition from "@/hooks/useRemainNutrition";
 import { useUserStore } from "@/store/userStore";
+import { DailyMealItem } from "@/types/dailyMeal";
 import { Food } from "@/types/food";
 import { useState } from "react";
 
@@ -21,8 +22,8 @@ export function StatsPageSection() {
 
     const groupFoods = (foodList: Food[]) => {
     
-            const grouped = foodList.reduce((acc: Record<string, Food & { quantity: number }>, cur: Food) => {
-                const key = cur.foodId || cur.name
+            const grouped = foodList.reduce((acc: Record<string, DailyMealItem & { quantity: number }>, cur: DailyMealItem) => {
+                const key = cur._id || cur.name
                 if (acc[key]) {
                     acc[key].quantity += 1
                 } else {

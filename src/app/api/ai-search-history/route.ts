@@ -2,7 +2,9 @@ import dbConnect from "@/lib/mongoose";
 import { userInfoFromToken } from "@/lib/userInfoFromToken";
 import UserAiSearchHistoryModel from "@/models/userAiSearchHistory";
 import userModel from "@/models/userModel";
+import { createAiSearchHistoryReqSchema, deleteAiSearchHistoryReqSchema } from "@/schemas/ai/aiSearchHistory/aiSearchHistoryReq";
 import { NextRequest, NextResponse } from "next/server";
+
 
 export async function GET(req: NextRequest) {
     try {
@@ -31,14 +33,22 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
     try {
-        const { answer, prompt } = await req.json()
-
         const userInfo = await userInfoFromToken(req)
 
         if (!userInfo) {
             return NextResponse.json({ message: '로그인이 필요합니다' }, { status: 401 })
         }
+        
+        const body: unknown = await req.json()
+        const res = createAiSearchHistoryReqSchema.safeParse(body)
 
+        if(!res.success){
+            return NextResponse.json({message: res.error.issues[0].message?? '검색 기록데이터가 올바르지 않습니다'},{status: 400})
+        }
+        
+        const { answer, prompt } = res.data
+        
+        await dbConnect()
         const user = await userModel.findById(userInfo.objectId)
 
         if (!user) {
@@ -65,15 +75,24 @@ export async function POST(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
     try {
-
-        const { deletedId } = await req.json()
-
         const userInfo = await userInfoFromToken(req)
 
         if (!userInfo) {
             return NextResponse.json({ message: '로그인이 필요합니다' }, { status: 401 })
         }
 
+        const body: unknown = await req.json()
+
+
+        const res = deleteAiSearchHistoryReqSchema.safeParse(body)
+
+        if(!res.success){
+            return NextResponse.json({message: res.error.issues[0].message??'검색 기록 id가 올바르지 않습니다'},{status: 400})
+        }
+
+        const { deletedId} = res.data
+        
+        await dbConnect()
         const user = await userModel.findById(userInfo.objectId)
 
 

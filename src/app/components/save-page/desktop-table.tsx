@@ -1,4 +1,5 @@
-import { EachVersionProps, SavedFood } from "@/app/components/save-page/types";
+import { EachVersionProps } from "@/app/components/save-page/types";
+import { SavedFood } from "@/types/food";
 import { Calendar, Trash2 } from "lucide-react";
 
 
@@ -19,14 +20,14 @@ export function DesktopVersion({savedFoods, addFood, deleteFood}: EachVersionPro
                     </thead>
                     <tbody className="divide-y divide-gray-800">
                         {savedFoods?.map((f: SavedFood) => (
-                            <tr key={f.foodId._id} className="hover:bg-gray-800/50 transition-colors">
-                                <td className="px-4 py-3 font-medium text-white">{f.foodId.name}</td>
-                                <td className="px-4 py-3 text-gray-600 text-xs">{f.foodId.unit}</td>
-                                <td className="px-4 py-3 text-center text-orange-400 font-medium">{f.foodId.calorie} kcal</td>
-                                <td className="px-4 py-3 text-center text-emerald-400 font-medium">{f.foodId.protein}g</td>
+                            <tr key={f._id} className="hover:bg-gray-800/50 transition-colors">
+                                <td className="px-4 py-3 font-medium text-white">{f.food.name}</td>
+                                <td className="px-4 py-3 text-gray-600 text-xs">{f.food.unit}</td>
+                                <td className="px-4 py-3 text-center text-orange-400 font-medium">{f.food.calorie} kcal</td>
+                                <td className="px-4 py-3 text-center text-emerald-400 font-medium">{f.food.protein}g</td>
                                 <td className="px-4 py-3 text-center">
                                     <button
-                                        onClick={() => addFood(f.foodId)}
+                                        onClick={() => addFood(f.food)}
                                         aria-label='식단추가'
                                         className="p-2 rounded-lg hover:bg-blue-500/10 transition-colors cursor-pointer inline-flex"
                                     >
@@ -35,7 +36,7 @@ export function DesktopVersion({savedFoods, addFood, deleteFood}: EachVersionPro
                                 </td>
                                 <td className="px-4 py-3 text-center">
                                     <button
-                                        onClick={() => deleteFood(f.foodId._id!)}
+                                        onClick={() => deleteFood(f.food._id)}
                                         aria-label='저장삭제'
                                         className="p-2 rounded-lg hover:bg-red-500/10 transition-colors cursor-pointer inline-flex"
                                     >

@@ -3,24 +3,30 @@ import dbConnect from "@/lib/mongoose";
 import dailyMeal from '@/models/dailyModel'
 import { userInfoFromToken } from "@/lib/userInfoFromToken"
 import dayjs from "@/lib/dayjs";
+import { deleteFoodSchema } from "@/schemas/food/deleteFood";
 
 
 export async function DELETE(req: NextRequest){
     try{
-        await dbConnect()
         const userInfo = await userInfoFromToken(req)
-        const food = await req.json()
-
         if(!userInfo){
             return NextResponse.json({message:'user token is required'}, {status: 401})
         }
+        const body:unknown = await req.json()
 
-        if (!food) {
-            return NextResponse.json({ message: 'info is not proviede' }, { status: 400 })
+        const res = deleteFoodSchema.safeParse(body)
+
+        if(!res.success){
+            return NextResponse.json({message: res.error.issues[0].message ?? '삭제할 식단 정보가 올바르지 않습니다'}, { status: 400})
         }
 
-        const today = dayjs().format('YYYY-MM-DD')
-
+        const meal = res.data
+        
+    
+        
+        const today = dayjs().tz().format('YYYY-MM-DD')
+        
+        await dbConnect()
         const todayMeal = await dailyMeal.findOne({
             date: today,
             userId: userInfo.objectId
@@ -30,7 +36,7 @@ export async function DELETE(req: NextRequest){
             return NextResponse.json({ message: 'not found' }, { status: 404 })
         }
 
-        const targetFood = todayMeal.meals.id(food._id)
+        const targetFood = todayMeal.meals.id(meal._id)
         if(!targetFood){
             return NextResponse.json({ message: 'food not found' }, { status: 404 })
         }

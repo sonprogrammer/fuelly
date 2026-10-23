@@ -2,15 +2,16 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from 'react'
-import { Food } from '@/types/food'
+import { FoodInfo } from '@/types/food'
 import { toast } from 'react-hot-toast'
 import { useAiFoodInfo } from "@/hooks/usePostAiFoodInfo";
+import { AddDailyMealReq } from "@/types/dailyMeal";
 interface ModalProps {
     open: boolean,
     onClose: () => void
-    handleSaveNomal: (food: Food) => void
+    handleSaveNomal: (food: FoodInfo) => void
     addNomalFoodPending: boolean
-    handleSaveDaily: (food: Food) => void
+    handleSaveDaily: (food: AddDailyMealReq) => void
     dailyPending: boolean
 }
 
@@ -67,6 +68,7 @@ export default function AddCustomMenuModal({ open, onClose, handleSaveDaily, dai
 
 
 
+    // *새로 추가하는거니깐 기존 음식 문서에 없음
     const handleDailyFoodSubmit = () => {
         if (!foodName || !calorie || !protein || !unit) {
             toast.error('작성 내용을 확인해주세요')

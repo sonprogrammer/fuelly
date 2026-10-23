@@ -14,17 +14,14 @@ import useGetSavedFood from '@/hooks/useGetSavedFood'
 import usePostAiFood from '@/hooks/usePostAiFood'
 import { Heart } from 'lucide-react'
 import { toast } from 'react-hot-toast'
-import { Food } from '@/types/food'
+import { SavedFood } from '@/types/food'
 import { useState } from 'react';
 import { useAiRecommendStore } from '@/store/aiRecommendMealsStore';
 import { useShallow } from 'zustand/react/shallow';
 import { SubmitBtn } from '@/app/components/submit-button';
 
-interface SavedFood {
-    _id: string
-    foodId: Food
-    savedUser: string
-}
+
+
 
 const categories = [
     { label: '전체', value: 'all' },
@@ -50,8 +47,8 @@ export default function AiMenu() {
 
     const savedFoodMap = new Map<string, string>(
         savedFoods?.map((item: SavedFood) => [
-            item.foodId.name,
-            item.foodId._id
+            item.food.name,
+            item.food._id
         ])
     )
 
@@ -100,6 +97,7 @@ export default function AiMenu() {
         })
     }
 
+    // *기존 음식 문서에 없는거임
     const handleAddDaily = (food: AiRecommendResultFood) => {
         dailyMutate({
             name: food.name,

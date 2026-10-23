@@ -1,31 +1,32 @@
 import dbConnect from "@/lib/mongoose";
 import { userInfoFromToken } from "@/lib/userInfoFromToken";
 import userModel from "@/models/userModel";
+import { agreementReqSchema } from "@/schemas/user/userInfo/agreementReq";
 import { NextRequest, NextResponse } from "next/server";
 
-interface AgreementBody {
-    termsOfService: boolean;
-    privacyPolicy: boolean;
-    serviceImprovement: boolean;
-}
 
 export async function PATCH(req: NextRequest) {
     try {
-        await dbConnect()
         const userInfo = await userInfoFromToken(req)
-
+        
         if (!userInfo) {
             return NextResponse.json({ message: 'user token required' }, { status: 401 })
         }
-
-        const { termsOfService, privacyPolicy, serviceImprovement }: AgreementBody = await req.json()
-
-        if (!termsOfService || !privacyPolicy) {
-            return NextResponse.json({ success: false, message: '필수 약관 동의해주세요' }, { status: 400 })
+        
+        const body: unknown = await req.json()
+        
+        const res = agreementReqSchema.safeParse(body)
+        
+        if(!res.success){
+            return NextResponse.json({success: false, message: res.error.issues[0].message ?? '약관 목록이 올바르지 않습니다'},{status: 400} )
         }
-
+        
+        const { serviceImprovement} = res.data
+        
+        
         const now = new Date()
         
+        await dbConnect()
         const user = await userModel.findByIdAndUpdate(
             userInfo.objectId,
             {

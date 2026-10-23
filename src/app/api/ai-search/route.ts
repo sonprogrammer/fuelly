@@ -7,7 +7,7 @@ import { userInfoContext } from '@/lib/ai/prompts/mealRecommendation';
 import { activityMap } from '@/config/activity';
 import {getMealTime}  from '@/utils/koreaMealTime';
 import { searchSystemPrompt } from '@/lib/ai/prompts/aiSearchPrompt';
-import { validateAiSearchRequest } from '@/lib/ai/validation/aiSearch';
+import { validateAiSearchRequest } from '@/lib/ai/validation/aiSearchReq';
 import { isValidAiSearchRes } from '@/lib/ai/validation/aiSearchRes';
 import { requestWithRetry } from '@/lib/ai/requestWithRetry';
 import dbConnect from '@/lib/mongoose';

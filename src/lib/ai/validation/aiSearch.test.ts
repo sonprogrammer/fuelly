@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { validateAiSearchRequest } from './aiSearch'
+import { validateAiSearchRequest } from './aiSearchReq'
 
 describe('validateAiSearchRequest', () => {
   it('정상 요청이면 valid true를 반환한다', () => {

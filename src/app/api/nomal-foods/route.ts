@@ -3,18 +3,19 @@ import Food from '@/models/foodModel'
 import { NextRequest, NextResponse } from "next/server";
 import { basicFoods } from '../../../store/basicFoods'
 import { userInfoFromToken } from '@/lib/userInfoFromToken'
+import { getNormalFoodsSchema } from "@/schemas/food/getNormalFood";
 
 
 export async function GET(req: NextRequest) {
     try {
-        await dbConnect()
-        const count = await Food.countDocuments()
         const userInfo = await userInfoFromToken(req)
-
+        
         if (!userInfo) {
             return NextResponse.json({ message: 'user token invalid' }, { status: 401 })
         }
-
+        
+        await dbConnect()
+        const count = await Food.countDocuments()
         if (count === 0) {
             await Food.insertMany(basicFoods)
         }
@@ -32,7 +33,15 @@ export async function GET(req: NextRequest) {
             return priorityA - priorityB;
         });
 
-        return NextResponse.json({ message: 'here you are', foods:sortedFoods }, { status: 200 })
+        const response: unknown = JSON.parse(JSON.stringify({foods: sortedFoods}))
+
+        const res = getNormalFoodsSchema.safeParse(response)
+
+        if(!res.success){
+            return NextResponse.json({message: '음식 목록 응답이 올바르지 않습니다'},{status: 500})
+        }
+
+        return NextResponse.json(res.data, { status: 200 })
 
     } catch (err) {
         console.log('err', err)

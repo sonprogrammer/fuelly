@@ -1,6 +1,7 @@
 import dbConnect from "@/lib/mongoose";
 import { userInfoFromToken } from "@/lib/userInfoFromToken";
 import userModel from "@/models/userModel";
+import { AiPreferenceSchema, updateAiPreferenceReqSchema } from "@/schemas/user/aiPreference/aiPreference";
 import { NextRequest, NextResponse } from "next/server";
 
 
@@ -13,8 +14,13 @@ export async function PATCH(req: NextRequest) {
             return NextResponse.json({ message: '로그인이 필요합니다' }, { status: 401 })
         }
 
-        const data = await req.json()
-        await dbConnect()
+        const body: unknown = await req.json()
+        const res = updateAiPreferenceReqSchema.safeParse(body)
+
+        if (!res.success) {
+            return NextResponse.json({ message: res.error.issues[0].message ?? 'AI 맞춤 설정 정보가 잘못되었습니다.' }, { status: 400 })
+        }
+        const data = res.data
 
         const updateData: Record<string, unknown> = {}
 
@@ -38,6 +44,7 @@ export async function PATCH(req: NextRequest) {
             return NextResponse.json({ message: '수정할 정보가 없습니다.' }, { status: 400 })
         }
 
+        await dbConnect()
         const user = await userModel.findByIdAndUpdate(userInfo.objectId,
             {
                 $set: updateData
@@ -65,24 +72,28 @@ export async function GET(req: NextRequest) {
         if (!userInfo?.objectId) {
             return NextResponse.json({ message: '로그인이 필요합니다' }, { status: 401 })
         }
-        
-        
-        const user = await userModel.findById(userInfo.objectId)
 
+        await dbConnect()
+        const user = await userModel.findById(userInfo.objectId)
 
         if (!user) {
             return NextResponse.json({ message: '사요자 정볼르 찾을 수 없습니다.' }, { status: 404 })
         }
 
-        return NextResponse.json({
-            mssage: 'success',
-            aiPreference: user.aiPreference ?? {
-                allergies: [],
-                dislikedFoods: [],
-                preferredFoods: [],
-                customRequest: ''
-            }
-        }, { status: 200 })
+        const preference = user.aiPreference ?? {
+            allergies: [],
+            dislikedFoods: [],
+            preferredFoods: [],
+            customRequest: ''
+        }
+
+        const res = AiPreferenceSchema.safeParse(preference)
+
+        if (!res.success) {
+            return NextResponse.json({ message: 'ai 맞춤 설정을 불러오지 못했습니다.' }, { status: 500 })
+        }
+
+        return NextResponse.json({ mssage: 'success', aiPreference: res.data }, { status: 200 })
     } catch (error) {
         console.error(error)
         return NextResponse.json({ message: 'internal srver error' }, { status: 500 })
@@ -96,7 +107,7 @@ export async function DELETE(req: NextRequest) {
         if (!userInfo) {
             return NextResponse.json({ message: '로그인이 필요합니다' }, { status: 401 })
         }
-
+        await dbConnect()
         const user = await userModel.findByIdAndUpdate(userInfo.objectId, {
             $set: {
                 aiPreference: {
@@ -106,15 +117,15 @@ export async function DELETE(req: NextRequest) {
                     customRequest: ''
                 }
             }
-        },{new: true, runValidators: true})
+        }, { new: true, runValidators: true })
 
-        if(!user){
-            return NextResponse.json({message: '사용자 정보를 찾을 수 없습니다'},{status: 404})
+        if (!user) {
+            return NextResponse.json({ message: '사용자 정보를 찾을 수 없습니다' }, { status: 404 })
         }
 
-        return NextResponse.json({message: 'AI 설정이 초기화 되었습니다'},{status: 200})
+        return NextResponse.json({ message: 'AI 설정이 초기화 되었습니다' }, { status: 200 })
     } catch (error) {
         console.error(error)
-        return NextResponse.json({message: 'internal server error'}, { status: 500})
+        return NextResponse.json({ message: 'internal server error' }, { status: 500 })
     }
 }

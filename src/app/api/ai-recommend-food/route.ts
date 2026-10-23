@@ -8,6 +8,8 @@ import { activityMap } from '@/config/activity'
 import { getMealTime } from '@/utils/koreaMealTime'
 import { requestWithRetry } from '@/lib/ai/requestWithRetry'
 import dbConnect from '@/lib/mongoose'
+import { aiRecommendFoodReqSchema } from '@/schemas/ai/aiRecommendFood/aiRecommendReq'
+import { aiRecommendFoodResSchema } from '@/schemas/ai/aiRecommendFood/aiRecommendRes'
 
 
 
@@ -19,47 +21,37 @@ const categoryMap = {
     home: '집에서 쉽게 준비하거나 만들어 먹을 수 있는 메뉴를 추천'
 } as const
 
-type RecommendMealCategory = keyof typeof categoryMap
-
 export async function POST(req: NextRequest) {
+    const userInfo = await userInfoFromToken(req)
 
-    const apiKey = process.env.GROQ_API_KEY
-    if (!apiKey) {
-        return NextResponse.json({ message: "AI 키확인" }, { status: 500 })
+    if (!userInfo) {
+        return NextResponse.json({ message: '로그인이 필요합니다.' }, { status: 401 })
     }
-    const groq = new Groq({ apiKey })
-    await dbConnect()
-    
+
+
     try {
-        const data = await req.json()
-        const { remain, category } = data
+        const data: unknown = await req.json()
 
-        const userInfo = await userInfoFromToken(req)
+        const requestRes = aiRecommendFoodReqSchema.safeParse(data)
 
-        if (!userInfo) {
-            return NextResponse.json({ message: '로그인이 필요합니다.' }, { status: 401 })
+        if (!requestRes.success) {
+            return NextResponse.json({ message: requestRes.error.issues[0].message ?? '데이터가 정확하지 않습니다.' })
         }
 
+
+        const { remain, category } = requestRes.data
+
+        const apiKey = process.env.GROQ_API_KEY
+        if (!apiKey) {
+            return NextResponse.json({ message: "AI 키확인" }, { status: 500 })
+        }
+        const groq = new Groq({ apiKey })
+
+        await dbConnect()
         const user = await userModel.findById(userInfo.objectId)
 
         if (!user) {
             return NextResponse.json({ message: '사용자 정보를 찾을 수 없습니다.' }, { status: 404 })
-        }
-
-        if (!remain) {
-            return NextResponse.json({ message: '남은 영양 정보가 필요합니다.' }, { status: 400 })
-        }
-
-        if (typeof remain.calorie !== 'number' || typeof remain.protein !== 'number') {
-            return NextResponse.json({ message: '영양 정보가 올바르지 않습니다.' }, { status: 400 })
-        }
-
-        if (!category) {
-            return NextResponse.json({ message: '추천 카테고리가 필요합니다.' }, { status: 400 })
-        }
-
-        if (!(category in categoryMap)) {
-            return NextResponse.json({ message: '올바르지 않은 추천 카테고리입니다.' }, { status: 400 })
         }
 
         const userAllergies = user.aiPreference?.allergies ?? []
@@ -70,7 +62,7 @@ export async function POST(req: NextRequest) {
 
 
         const age = differenceInYears(new Date(), new Date(user.birthDate))
-        const recommendationCategory = categoryMap[category as RecommendMealCategory]
+        const recommendationCategory = categoryMap[category]
 
 
         const mealTime = getMealTime()
@@ -143,21 +135,27 @@ export async function POST(req: NextRequest) {
         }), { retries: 1, timeoutMs: 10000 })
 
         const rawAnswer = completion.choices[0].message?.content
+
         if (!rawAnswer) {
             return NextResponse.json(
                 { message: 'AI가 응답을 생성하지 못했습니다. 잠시 후 다시 시도해주세요.' },
                 { status: 503 }
             );
         }
+
+        let parsedAnswer: unknown
         try {
-
-            const parsedAnswer = JSON.parse(rawAnswer)
-
-            return NextResponse.json({ message: 'success', answer: parsedAnswer }, { status: 200 });
+             parsedAnswer = JSON.parse(rawAnswer)
         } catch (parseError) {
             console.log('err', parseError)
-            return NextResponse.json({ message: 'responding error' }, { status: 402 })
+            return NextResponse.json({ message: 'responding error' }, { status: 500 })
         }
+        const responseRes = aiRecommendFoodResSchema.safeParse(parsedAnswer)
+
+        if(!responseRes.success){
+            return NextResponse.json({message: responseRes.error.issues[0].message ?? 'ai응답 형식이 올바르지 않습니다.'})
+        }
+        return NextResponse.json({answer: responseRes.data}, {status: 200})
     } catch (err) {
         console.log('err', err)
         if (err instanceof Groq.APIError && err.status === 429) {
