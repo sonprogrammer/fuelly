@@ -5,7 +5,7 @@ export interface IDaily extends Document{
     userId: Types.ObjectId //유저 오브젝트id
     date: string
     meals: {
-        foodId?: Types.ObjectId 
+        foodId?: Types.ObjectId  | null
         name: string
         protein: number
         calorie: number

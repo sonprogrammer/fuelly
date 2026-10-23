@@ -1,5 +1,6 @@
 import {useQuery} from '@tanstack/react-query'
 import {axiosInstance} from '../lib/axios'
+import { useUserStore } from '@/store/userStore'
 
 
 const getUserAllMeal = async(period: number) => {
@@ -8,8 +9,9 @@ const getUserAllMeal = async(period: number) => {
 }
 
 const useGetUserAllMeal = (period: number) => {
+    const user = useUserStore(state => state.user)
     return useQuery({
-        queryKey: ['allMeals',period],
+        queryKey: ['allMeals',period, user?._id],
         queryFn: () => getUserAllMeal(period),
         staleTime: 1000 * 60 * 10,
         gcTime: 1000 * 60 * 30

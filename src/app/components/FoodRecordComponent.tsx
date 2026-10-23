@@ -1,16 +1,17 @@
 'use client'
 import dayjs from "dayjs";
 import "dayjs/locale/ko"
-import { GroupFoodsArrayType } from '@/types/food'
+
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { GroupMealsArrayType } from "@/types/dailyMeal";
 
 interface DayData {
   date: string;
   totalCalorie: number;
   totalProtein: number;
-  meals: GroupFoodsArrayType[];
+  meals: GroupMealsArrayType[];
   fullDate?: string;
 }
 

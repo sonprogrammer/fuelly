@@ -1,9 +1,10 @@
 import {axiosInstance} from '@/lib/axios'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { Food } from '@/types/food'
 import toast from 'react-hot-toast'
+import { useUserStore } from '@/store/userStore'
+import { AddDailyMealReq } from '@/types/dailyMeal'
 
-const postFoodToDailyMeal = async (food: Food) => {
+const postFoodToDailyMeal = async (food: AddDailyMealReq) => {
     const res = await axiosInstance.post('/addTo-today-meal', food)
     return res.data
     
@@ -11,10 +12,11 @@ const postFoodToDailyMeal = async (food: Food) => {
 
 const usePostFoodToDailyMeal = () => {
     const queryClient = useQueryClient()
+    const user = useUserStore(state => state.user)
     return useMutation({
-        mutationFn: (food:Food)=> postFoodToDailyMeal(food),
+        mutationFn: postFoodToDailyMeal,
         onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ['todayMeal']})
+            queryClient.invalidateQueries({queryKey: ['todayMeal', user?._id]})
         },
         onError: () => {
             toast.error('식단 등록 실패')

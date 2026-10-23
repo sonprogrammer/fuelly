@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { axiosInstance} from '@/lib/axios'
 import {CreateFoodFromAi} from '@/types/ai'
+import { useUserStore } from '@/store/userStore';
 
 const postAiFood = async(food: CreateFoodFromAi) => {
     const res = await axiosInstance.post('/save-ai-food',{food})
@@ -10,11 +11,12 @@ const postAiFood = async(food: CreateFoodFromAi) => {
 
 const usePostAiFood = () =>{
     const queryClient = useQueryClient()
+    const user = useUserStore(state => state.user)
 
     return useMutation({
-        mutationFn: (food:CreateFoodFromAi)=> postAiFood(food),
+        mutationFn: postAiFood,
         onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ['savedFoods']})
+            queryClient.invalidateQueries({queryKey: ['savedFoods', user?._id]})
         }
     })
 }

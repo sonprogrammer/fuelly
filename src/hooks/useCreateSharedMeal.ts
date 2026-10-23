@@ -1,9 +1,10 @@
-import { GroupFoodsArrayType } from '@/types/food';
+
 import { axiosInstance } from "@/lib/axios";
+import { GroupMealsArrayType } from "@/types/dailyMeal";
 import { useMutation } from '@tanstack/react-query';
 
 interface CreateSharedMealData{
-    meals: GroupFoodsArrayType[];
+    meals: GroupMealsArrayType[];
     totalCalorie: number;
     totalProtein: number;
 }

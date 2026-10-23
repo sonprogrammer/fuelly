@@ -19,7 +19,7 @@ const useUpdatedUserInfo = () => {
     const queryClient = useQueryClient()
     const setUser = useUserStore(state => state.setUser)
     return useMutation({
-        mutationFn: (update: UpdateData) => updateUserInfo(update),
+        mutationFn: updateUserInfo,
         onSuccess: (res) => {
             const updatedUser = res.userUpdated
             queryClient.setQueryData(['user'], updatedUser)

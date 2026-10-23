@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { SignJWT, jwtVerify } from 'jose'
+import { jwtPayloadSchema } from '@/schemas/user/login/jwtpayload'
 
 
 const JWT_SECRET = new TextEncoder().encode(
@@ -17,7 +18,7 @@ export async function POST(req: NextRequest) {
         }
 
         const verified = await jwtVerify(refreshToken, JWT_SECRET)
-        const payload = verified.payload as { objectId: string }
+        const payload = jwtPayloadSchema.parse(verified.payload)
 
         const newAccessToken = await new SignJWT({
             objectId: payload.objectId,

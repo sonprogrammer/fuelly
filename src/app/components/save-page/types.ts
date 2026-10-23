@@ -1,14 +1,10 @@
-import { Food } from "@/types/food";
+import { SavedFood } from "@/types/food"
 
-export interface SavedFood {
-    _id: string;
-    savedUser: string;
-    foodId: Food
-}
+
 
 
 export interface EachVersionProps{
     savedFoods: SavedFood[]
-    addFood: (food: Food) => void
+    addFood: (food: SavedFood['food']) => void
     deleteFood: (foodId: string) => void
 }

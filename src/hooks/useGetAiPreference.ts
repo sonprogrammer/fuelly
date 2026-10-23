@@ -10,7 +10,6 @@ interface GetAiPreferenceRes{
 
 const getAiPreference = async():Promise<GetAiPreferenceRes> => {
     const res = await axiosInstance.get<GetAiPreferenceRes>('/ai-preference')
-    console.log('res', res.data)
     return res.data
 }
 

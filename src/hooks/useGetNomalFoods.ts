@@ -1,8 +1,16 @@
 import { useQuery } from '@tanstack/react-query'
 import { axiosInstance } from '@/lib/axios'
 
+
+// interface GetNormalFoodsRes{
+//     foods: {
+
+//     }
+// }
+
 const getNomalFoods = async () => {
     const res = await axiosInstance.get('/nomal-foods')
+    console.log('res', res.data)
     return res.data.foods
 }
 

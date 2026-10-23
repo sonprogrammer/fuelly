@@ -2,27 +2,34 @@ import dbConnect from "@/lib/mongoose";
 import { userInfoFromToken } from "@/lib/userInfoFromToken";
 import SharedMeal from "@/models/sharedMealModel";
 import userModel from "@/models/userModel";
+import { mealShareReqSchema } from "@/schemas/food/mealShareReq";
 import { randomUUID } from "crypto";
 import { NextRequest, NextResponse } from "next/server";
 
+
 export async function POST(req:NextRequest){
     try {
-        await dbConnect()
-
+        
         const userInfo = await userInfoFromToken(req)
-
+        
         if(!userInfo){
             return NextResponse.json({message:'로그인이 필요합니다'}, {status: 401})
         }
+        
+        const body:unknown = await req.json()
 
-        const { meals, totalCalorie, totalProtein} = await req.json()
+        const res = mealShareReqSchema.safeParse(body)
 
-        if(!meals?.length){
-            return NextResponse.json({message: '공유할 식단이 없습니다.'}, {status: 400})
+        if(!res.success){
+            return NextResponse.json({message: res.error.issues[0].message??'식단 정보가 올바르지 않습니다'},{ status: 400})
         }
 
+        const { meals, totalCalorie, totalProtein} = res.data
+        
+        
         const shareId = randomUUID()
-
+        
+        await dbConnect()
         const user = await userModel.findOne({_id: userInfo.objectId})
 
         await SharedMeal.create({

@@ -4,6 +4,8 @@ import dailyMeal from "@/models/dailyModel"
 import {format, subDays} from 'date-fns'
 import { NextRequest, NextResponse } from "next/server"
 import mongoose from "mongoose"
+import { frequentFoodsResSchema } from "@/schemas/food/frequentFoodsRes"
+
 
 export async function GET(req: NextRequest) {
     try {
@@ -38,6 +40,7 @@ export async function GET(req: NextRequest) {
             {
                 $group: {
                     _id: "$meals.name",
+                    mealId: { $last: "$meals._id" },
                     count: { $sum: 1 },
                     foodId: { $last: "$meals.foodId" },
                     name: { $last: "$meals.name" },
@@ -56,7 +59,7 @@ export async function GET(req: NextRequest) {
             },
             {
                 $project: {
-                    _id: 0,
+                    _id: "$mealId",
                     foodId: 1,
                     name: 1,
                     calorie: 1,
@@ -67,7 +70,16 @@ export async function GET(req: NextRequest) {
             }
         ])
 
-        return NextResponse.json({ message: "success", frequentFoods }, { status: 200 })
+        const response: unknown = JSON.parse(JSON.stringify({message: 'success', frequentFoods}))
+
+        const res = frequentFoodsResSchema.safeParse(response)
+
+        if(!res.success){
+            console.error('자주먹는 음식응답 검증 실패', res.error.issues[0].message)
+            return NextResponse.json({message: '자주 먹는 음식 데이터가 올바르지 않습니다'},{status: 500})
+        }
+
+        return NextResponse.json(res.data, { status: 200 })
     } catch (error) {
         console.error(error)
         return NextResponse.json({ message: "frequent foods failed" }, { status: 500 })

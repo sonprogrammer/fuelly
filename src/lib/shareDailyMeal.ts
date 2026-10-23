@@ -1,13 +1,14 @@
 import { shareMealToKakao } from "@/lib/kakaoShare"
-import { GroupFoodsArrayType } from "@/types/food"
+import { GroupMealsArrayType } from "@/types/dailyMeal"
+
 
 
 interface ShareDailyMealParams {
-    foods: GroupFoodsArrayType[]
+    foods: GroupMealsArrayType[]
     totalCalorie: number
     totalProtein: number
     createSharedMeal: (data: {
-        meals: GroupFoodsArrayType[]
+        meals: GroupMealsArrayType[]
         totalCalorie: number
         totalProtein: number
     }, options: {
