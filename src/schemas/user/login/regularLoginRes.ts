@@ -4,5 +4,5 @@ import { z} from 'zod'
 export const regularLoginResSchema = z.object({
     success: z.literal(true),
     user: userResSchema,
-    accessToekn: z.string().min(1)
+    accessToken: z.string().min(1)
 })

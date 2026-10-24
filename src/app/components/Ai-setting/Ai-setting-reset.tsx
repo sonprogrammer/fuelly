@@ -2,7 +2,6 @@
 
 import { RotateCcw } from 'lucide-react'
 import { useDeleteAiPreference } from '@/hooks/useDeleteAiPreference'
-import { useUserStore } from '@/store/userStore'
 import { useState } from 'react'
 import { ConfirmModalComponent } from '@/app/components/ConfirmModalComponent'
 
@@ -12,17 +11,21 @@ interface AiSettingResetBtnProps{
 
 export function AiSettingResetBtn({disabled}: AiSettingResetBtnProps) {
     const [modalOpen, setModalOpen] = useState(false)
-    const user = useUserStore(state => state.user)
-    const { mutate: resetAiPreference, isPending } = useDeleteAiPreference(user?._id)
+    const { mutate: resetAiPreference, isPending } = useDeleteAiPreference()
 
     const handleClickResetBtn = () => {
         setModalOpen(true)
     }
 
     const handleReset = () => {
+        
         resetAiPreference(undefined, {
             onSuccess: () => {
                 setModalOpen(false)
+                console.log('clicke')
+            },
+            onError: (error) => {
+                console.log('error', error)
             }
         })
     }

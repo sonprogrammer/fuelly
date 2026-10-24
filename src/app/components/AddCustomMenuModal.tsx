@@ -6,6 +6,7 @@ import { FoodInfo } from '@/types/food'
 import { toast } from 'react-hot-toast'
 import { useAiFoodInfo } from "@/hooks/usePostAiFoodInfo";
 import { AddDailyMealReq } from "@/types/dailyMeal";
+import { createFoodRequestSchema } from "@/schemas/food/addNomalfood";
 interface ModalProps {
     open: boolean,
     onClose: () => void
@@ -28,21 +29,30 @@ export default function AddCustomMenuModal({ open, onClose, handleSaveDaily, dai
 
     if (!open) return null;
 
-
-    const handleNomalFoodSubmit = () => {
-        if (!foodName || !calorie || !protein || !unit) {
-            toast.error('작성 내용을 확인해주세요')
+    const getValidateFood = () =>{
+        if(!calorie.trim() || !protein.trim()){
+            toast.error('칼로리와 단백질을 입력해주세요')
             return
+        }  
+        const res = createFoodRequestSchema.safeParse({
+            name: foodName,
+            calorie: Number(calorie),
+            protein: Number(protein),
+            unit
+        })
+        if(!res.success){
+            toast.error(res.error.issues[0].message ?? '작성 내용을 확인해주세요')
+            return 
         }
 
-        handleSaveNomal(
-            {
-                name: foodName,
-                calorie: Number(calorie),
-                protein: Number(protein),
-                unit,
-            }
-        )
+        return res.data
+    }
+
+    const handleNomalFoodSubmit = () => {
+        const food = getValidateFood()
+        if(!food) return 
+
+        handleSaveNomal(food)
     }
 
     // * ai가 자동으로 채워넣기
@@ -70,19 +80,10 @@ export default function AddCustomMenuModal({ open, onClose, handleSaveDaily, dai
 
     // *새로 추가하는거니깐 기존 음식 문서에 없음
     const handleDailyFoodSubmit = () => {
-        if (!foodName || !calorie || !protein || !unit) {
-            toast.error('작성 내용을 확인해주세요')
-            return
-        }
-        handleSaveDaily(
-            {
-                name: foodName,
-                calorie: Number(calorie),
-                protein: Number(protein),
-                unit,
-            },
+        const food = getValidateFood()
+        if(!food) return 
 
-        )
+        handleSaveDaily(food)
     }
 
     const handleOverlayClick = (e: React.MouseEvent) => {

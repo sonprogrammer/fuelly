@@ -5,9 +5,7 @@ import { useUserStore } from '@/store/userStore'
 
 
 const toggleSaveFood = async(foodId: string) => {
-    
     const res = await axiosInstance.post('/toggle-save-food', {foodId})
-    console.log('toggle', res.data)
     return res.data
 }
 

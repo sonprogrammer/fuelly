@@ -8,3 +8,7 @@ export const aiRecommendFoodResSchema = z.object({
         amount: z.string()
     })).length(3)
 })
+
+export const aiRecommendFoodApiResSchema = z.object({
+    answer: aiRecommendFoodResSchema
+})

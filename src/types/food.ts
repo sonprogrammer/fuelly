@@ -20,6 +20,3 @@ export interface SavedFood {
     food: Food
 }
 
-export interface GetSaveFoodRes extends SavedFood{
-    createdAt: string
-}

@@ -16,11 +16,6 @@ import { useDeleteMyFoods } from '@/hooks/useDeleteMyFoods';
 import { DeleteConfimModal } from '@/app/components/DeleteConfimModal';
 import { AddDailyMealReq } from '@/types/dailyMeal';
 
-interface SavedFood {
-    _id: string;
-    savedUser: string;
-    food: Food
-}
 
 export default function AddNomalMenu() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -67,11 +62,7 @@ export default function AddNomalMenu() {
         return createdBy !== 'system' && createdBy === user?._id
     }
 
-    const savedFoodIdSet = new Set(
-        (savedFoods ?? [])
-        .map((item: SavedFood) => item.food._id)
-        .filter((foodId: string): foodId is string => typeof foodId === 'string')
-    )
+    const savedFoodIdSet = new Set((savedFoods ?? []).map((item) => item.food._id))
 
 
     const handleModalOpenClick = () => {
@@ -86,7 +77,6 @@ export default function AddNomalMenu() {
     // !이름은 세이브지만 토글 기증임 좋아요 취소 등록 둘다 가능
     const handleSaveToggle = (foodId: string) => {
         const isCurrentlySaved = savedFoodIdSet.has(foodId)
-        console.log('saveding', foodId)
         toggleSave(foodId, {
             onSuccess: () => {
                 if (isCurrentlySaved) {

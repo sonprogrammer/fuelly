@@ -1,15 +1,12 @@
 import {useQuery} from '@tanstack/react-query'
 import {axiosInstance} from '@/lib/axios'
 import { useUserStore } from '@/store/userStore'
-import {  SavedFood } from '@/types/food'
-
-export interface GetSaveFoodRes extends SavedFood{
-    createdAt: string
-}
+import { savedFoodsResSchema } from '@/schemas/food/savedFoodsRes'
 
 const getSavedFood = async () =>{
-    const res = await axiosInstance.get<GetSaveFoodRes[]>('/get-saved-food')
-    return res.data
+    const res = await axiosInstance.get<unknown>('/get-saved-food')
+    const data = savedFoodsResSchema.parse(res.data)
+    return data
 }
 
 const 

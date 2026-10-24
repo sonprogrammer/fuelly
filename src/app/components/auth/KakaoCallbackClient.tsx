@@ -2,6 +2,8 @@
 
 import { KakaoLoginFallback } from "@/app/components/auth/KakaoLoginFallback"
 import { TermBottomSheet } from "@/app/components/term-bottomsheet"
+
+import { kakaoLoginResSchema } from "@/schemas/user/login/kakaologinRes"
 import { useAgreementStore } from "@/store/agreementsStore"
 import { useUserStore } from "@/store/userStore"
 import axios from "axios"
@@ -31,28 +33,16 @@ export function KakaoCallbackClient() {
         const login = async () => {
             try {
                 const res = await axios.post('/api/kakao-login', { code })
-                if (!res.data.success) {
-                    return
-                }
 
-                const newUser = ({
-                    kakaoId: res.data.user.kakaoId,
-                    name: res.data.user.name,
-                    objectId: res.data.user.objectId,
-                    height: res.data.user.height,
-                    weight: res.data.user.weight,
-                    goal: res.data.user.goal,
-                    gender: res.data.user.gender,
-                    activity: res.data.user.activity,
-                    age: res.data.user.age,
-                    birthDate: res.data.user.birthDate,
-                    _id: res.data.user._id
-                })
+                const data = kakaoLoginResSchema.parse(res.data)
 
-                setUserAccessToken(res.data.accessToken)
+                const { user: newUser, accessToken, needsAgreement} = data
+
+
+                setUserAccessToken(accessToken)
                 setUser(newUser)
 
-                if (res.data.needsAgreement) {
+                if (needsAgreement) {
                     setTermsOpen(true)
                     return
                 }

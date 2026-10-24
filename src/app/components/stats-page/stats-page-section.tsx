@@ -2,12 +2,10 @@
 
 import { StatsChartSection } from "@/app/components/stats-page/stats-chart-section";
 import { StatsMealsSection } from "@/app/components/stats-page/stats-meal-section";
-import { MealData } from "@/app/components/stats-page/types";
 import useGetUserAllMeal from "@/hooks/useGetUserAllMeal";
 import useRemainNutrition from "@/hooks/useRemainNutrition";
 import { useUserStore } from "@/store/userStore";
-import { DailyMealItem } from "@/types/dailyMeal";
-import { Food } from "@/types/food";
+import { DailyMealItem, GroupMealsArrayType } from "@/types/dailyMeal";
 import { useState } from "react";
 
 export function StatsPageSection() {
@@ -20,31 +18,34 @@ export function StatsPageSection() {
     const PRO_LIMIT = recommended.protein
 
 
-    const groupFoods = (foodList: Food[]) => {
-    
-            const grouped = foodList.reduce((acc: Record<string, DailyMealItem & { quantity: number }>, cur: DailyMealItem) => {
-                const key = cur._id || cur.name
-                if (acc[key]) {
-                    acc[key].quantity += 1
-                } else {
-                    acc[key] = {...cur , quantity: 1}
-                }
-                return acc
-            }, { }) ?? {}
-            return grouped
-        }
+    const groupFoods = (foodList: DailyMealItem[]) => {
+        return foodList.reduce((acc: Record<string, GroupMealsArrayType>, cur) => {
+            const key = JSON.stringify([
+                cur.name.trim(),
+                cur.unit.trim(),
+                cur.calorie,
+                cur.protein,
+            ])
+            if (acc[key]) {
+                acc[key].quantity += 1
+            } else {
+                acc[key] = { ...cur, quantity: 1 }
+            }
+            return acc
+        }, {})
+    }
 
     // * 날짜별 식단 보기
-    const filteredData = allMeal?.map((day: MealData) => {
+    const filteredData = allMeal?.map(day => {
         const groupObj = groupFoods(day.meals)
         const groupMealsArray = Object.values(groupObj)
-        return { ...day, meals: groupMealsArray} 
+        return { ...day, meals: groupMealsArray }
     }) ?? []
-    
+
     return (
         <>
-            <StatsChartSection  key={range} isPendingMeal={pendingtoGetMeal} allMeal={allMeal} range={range} CAL_LIMIT={CAL_LIMIT} PRO_LIMIT={PRO_LIMIT}/>
-            <StatsMealsSection isPendingMeal={pendingtoGetMeal} CAL_LIMIT={CAL_LIMIT} PRO_LIMIT={PRO_LIMIT} range={range} setRange={setRange} filteredData={filteredData}/>
+            <StatsChartSection key={range} isPendingMeal={pendingtoGetMeal} allMeal={allMeal} range={range} CAL_LIMIT={CAL_LIMIT} PRO_LIMIT={PRO_LIMIT} />
+            <StatsMealsSection isPendingMeal={pendingtoGetMeal} CAL_LIMIT={CAL_LIMIT} PRO_LIMIT={PRO_LIMIT} range={range} setRange={setRange} filteredData={filteredData} />
         </>
     )
 }

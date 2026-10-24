@@ -6,3 +6,4 @@ export const mealShareReqSchema = z.object({
     totalCalorie: z.number(),
     totalProtein: z.number(),
 })
+

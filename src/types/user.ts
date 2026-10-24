@@ -7,7 +7,7 @@ export interface User {
     activity?: ActivityLevel
     goal?: GoalLabel
     age?: number
-    birthDate?: string
+    birthDate?: string | null
 }
 
 export type FixedUser = {

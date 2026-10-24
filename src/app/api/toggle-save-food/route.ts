@@ -33,7 +33,7 @@ export async function POST(req: NextRequest) {
 
         if (isAlreadySaved) {
             await savedModel.deleteOne({ _id: isAlreadySaved._id, savedUser: userInfo.objectId })
-            return NextResponse.json({ message: 'cancle saved food', isSaved: false }, { status: 200 })
+            return NextResponse.json({ message: '즐겨찾기 해제', isSaved: false }, { status: 200 })
         }
 
 
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
             savedUser: userInfo.objectId,
             foodId
         })
-        return NextResponse.json({ message: 'save food', isSaved: true }, { status: 200 })
+        return NextResponse.json({ message: '즐겨찾기 추가', isSaved: true }, { status: 200 })
 
 
 

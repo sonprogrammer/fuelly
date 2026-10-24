@@ -17,6 +17,7 @@ import usePostFoodToDailyMeal from "@/hooks/usePostFoodToDailyMeal";
 import { usePostUserAiHistory } from "@/hooks/usePostUserAiHistory";
 import useRemainNutrition from "@/hooks/useRemainNutrition";
 import useToggleSaveFood from "@/hooks/useToggleSaveFood";
+import { aiSearchRequestSchema } from "@/schemas/ai/aiSearch/aiSearchReq";
 import { useUserStore } from "@/store/userStore";
 import { AiFood } from "@/types/ai";
 import { SavedFood } from "@/types/food";
@@ -45,13 +46,13 @@ export function AISearchSection() {
     const { mutateAsync: aiSearch, data: result, isPending: isAnalyzing, } = usePostAiSearch()
 
     // *ai search history
-    const { data: searchHistory = [], isPending: isHistoryLoading } = useGetUserAiHistory(user?._id)
+    const { data: searchHistory = [], isPending: isHistoryLoading } = useGetUserAiHistory()
 
     // * upload ai search history
-    const { mutate: postHistory } = usePostUserAiHistory(user?._id)
+    const { mutate: postHistory } = usePostUserAiHistory()
 
     //* delte ai search history
-    const { mutate: deleteHistory, isPending: deletingHistory } = useDeleteUserAiHistory(user?._id)
+    const { mutate: deleteHistory, isPending: deletingHistory } = useDeleteUserAiHistory()
 
     const selectedHistory = searchHistory.find(item => item._id === selectedHistoryId)
     const displayRes = selectedHistory?.answer ?? result
@@ -71,26 +72,19 @@ export function AISearchSection() {
 
 
     const handleSearch = async (userPrompt: string): Promise<boolean> => {
-        const prompt = userPrompt.trim()
-
         if (!user) {
             toast.error('로그인을 다시 해주세요')
             return false
         }
-        if (!prompt) {
-            toast.error('내용을 입력해주세요')
-            return false
-        }
-        if (prompt.length < 2) {
-            toast.error('조금 더 구체적으로 입력해주세요.')
-            return false
-        }
 
-        if (prompt.length > 100) {
-            toast.error('100자 이내로 입력해주세요.')
+        const validation = aiSearchRequestSchema.shape.prompt.safeParse(userPrompt)
+
+        if(!validation.success){
+            toast.error(validation.error.issues[0].message ??'질문을 확인해주세요')
             return false
         }
-
+     
+        const prompt = validation.data
         try {
             const answer = await aiSearch({ prompt, remain })
             postHistory({ prompt, answer })

@@ -1,30 +1,23 @@
 import { axiosInstance } from "@/lib/axios"
+import { frequentFoodsResSchema } from "@/schemas/food/frequentFoodsRes"
+import { useUserStore } from "@/store/userStore"
 import { useQuery } from "@tanstack/react-query"
+import z from "zod"
 
-export interface FrequentFood {
-    foodId?: string //food id임, 일단은 자주먹는음식인데 음식문서에 저장이 안되어있을 수도 있을 경우를 위해서 옵셔널
-    name: string
-    calorie: number
-    protein: number
-    unit: string
-    count: number
-    _id: string //식단의 각음식 배열에 있는 오브젝트 아이디
-}
 
-interface FrequentFoodsResponse {
-    message: string
-    frequentFoods: FrequentFood[]
-}
+export type FrequentFood = z.infer<typeof frequentFoodsResSchema>['frequentFoods'][number]
 
-const getFrequentFoods = async():Promise<FrequentFood[]> => {
-    const res = await axiosInstance.get<FrequentFoodsResponse>('/frequent-foods')
-    console.log('res', res.data)
-    return res.data.frequentFoods
+
+const getFrequentFoods = async() => {
+    const res = await axiosInstance.get<unknown>('/frequent-foods')
+    const data = frequentFoodsResSchema.parse(res.data)
+    return data.frequentFoods
 }
 
 export function useGetFrequentFoods(){
+    const user = useUserStore(state => state.user)
     return useQuery({
-        queryKey: ['frequent-foods'],
+        queryKey: ['frequent-foods', user?._id],
         queryFn: getFrequentFoods,
         staleTime: 1_000 * 60 * 30,
         gcTime: 1_000 * 60 * 60

@@ -5,6 +5,8 @@ import { CalendarDays } from "lucide-react"
 import { useState } from "react"
 import { toast } from "react-hot-toast"
 import useUpdatedUserInfo from "@/hooks/useUpdateUserInfo"
+import { updateUserInfoReqSchema } from "@/schemas/user/userInfo/updateUserInfoReq"
+
 
 interface BirthDateModalProps {
     onClose?: () => void
@@ -34,9 +36,16 @@ export default function BirthDateModal({ onClose }: BirthDateModalProps) {
             toast.error('생년월일 8자리를 입력해주세요')
             return
         }
-        const birthDateValue = birthDate.replace(/\./g, '-')
+        const res = updateUserInfoReqSchema.safeParse(birthDate.replace(/\./g, '-'))
 
-        updateMutate({ birthDate: birthDateValue }, {
+        if(!res.success){
+            toast.error(res.error.issues[0].message ??'생년월일을 확인해주세요')
+            return 
+        }
+
+
+
+        updateMutate(res.data , {
             onSuccess: () => {
                 toast.success('생년월일이 저장되었습니다!')
                 onClose?.()

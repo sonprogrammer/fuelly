@@ -5,6 +5,7 @@ import { useUserStore } from "@/store/userStore";
 import { useRouter } from "next/navigation";
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
+import { regularLoginResSchema } from "@/schemas/user/login/regularLoginRes";
 interface LoginInfo {
     nickName: string;
     password: string;
@@ -20,34 +21,28 @@ const useRegularLogin = () => {
     const login = async ({ nickName, password }: LoginInfo) => {
         try {
             const res = await axios.post('api/regular-login', { nickName, password })
-            if (res.data.success) {
-                toast.success(`${res.data.user.nickName}님, 환영합니다!`)
-                const newUser = {
-                    nickName: res.data.user.nickName,
-                    height: res.data.user.height,
-                    weight: res.data.user.weight,
-                    goal : res.data.user.goal,
-                    gender: res.data.user.gender,
-                    activity: res.data.user.activity,
-                    age: res.data.user.age,
-                    _id: res.data.user._id
-                }
-                const accessToken = res.data.accessToken 
-                setUserAccessToken(accessToken)
-                setUser(newUser)
-                
-                if(newUser?.weight && newUser?.height){
-                    router.push('/home')
-                }else {
-                    router.push('/survey')
-                }
-            }else if(!res.data.success){
-                toast.error(res.data.message || '로그인 정보를 확인해주세요.')
+            const data = regularLoginResSchema.parse(res.data)
+
+            const { user: newUser, accessToken } = data
+
+            setUserAccessToken(accessToken)
+            setUser(newUser)
+            toast.success(`${newUser.nickName ?? nickName}님 환영합니다.`)
+
+            if (newUser?.weight && newUser?.height) {
+                router.push('/home')
+            } else {
+                router.push('/survey')
             }
-            
+
+
 
         } catch (error) {
-            console.error(error)
+            console.error('로그인 실패', error)
+
+            const message = axios.isAxiosError<{message?:unknown}>(error) ? error.response?.data.message : undefined
+
+            toast.error(typeof message === 'string' ? message : '로그인 실패. 다시 시도해주세요')
         }
     }
     return { login }

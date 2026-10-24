@@ -43,14 +43,8 @@ export default function TodayMenuComponent() {
 
     const { data: frequentFoods = [], isPending: isFrequentFoodsPending } = useGetFrequentFoods()
 
+    const grouopMealsArray:GroupMealsArrayType[] = Object.values(groupMeals)
 
-    // console.log('dailyfoods', dailyFoods)
-    // console.log('dailymeals', dailyMeals)
-    // console.log('gruopMelas', groupMeals)
-
-    // console.log('frequentFoods', frequentFoods)
-    const grouopMealsArray = Object.values(groupMeals) as GroupMealsArrayType[]
-    // console.log('grouopMealsArray', grouopMealsArray)
 
     const handleShareMeal = () => {
         shareDailyMeal({
