@@ -1,5 +1,6 @@
 
 import { axiosInstance } from "@/lib/axios";
+import { mealShareResSchema } from "@/schemas/food/mealShareRes";
 import { GroupMealsArrayType } from "@/types/dailyMeal";
 import { useMutation } from '@tanstack/react-query';
 
@@ -9,13 +10,10 @@ interface CreateSharedMealData{
     totalProtein: number;
 }
 
-interface CreateShareMealRes{
-    shareId: string
-}
 
-const createShareMeal = async(data:CreateSharedMealData):Promise<CreateShareMealRes>=>{
-    const res = await axiosInstance.post('/share-meal', data)
-    return res.data
+const createShareMeal = async(data:CreateSharedMealData) =>{
+    const res = await axiosInstance.post<unknown>('/share-meal', data)
+    return mealShareResSchema.parse(res.data)
 }
 
 export function useCreateSharedMeal() {

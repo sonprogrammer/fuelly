@@ -14,14 +14,27 @@ import useGetSavedFood from '@/hooks/useGetSavedFood'
 import usePostAiFood from '@/hooks/usePostAiFood'
 import { Heart } from 'lucide-react'
 import { toast } from 'react-hot-toast'
-import { SavedFood } from '@/types/food'
 import { useState } from 'react';
 import { useAiRecommendStore } from '@/store/aiRecommendMealsStore';
 import { useShallow } from 'zustand/react/shallow';
 import { SubmitBtn } from '@/app/components/submit-button';
+import type { FoodInfo } from '@/types/food'
 
+const getFoodKey = (food: FoodInfo) => JSON.stringify([
+    food.name.trim(),
+    food.unit.trim(),
+    food.calorie,
+    food.protein
+])
 
-
+const getRecommendFoodKey = (food: AiRecommendResultFood) => {
+    return getFoodKey({
+        name: food.name,
+        unit: food.amount,
+        calorie: food.calorie,
+        protein: food.protein
+    })
+}
 
 const categories = [
     { label: '전체', value: 'all' },
@@ -46,28 +59,26 @@ export default function AiMenu() {
     const { mutate: saveAiFood } = usePostAiFood()
 
     const savedFoodMap = new Map<string, string>(
-        savedFoods?.map((item: SavedFood) => [
-            item.food.name,
+        (savedFoods ?? [])?.map((item) => [
+            getFoodKey(item.food),
             item.food._id
         ])
     )
 
 
+
+
     const handleClickAi = () => {
         if (!user) return
 
-        recommendFood({
-            remain,
-            category
-        }, {
-            onSuccess: data => {
-                setRecommendation(data)
-            }
+        recommendFood({ remain, category }, {
+            onSuccess: data => { setRecommendation(data) }
         })
 
     }
     const handleSaveToggle = (food: AiRecommendResultFood) => {
-        const savedFoodId = savedFoodMap.get(food?.name)
+        const savedFoodId = savedFoodMap.get(getRecommendFoodKey(food))
+
         if (!savedFoodId) {
             saveAiFood({
                 name: food.name,
@@ -75,13 +86,13 @@ export default function AiMenu() {
                 protein: food.protein,
                 unit: food.amount
             }, {
-                onSuccess: () => toast.success('즐겨찾기에 저장 성공')
+                onSuccess: () => toast.success('즐겨찾기 저장')
             })
             return
         }
         toggleSave(savedFoodId, {
             onSuccess: () => {
-                toast.success('삭제 성공')
+                toast.success('즐겨찾기 삭제')
             }
         })
     }
@@ -169,13 +180,13 @@ export default function AiMenu() {
             {recommendation && (
                 <div className="border border-gray-800 rounded-xl overflow-hidden my-4">
                     {recommendation.meals.map((food) => {
-                        const savedFoodId = savedFoodMap.get(food.name)
+                        const savedFoodId = savedFoodMap.get(getRecommendFoodKey(food))
                         const isSaved = Boolean(savedFoodId)
                         const caloriePercent = remain.calorie > 0 ? Math.min((food.calorie / remain.calorie) * 100, 100) : 100
                         const proteinPercent = remain.protein > 0 ? Math.min((food.protein / remain.protein) * 100, 100) : 100
                         return (
                             <AiRecommandMenu
-                                key={food.name}
+                                key={getRecommendFoodKey(food)}
                                 data={food}
                                 caloriePercent={caloriePercent}
                                 proteinPercent={proteinPercent}

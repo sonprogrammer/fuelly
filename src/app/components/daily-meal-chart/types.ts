@@ -1,3 +1,4 @@
+import { DailyMealRes } from "@/types/dailyMeal"
 import { Food } from "@/types/food"
 
 export interface MealData {
@@ -10,7 +11,7 @@ export interface MealData {
 }
 
 export interface DailyMealChartProps {
-  sortedMeals: MealData[]
+  sortedMeals: DailyMealRes[] | undefined
   CAL_LIMIT: number
   PRO_LIMIT: number
 }

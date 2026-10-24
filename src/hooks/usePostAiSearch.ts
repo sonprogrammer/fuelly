@@ -3,10 +3,8 @@ import { axiosInstance } from '@/lib/axios'
 import { AxiosError } from 'axios';
 import toast from 'react-hot-toast';
 import { AiSearchRes } from '@/types/ai';
+import { aiSearchApiResSchema } from '@/schemas/ai/aiSearch/aiSearchRes';
 
-interface ErrorResponse {
-    message: string
-}
 
 interface AiSearchPayload {
     prompt: string;
@@ -19,8 +17,9 @@ interface AiSearchPayload {
 
 
 const aiSearch = async ({prompt, remain}: AiSearchPayload):Promise<AiSearchRes> => {
-    const res = await axiosInstance.post('/ai-search', {prompt, remain})
-    return res.data.answer
+    const res = await axiosInstance.post<unknown>('/ai-search', {prompt, remain})
+    const data = aiSearchApiResSchema.parse(res.data)
+    return data.answer
 }
 
 
@@ -32,7 +31,8 @@ const usePostAiSearch = () => {
         onError: error => {
             if (error instanceof AxiosError) {
                 const status = error.response?.status
-                const message = (error.response?.data as ErrorResponse)?.message
+                const rawMsg = error.response?.data?.message
+                const message = typeof rawMsg ==='string' ? rawMsg : undefined
 
                 if (status === 429) {
                     toast.error(message || 'AI 요청 한도에 도달했습니다. 잠시 후 다시 시도해주세요.')

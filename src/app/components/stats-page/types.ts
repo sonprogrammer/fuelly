@@ -1,3 +1,4 @@
+import { DailyMealRes, GroupDailyMeal } from "@/types/dailyMeal";
 import { Food } from "@/types/food";
 
 export interface MealData {
@@ -18,7 +19,7 @@ export interface GroupedMealData extends Omit<MealData, 'meals'> {
 export interface StatsChartSectionProps{
     isPendingMeal: boolean;
     range: 7 | 30
-    allMeal: MealData[]
+    allMeal: DailyMealRes[] | undefined
     PRO_LIMIT: number;
     CAL_LIMIT: number
 }
@@ -26,7 +27,7 @@ export interface StatsChartSectionProps{
 export interface StatsMealsSectionProps{
     range: 7 | 30
     setRange: (range: 7 | 30) => void
-    filteredData:GroupedMealData[]
+    filteredData:GroupDailyMeal[]
     PRO_LIMIT: number;
     CAL_LIMIT: number
     isPendingMeal: boolean

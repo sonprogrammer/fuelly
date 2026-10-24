@@ -1,17 +1,12 @@
 import {axiosInstance} from '@/lib/axios'
+import { getTodayMealResSchema } from '@/schemas/food/dailyMealRes'
 import { useUserStore } from '@/store/userStore'
-import { DailyMealItem } from '@/types/dailyMeal'
 import { useQuery } from '@tanstack/react-query'
 
-interface GetDailyMealsRes{
-    userDailyMeal: {
-        meals: DailyMealItem[]
-    }
-}
-
 const getDailyMeal = async () => {
-    const res = await axiosInstance.get<GetDailyMealsRes>('/get-today-meal')
-    return res.data.userDailyMeal
+    const res = await axiosInstance.get<unknown>('/get-today-meal')
+        const data = getTodayMealResSchema.parse(res.data)
+        return data.userDailyMeal
 }
 
 const useGetDailyMeal = () => {

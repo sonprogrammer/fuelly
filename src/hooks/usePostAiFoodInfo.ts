@@ -1,25 +1,15 @@
 
 import { axiosInstance } from "@/lib/axios";
+import { aiFoodInfoResSchema, FoodAiInfo } from "@/schemas/ai/foodNutrition/foodNutritionRes";
 import { useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
 
-interface FoodAiInfo {
-    calorie: number;
-    protein: number;
-    unit?: string
-}
-
-
-interface ErrorResponse {
-    message: string
-}
-
 const getAiFoodInfo = async (foodName: string) => {
-    const res = await axiosInstance.post<FoodAiInfo>('/ai-food-info', { foodName })
-    return res.data
+    const res = await axiosInstance.post<unknown>('/ai-food-info', { foodName })
+    return aiFoodInfoResSchema.parse(res.data)
 }
 
 
@@ -47,7 +37,8 @@ export function useAiFoodInfo() {
         } catch(error){
             if (error instanceof AxiosError) {
                 const status = error.response?.status
-                const message = (error.response?.data as ErrorResponse)?.message
+                const rawMsg = error.response?.data?.message
+                const message = typeof rawMsg === 'string' ? rawMsg : undefined
 
                 if (status === 429) {
                     toast.error(message || 'AI 요청 한도에 도달했습니다. 잠시 후 다시 시도해주세요.')

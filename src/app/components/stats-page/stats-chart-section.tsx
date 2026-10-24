@@ -31,7 +31,7 @@ export function StatsChartSection({ isPendingMeal, range, allMeal, PRO_LIMIT, CA
     return (
         <div className='그래프 mb-10'>
             <h1 className="text-gray-400 mb-5">{`최근 ${range}일 기록`}</h1>
-            <DailyMealChart sortedMeals={allMeal} CAL_LIMIT={CAL_LIMIT} PRO_LIMIT={PRO_LIMIT} />
+            <DailyMealChart sortedMeals={allMeal ?? []} CAL_LIMIT={CAL_LIMIT} PRO_LIMIT={PRO_LIMIT} />
 
         </div>
     )

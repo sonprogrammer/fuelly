@@ -1,11 +1,13 @@
 import {useQuery} from '@tanstack/react-query'
 import {axiosInstance} from '../lib/axios'
 import { useUserStore } from '@/store/userStore'
+import { getAllMealsResSchema } from '@/schemas/food/dailyMealRes'
 
 
 const getUserAllMeal = async(period: number) => {
-    const res = await axiosInstance.get(`/get-all-meal?days=${period}`)
-    return res.data.userAllMeal
+    const res = await axiosInstance.get<unknown>(`/get-all-meal?days=${period}`)
+    const data = getAllMealsResSchema.parse(res.data)
+    return data.userAllMeal
 }
 
 const useGetUserAllMeal = (period: number) => {
@@ -14,7 +16,8 @@ const useGetUserAllMeal = (period: number) => {
         queryKey: ['allMeals',period, user?._id],
         queryFn: () => getUserAllMeal(period),
         staleTime: 1000 * 60 * 10,
-        gcTime: 1000 * 60 * 30
+        gcTime: 1000 * 60 * 30,
+        enabled: !!user?._id
     })
 }
 

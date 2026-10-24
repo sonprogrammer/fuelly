@@ -1,5 +1,5 @@
 import FoodRecordComponent from "@/app/components/FoodRecordComponent";
-import { GroupedMealData, StatsMealsSectionProps } from "@/app/components/stats-page/types";
+import { StatsMealsSectionProps } from "@/app/components/stats-page/types";
 
 export function StatsMealsSection({ isPendingMeal, range, setRange, filteredData, CAL_LIMIT, PRO_LIMIT }: StatsMealsSectionProps) {
     return (
@@ -31,7 +31,7 @@ export function StatsMealsSection({ isPendingMeal, range, setRange, filteredData
             ) : (
                 <section className={filteredData.length > 0 ? "grid grid-cols-1 sm:grid-cols-2 gap-3 py-8" : ""}>
                     {filteredData.length > 0 ? (
-                        filteredData?.map((dailyData: GroupedMealData) => (
+                        filteredData?.map(dailyData => (
                             <FoodRecordComponent
                                 key={dailyData.date}
                                 dailyData={[dailyData]}

@@ -1,26 +1,23 @@
 import { useQuery } from '@tanstack/react-query'
 import { axiosInstance } from '@/lib/axios'
-
-
-// interface GetNormalFoodsRes{
-//     foods: {
-
-//     }
-// }
+import { getNormalFoodsSchema } from '@/schemas/food/getNormalFood'
+import { useUserStore } from '@/store/userStore'
 
 const getNomalFoods = async () => {
-    const res = await axiosInstance.get('/nomal-foods')
-    console.log('res', res.data)
-    return res.data.foods
+    const res = await axiosInstance.get<unknown>('/nomal-foods')
+    const data = getNormalFoodsSchema.parse(res.data)
+    return data.foods
 }
 
 
 const useGetNomalFoods = () => { 
+    const user = useUserStore(state => state.user)
     return useQuery({
-        queryKey: ['nomalFoods'],
+        queryKey: ['nomalFoods', user?._id],
         queryFn: () => getNomalFoods(),
         staleTime: 1000 * 60 * 60 * 24,
-        gcTime: 1000 * 60 * 60 * 24
+        gcTime: 1000 * 60 * 60 * 24,
+        enabled: !!user?._id
     })
 }
 

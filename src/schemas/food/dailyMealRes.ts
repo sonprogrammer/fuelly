@@ -20,9 +20,14 @@ export const dailyMealResSchema = z.object({
     totalCalorie: z.number(),
     createdAt: z.iso.datetime(),
     updatedAt: z.iso.datetime()
-}).passthrough()
+})
 
 export const getTodayMealResSchema = z.object({
     message: z.literal('success'),
     userDailyMeal: dailyMealResSchema.nullable()
+})
+
+export const getAllMealsResSchema = z.object({
+    message: z.string(),
+    userAllMeal: z.array(dailyMealResSchema)
 })

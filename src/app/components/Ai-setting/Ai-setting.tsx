@@ -4,22 +4,21 @@
 import { MyAiSettingModal } from '@/app/components/Ai-setting/Ai-setting-modal'
 import { AiSettingResetBtn } from '@/app/components/Ai-setting/Ai-setting-reset'
 import { useGetAiPreference } from '@/hooks/useGetAiPreference'
-import { useUserStore } from '@/store/userStore'
 import { AlertTriangle, ChevronRight, Heart, Loader2, RefreshCw, UtensilsCrossed } from 'lucide-react'
 import Image from 'next/image'
 import { useState } from 'react'
 
 export function MyAiSetting() {
     const [open, setOpen] = useState(false)
-    const user = useUserStore(state => state.user)
 
-    const { data, isPending: isAIPreferencePending, refetch, isFetching, isError } = useGetAiPreference(user?._id)
+    const { data, isPending: isAIPreferencePending, refetch, isFetching, isError } = useGetAiPreference()
 
     const aiPreference = data?.aiPreference
     const hasAiPreference = Boolean(aiPreference?.allergies.length ||
         aiPreference?.dislikedFoods.length ||
         aiPreference?.preferredFoods.length ||
         aiPreference?.customRequest.trim())
+
 
     return (
         <section className="rounded-2xl border border-gray-800 bg-gray-900 p-5">

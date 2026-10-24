@@ -5,18 +5,11 @@ import "dayjs/locale/ko"
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-import { GroupMealsArrayType } from "@/types/dailyMeal";
+import { GroupDailyMeal } from "@/types/dailyMeal";
 
-interface DayData {
-  date: string;
-  totalCalorie: number;
-  totalProtein: number;
-  meals: GroupMealsArrayType[];
-  fullDate?: string;
-}
 
 interface FoodRecordProps {
-  dailyData: DayData[];
+  dailyData: GroupDailyMeal[];
   PRO_LIMIT: number;
   CAL_LIMIT: number;
 }
@@ -91,8 +84,8 @@ export default function FoodRecordComponent({ dailyData, PRO_LIMIT, CAL_LIMIT }:
                   className="bg-gray-950 border-t border-gray-800"
                 >
                   <div className="p-4 space-y-2">
-                    {day.meals.map((meal, idx) => (
-                      <div key={idx} className="flex justify-between items-center p-3 bg-gray-900 rounded-xl">
+                    {day.meals.map(meal => (
+                      <div key={meal._id} className="flex justify-between items-center p-3 bg-gray-900 rounded-xl">
                         <div className="flex gap-2">
                           <span className="text-sm text-gray-300">{meal.name}</span>
                           {meal.quantity && meal.quantity > 1 && (

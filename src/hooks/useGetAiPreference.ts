@@ -1,23 +1,21 @@
 import { axiosInstance } from "@/lib/axios";
-import { AiPreference } from "@/types/ai";
+import { getAiPreferenceResSchema } from "@/schemas/user/aiPreference/aiPreference";
+import { useUserStore } from "@/store/userStore";
 import { useQuery } from "@tanstack/react-query";
 
-interface GetAiPreferenceRes{
-    message: string;
-    aiPreference:AiPreference
+
+
+const getAiPreference = async() => {
+    const res = await axiosInstance.get<unknown>('/ai-preference')
+    return getAiPreferenceResSchema.parse(res.data)
 }
 
-
-const getAiPreference = async():Promise<GetAiPreferenceRes> => {
-    const res = await axiosInstance.get<GetAiPreferenceRes>('/ai-preference')
-    return res.data
-}
-
-export function useGetAiPreference(userId?: string) {
+export function useGetAiPreference() {
+    const user = useUserStore(state => state.user)
     return useQuery({
-        queryKey: ['aiPreference', userId],
-        queryFn: () => getAiPreference(),
-        enabled: !!userId,
+        queryKey: ['aiPreference', user?._id],
+        queryFn: getAiPreference,
+        enabled: !!user?._id,
         staleTime: 1000 * 60 * 30,
         gcTime: 1000 * 60 * 60,
         refetchOnWindowFocus: false

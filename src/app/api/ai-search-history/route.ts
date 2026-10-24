@@ -59,14 +59,14 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ message: '받아온 데이터가 없습니다' }, { status: 400 })
         }
 
-        const history = await UserAiSearchHistoryModel.create({
+        await UserAiSearchHistoryModel.create({
             userId: user._id,
             prompt,
             answer
         })
 
 
-        return NextResponse.json({ message: 'success', history }, { status: 200 })
+        return NextResponse.json({ message: 'success' }, { status: 200 })
     } catch (error) {
         console.error(error)
         return NextResponse.json({ message: 'internal server error' }, { status: 500 })

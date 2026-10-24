@@ -14,7 +14,7 @@ export interface AiRecommendResult{
         calorie: number
         protein: number
         amount: string
-        reason: string
+        reason?: string
     }[]
 }
 

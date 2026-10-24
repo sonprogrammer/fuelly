@@ -1,26 +1,22 @@
 import { axiosInstance } from "@/lib/axios";
-
-import { AiSearchHistory } from "@/types/ai";
+import { getAiSearchHistoryResSchema } from "@/schemas/ai/aiSearchHistory/aiSearchHistoryRes";
+import { useUserStore } from "@/store/userStore";
 import { useQuery } from "@tanstack/react-query";
 
 
-
-interface GetAiSearchHistoryResponse {
-  message: string
-  histories: AiSearchHistory[]
+const getUserAiHistory = async() => {
+    const res = await axiosInstance.get<unknown>('/ai-search-history')
+    const data = getAiSearchHistoryResSchema.parse(res.data)
+    return data.histories
 }
 
 
-const getUserAiHistory = async():Promise<AiSearchHistory[]> => {
-    const res = await axiosInstance.get<GetAiSearchHistoryResponse>('/ai-search-history')
-    return res.data.histories
-}
-
-export function useGetUserAiHistory(userId?: string) {
+export function useGetUserAiHistory() {
+    const user = useUserStore(state => state.user)
     return useQuery({
-        queryKey: ['ai-search-history', userId],
+        queryKey: ['ai-search-history', user?._id],
         queryFn: getUserAiHistory,
-        enabled: !!userId,
+        enabled: !!user?._id,
         staleTime: 1000 * 60 * 30,
         gcTime: 1000 * 60 * 60
     })

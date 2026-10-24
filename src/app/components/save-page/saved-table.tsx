@@ -26,7 +26,13 @@ export function SavedTable(){
     }
 
     const addFood = (food: Food) => {
-        addToDaily(food, {
+        addToDaily({
+            foodId: food._id,
+            name: food.name,
+            calorie: food.calorie,
+            protein: food.protein,
+            unit: food.unit
+        }, {
             onSuccess: () => {
                 toast.success(`${food.name}이(가) 식단에 추가되었습니다!`)
             }

@@ -63,11 +63,19 @@ export default function RootLayout({
           </div>
         </header>
 
-        <main className='flex-1 overflow-y-auto'>
-          <QueryProviderWrapper>
-            {children}
-          </QueryProviderWrapper>
+        <main className="relative isolate min-h-0 flex-1 overflow-hidden">
+            <div className="h-full overflow-y-auto">
+                <QueryProviderWrapper>
+                    {children}
+                </QueryProviderWrapper>
+            </div>
+
+            <div
+                id="page-overlay-root"
+                className="pointer-events-none absolute inset-0 z-50"
+            />
         </main>
+
 
         <Toaster position="top-center" reverseOrder={false} />
 

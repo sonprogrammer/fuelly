@@ -8,7 +8,8 @@ const savedFoodDocumentSchema = z.object({
     protein: z.number().min(0),
     calorie: z.number().min(0),
     unit: z.string(),
-    createdBy: z.string().optional()
+    createdBy: z.string().optional(),
+    createdAt: z.iso.datetime()
 })
 
 export const savedFoodsResSchema = z.array(

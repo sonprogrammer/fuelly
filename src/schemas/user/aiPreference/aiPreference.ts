@@ -9,3 +9,12 @@ export const AiPreferenceSchema = z.object({
 })
 
 export const updateAiPreferenceReqSchema = AiPreferenceSchema.partial()
+
+
+export const getAiPreferenceResSchema = z.object({
+    aiPreference: AiPreferenceSchema
+})
+
+export const deleteAllAiPreferenceResSchema = z.object({
+    message: z.string()
+})

@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import useRegularLogin from "@/hooks/useRegularLogin"
 import { Mail, Lock, LogIn } from 'lucide-react'
+import { regularLoginReqSchema } from "@/schemas/user/login/regularLoginReq"
+import toast from "react-hot-toast"
 
 
 export default function LoginPage() {
@@ -21,7 +23,13 @@ export default function LoginPage() {
     }, [])
 
     const handleRegularLogin = async () => {
-        await login({ nickName: email, password })
+        const res = regularLoginReqSchema.safeParse({nickName: email, password})
+
+        if(!res.success){
+            toast.error(res.error.issues[0].message ?? '로그인 정보를 확인해주세요')
+            return
+        }
+        await login(res.data)
         if (remember) {
             localStorage.setItem('email', email)
         } else {
@@ -43,7 +51,8 @@ export default function LoginPage() {
                     <div className="relative group">
                         <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600 group-focus-within:text-emerald-400 transition-colors" />
                         <input
-                            type="email"
+                            type="text"
+                            autoComplete="username"
                             placeholder="닉네임"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}

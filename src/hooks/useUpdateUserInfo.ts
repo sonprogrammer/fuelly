@@ -1,6 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { axiosInstance } from '@/lib/axios'
 import { useUserStore } from "@/store/userStore"
+import { updateUserInfoResSchema } from '@/schemas/user/userInfo/updatedUserInfoRes'
+
 
 interface UpdateData {
     weight?: number
@@ -11,8 +13,8 @@ interface UpdateData {
 }
 
 const updateUserInfo = async (update: UpdateData) => {
-    const res = await axiosInstance.patch('/updated-userinfo', update)
-    return res.data
+    const res = await axiosInstance.patch<unknown>('/updated-userinfo', update)
+    return updateUserInfoResSchema.parse(res.data)
 }
 
 const useUpdatedUserInfo = () => {
