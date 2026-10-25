@@ -29,7 +29,12 @@ interface QueueItem {
 }
 
 let isRefreshing = false;
+let isLoggingOut = false
 let failedQueue: QueueItem[] = [];
+
+export const setLogoutInProgress = (value: boolean) => {
+    isLoggingOut = value
+}
 
 const processQueue = (error: Error | null, token: string | null = null): void => {
     failedQueue.forEach(promise => {
@@ -47,7 +52,7 @@ axiosInstance.interceptors.response.use(
     async (err) => {
         const originalRequest = err.config
 
-        if (err.response?.status !== 401 || originalRequest._retry) {
+        if (isLoggingOut || !originalRequest || err.response?.status !== 401 || originalRequest._retry) {
             return Promise.reject(err)
         }
 
@@ -69,6 +74,10 @@ axiosInstance.interceptors.response.use(
 
             const res = await axios.post('/api/refresh')
 
+            if(isLoggingOut){
+                throw new Error('로그아웃 진행 중')
+            }
+
             const newAccessToken = res.data.accessToken
 
 
@@ -84,8 +93,12 @@ axiosInstance.interceptors.response.use(
                 throw new Error('no access token received')
             }
         } catch (err) {
-            processQueue(err as Error, null)
-            setUserAccessToken(null)
+            const error = err instanceof Error ? err : new Error('토큰 재발급 실패')
+            processQueue(error, null)
+
+            if(isLoggingOut){
+                return Promise.reject(err)
+            }
             useUserStore.getState().clearUser()
             if (typeof window !== 'undefined') {
                 toast.error('세션 만료 재로그인하세요')

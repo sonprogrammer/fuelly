@@ -6,6 +6,7 @@ import { axiosInstance } from "@/lib/axios"
 import { useUserStore } from "@/store/userStore"
 import { useRouter } from "next/navigation"
 import { toast } from 'react-hot-toast'
+import { userInfoResSchema } from '@/schemas/user/userInfo/userInfoRes';
 
 
 interface UserInfo {
@@ -19,8 +20,8 @@ interface UserInfo {
 
 
 const postUserInfo = async (data: UserInfo) => {
-    const res = await axiosInstance.post('/submit-userInfo',data)
-    return res.data
+    const res = await axiosInstance.post<unknown>('/submit-userInfo',data)
+    return userInfoResSchema.parse(res.data)
 }
 
 
@@ -28,7 +29,7 @@ const usePostUserInfo = () => {
     const setUser = useUserStore(state=> state.setUser)
     const router = useRouter()
     return useMutation({
-        mutationFn: (data:UserInfo) => postUserInfo(data),
+        mutationFn: postUserInfo,
         onSuccess: (data) => {
             if (typeof data === 'object' && data !== null) {
               

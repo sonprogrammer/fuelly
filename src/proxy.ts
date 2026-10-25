@@ -15,7 +15,8 @@ export async function proxy(req: NextRequest) {
     pathname === '/api/kakao-login' ||
     pathname === '/api/regular-login' ||
     pathname === '/api/register' ||
-    pathname === '/api/refresh'
+    pathname === '/api/refresh' ||
+    pathname === '/api/Logout'
   ) {
     return NextResponse.next()
   }

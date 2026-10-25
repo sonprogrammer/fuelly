@@ -3,7 +3,7 @@ import { z} from 'zod'
 const policyAgreementResSchema = z.object({
     version: z.string().optional(),
     agreed: z.boolean(),
-    agreeeAt: z.iso.datetime().nullable().optional()
+    agreedAt: z.iso.datetime().nullable().optional()
 })
 
 const userPolicyResSchema = z.object({

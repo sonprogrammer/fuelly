@@ -10,7 +10,10 @@ import { axiosInstance } from '@/lib/axios'
 
 
 export default function ProtectUser({ children }: { children: React.ReactNode }) {
-    const [loading, setLoading] = useState<boolean>(true)
+    const [loading, setLoading] = useState<boolean>(() => {
+        const { userAccessToken, user } = useUserStore.getState()
+        return !userAccessToken || !user
+    })
     const router = useRouter()
     const initialized = useRef(false)
     const { setUser, setUserAccessToken, clearUser } = useUserStore(useShallow(state => ({

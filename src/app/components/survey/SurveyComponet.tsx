@@ -1,21 +1,21 @@
 'use client'
 
-
 import { NumberQuestion } from "@/app/components/survey/NumberQuestion"
 import { QuestionHeader } from "@/app/components/survey/QuestionHeader"
 import { SelectCard } from "@/app/components/survey/SelectCard"
+import { SubmitLoading } from "@/app/components/survey/submit-loading"
 import { ACTIVITIES, GOALS } from "@/config/survey-goals"
 import usePostUserInfo from "@/hooks/usePostUserInfo"
+import { userInfoReqSchema } from "@/schemas/user/userInfo/userInfoReq"
 import { useSurveyStore } from "@/store/surveyStore"
 import { useUserStore } from "@/store/userStore"
 import { ArrowLeft, ArrowRight } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useState } from "react"
 import { toast } from "react-hot-toast"
 
 const TOTAL_STEP = 6
 
 export default function SurveyComponent() {
-    const router = useRouter()
     const user = useUserStore((state) => state.user)
     const step = useSurveyStore((state) => state.step)
     const survey = useSurveyStore((state) => state.survey)
@@ -23,6 +23,8 @@ export default function SurveyComponent() {
     const setSurveyValue = useSurveyStore((state) => state.setSurveyValue)
     const resetSurvey = useSurveyStore((state) => state.resetSurvey)
     const { mutate, isPending } = usePostUserInfo()
+    const [isSubmitted, setIsSubmitted] = useState(false)
+
 
     const handleNext = () => {
         if (step === 0 && !survey.goal) {
@@ -62,21 +64,35 @@ export default function SurveyComponent() {
     }
 
     const handleSubmit = () => {
-        const { goal, gender, birthDate, height, weight, activity } = survey
-        if (!goal || !gender || !birthDate || !height || !weight || !activity) {
-            toast.error("입력 상태를 확인해주세요")
+        const res = userInfoReqSchema.safeParse({
+            goal: survey.goal,
+            gender: survey.gender,
+            birthDate: survey.birthDate.replace(/\./g, '-'),
+            height: survey.height,
+            weight: survey.weight,
+            activity: survey.activity
+        })
+        if (!res.success) {
+            toast.error(res.error.issues[0].message ?? "입력 상태를 확인해주세요")
             return
         }
-        mutate({ goal, gender, birthDate, height, weight, activity }, {
+        mutate(res.data, {
             onSuccess: () => {
-                resetSurvey()
+                setIsSubmitted(true)
                 toast.success("Fuelly와 함께 건강한 식단을 만들어 보세요!")
-                router.replace("/home")
+
+                resetSurvey()
             }
         })
     }
 
     const progress = ((step + 1) / TOTAL_STEP) * 100
+
+    if (isSubmitted) {
+    return (
+        <SubmitLoading />
+    )
+}
 
     return (
         <section className="w-full max-w-md rounded-3xl border border-gray-800 bg-gray-900 p-6 sm:p-8">

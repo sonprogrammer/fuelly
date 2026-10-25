@@ -15,8 +15,9 @@ export default function NavbarComponent() {
     const userAccessToken = useUserStore(state => state.userAccessToken)
     const pathname = usePathname()
 
+    const hideNavbar = [ '/', '/login', '/signup', '/survey', '/callback'].includes(pathname)
 
-    if (!userAccessToken || pathname === '/' || pathname === '/survey') return null
+    if (!userAccessToken || hideNavbar) return null
 
 
     return (

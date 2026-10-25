@@ -5,6 +5,7 @@ import checkEmail from '@/lib/checkEmail'
 import { useState } from "react"
 import { CheckCircle2, XCircle, Loader2 } from 'lucide-react'
 import { toast } from 'react-hot-toast'
+import { registerForm } from '@/schemas/user/login/registerForm'
 
 const SignUpPage = () => {
     const [email, setEmail] = useState<string>('')
@@ -26,16 +27,22 @@ const SignUpPage = () => {
     const passwordMatched = password && checkPassword ? password === checkPassword : null
 
     const handleRegisterClick = () => {
+        const res = registerForm.safeParse({
+            nickName: email,
+            password,
+            checkPassword
+        })
+
+        if (!res.success) {
+            toast.error(res.error.issues[0].message??'입력 내용을 확인해주세요')
+            return
+        }
         if (!emailValid) {
-            toast.error('이메일 중복 확인을 완료해주세요.')
+            toast.error('이름 중복을 해주세요')
             return
         }
-        if (!passwordMatched) {
-            toast.error('비밀번호가 일치하지 않습니다.')
-            return
-        }
-        const data = { nickName: email, password }
-        register(data)
+        const { nickName, password: validatedPassword} =res.data
+        register({nickName, password: validatedPassword})
     }
 
     return (
@@ -54,7 +61,7 @@ const SignUpPage = () => {
                     <label className="text-xs text-gray-500 ml-1">사용할 이름</label>
                     <div className="relative group">
                         <input
-                            type="email"
+                            type="text"
                             placeholder="근육왕"
                             value={email}
                             onChange={(e) => {
