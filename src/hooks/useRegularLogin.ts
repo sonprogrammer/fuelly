@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
 import { regularLoginResSchema } from "@/schemas/user/login/regularLoginRes";
+import { useAgreementStore } from "@/store/agreementsStore";
 interface LoginInfo {
     nickName: string;
     password: string;
@@ -15,6 +16,7 @@ interface LoginInfo {
 const useRegularLogin = () => {
     const setUser = useUserStore(state => state.setUser)
     const setUserAccessToken = useUserStore(state => state.setUserAccessToken)
+    const setTermOpen = useAgreementStore(state => state.setTermOpen)
     const router = useRouter()
 
 
@@ -27,6 +29,13 @@ const useRegularLogin = () => {
 
             setUserAccessToken(accessToken)
             setUser(newUser)
+
+            const needsAgreement = !newUser.policy?.terms?.agreed || !newUser.policy?.privacy?.agreed
+
+            if (needsAgreement) {
+                setTermOpen(true)
+                return
+            }
             toast.success(`${newUser.nickName ?? nickName}님 환영합니다.`)
 
             if (newUser?.weight && newUser?.height) {
@@ -40,7 +49,7 @@ const useRegularLogin = () => {
         } catch (error) {
             console.error('로그인 실패', error)
 
-            const message = axios.isAxiosError<{message?:unknown}>(error) ? error.response?.data.message : undefined
+            const message = axios.isAxiosError<{ message?: unknown }>(error) ? error.response?.data.message : undefined
 
             toast.error(typeof message === 'string' ? message : '로그인 실패. 다시 시도해주세요')
         }

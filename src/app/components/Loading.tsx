@@ -1,7 +1,7 @@
 
 import { Sparkles } from 'lucide-react';
 
-export default function Loading() {
+export default function Loading({description='사용자 정보를 불러오고 있습니다...'}: {description?: string}) {
   return (
     <div className="fixed inset-0 z-100 flex flex-col items-center justify-center bg-white/80 backdrop-blur-md">
       <div className="relative flex flex-col items-center">
@@ -16,7 +16,7 @@ export default function Loading() {
           FUELLY
         </h2>
         <p className="mt-2 text-sm font-medium text-gray-400">
-          사용자 정보를 불러오고 있습니다...
+          {description}
         </p>
       </div>
 

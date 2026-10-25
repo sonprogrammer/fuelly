@@ -28,6 +28,8 @@ export async function POST(req: NextRequest) {
             .setIssuedAt()
             .sign(JWT_SECRET)
 
+
+
         return NextResponse.json({ success: true, accessToken: newAccessToken, message: '엑세스토큰 발급' })
     } catch (err) {
         console.error('refreshtoken error', err)
