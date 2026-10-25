@@ -6,6 +6,7 @@ import { axiosInstance, setLogoutInProgress } from '@/lib/axios'
 import { LogOut } from 'lucide-react'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
+import axios from 'axios'
 
 
 export default function LogoutComponent() {
