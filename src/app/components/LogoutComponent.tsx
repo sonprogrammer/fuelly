@@ -2,7 +2,7 @@
 
 
 import { useUserStore } from '@/store/userStore'
-import { axiosInstance, setLogoutInProgress } from '@/lib/axios'
+import { setLogoutInProgress } from '@/lib/axios'
 import { LogOut } from 'lucide-react'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
@@ -20,7 +20,7 @@ export default function LogoutComponent() {
         setIsPending(true)
         setLogoutInProgress(true)
         try {
-            await axios.post('/Logout', {})
+            await axios.post('/api/Logout', {})
             clearUser()
             window.location.replace('/')
         } catch (error) {
