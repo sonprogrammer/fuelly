@@ -19,7 +19,7 @@ export default function LogoutComponent() {
         setIsPending(true)
         setLogoutInProgress(true)
         try {
-            await axiosInstance.post('/Logout', {})
+            await axios.post('/Logout', {})
             clearUser()
             window.location.replace('/')
         } catch (error) {
