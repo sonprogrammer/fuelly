@@ -8,8 +8,8 @@ import z from "zod"
 export type FrequentFood = z.infer<typeof frequentFoodsResSchema>['frequentFoods'][number]
 
 
-const getFrequentFoods = async() => {
-    const res = await axiosInstance.get<unknown>('/frequent-foods')
+const getFrequentFoods = async(signal: AbortSignal) => {
+    const res = await axiosInstance.get<unknown>('/frequent-foods',{ signal})
     const data = frequentFoodsResSchema.parse(res.data)
     return data.frequentFoods
 }
@@ -18,7 +18,7 @@ export function useGetFrequentFoods(){
     const user = useUserStore(state => state.user)
     return useQuery({
         queryKey: ['frequent-foods', user?._id],
-        queryFn: getFrequentFoods,
+        queryFn: ({signal})=> getFrequentFoods(signal),
         staleTime: 1_000 * 60 * 30,
         gcTime: 1_000 * 60 * 60
     })

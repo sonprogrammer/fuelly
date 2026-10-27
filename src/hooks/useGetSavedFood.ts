@@ -3,8 +3,8 @@ import {axiosInstance} from '@/lib/axios'
 import { useUserStore } from '@/store/userStore'
 import { savedFoodsResSchema } from '@/schemas/food/savedFoodsRes'
 
-const getSavedFood = async () =>{
-    const res = await axiosInstance.get<unknown>('/get-saved-food')
+const getSavedFood = async (signal: AbortSignal) =>{
+    const res = await axiosInstance.get<unknown>('/get-saved-food',{signal})
     const data = savedFoodsResSchema.parse(res.data)
     return data
 }
@@ -14,7 +14,7 @@ useGetSavedFood = () => {
     const user = useUserStore(state => state.user)
     return useQuery({
         queryKey: ['savedFoods', user?._id],
-        queryFn: getSavedFood,
+        queryFn: ({signal}) => getSavedFood(signal),
         staleTime: 1000 * 60 * 60,
         gcTime: 1000 * 60 * 60
     })
