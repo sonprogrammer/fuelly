@@ -37,3 +37,7 @@ jobs:
           UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
       - name: Build
         run: pnpm build
+        env:
+          REFRESH_ENCRYPTION_KEY: ${{ secrets.REFRESH_ENCRYPTION_KEY }}
+          UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+          UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
