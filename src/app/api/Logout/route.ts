@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { jwtVerify } from "jose";
+import { errors, jwtVerify } from "jose";
 import { redis } from "@/lib/redis";
 import { redisKeys } from "@/lib/redis-keys";
 
@@ -17,13 +17,9 @@ export async function POST(req: NextRequest) {
             try {
                 const verified = await jwtVerify(refreshToken, JWT_SECRET)
                 sessionId = verified.payload.jti
-                if (verified.payload.jti) {
-                    const deleted = await redis.del(redisKeys.session(verified.payload.jti));
-                    console.log("redis 세션 삭제 ", deleted);
-                }
 
             } catch (error) {
-                if (!(error instanceof Error) || error.name === 'UpstashError') {
+                if (!(error instanceof errors.JOSEError)) {
                     throw error
                 }
 
@@ -34,11 +30,11 @@ export async function POST(req: NextRequest) {
         }
 
 
-        const response = NextResponse.json({ success: true })
+        const res = NextResponse.json({ success: true })
 
 
 
-        response.cookies.set("fuellyRefreshToken", "", {
+        res.cookies.set("fuellyRefreshToken", "", {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
             sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
@@ -46,7 +42,7 @@ export async function POST(req: NextRequest) {
             maxAge: 0,
         });
 
-        return response
+        return res
     } catch (error) {
         console.error("로그아웃 실패", error);
 
