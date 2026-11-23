@@ -51,6 +51,22 @@ AI(Grok) 식단 가이드와 직관적인 차트를 통해 건강한 식습관 �
 | **AI Integration** | Groq AI API |
 | **Icons** | Lucide React |
 | **Database** | MongoDB |
+| **Session Management** | Upstash Redis |
+---
+
+## 🔐 인증 및 세션 관리 (Authentication and Session)
+
+Fuelly는 Redis 기반으로 Refresh Token 세션을 관리하고 Token Rotation을 적용해 탈취된 토큰의 재사용을 방지합니다.
+
+- Redis 세션 관리: Refresh Token 원문 대신 해시를 저장하고 서버에서 세션 유효성 검증.
+- Token Rotation: Access Token 재발급 시 기존 Refresh Token을 무효화하고 새로운 Refresh Token으로 교체.
+- 로그아웃 무효화: 브라우저 쿠키와 Redis 세션을 함께 삭제해 기존 Refresh Token 재사용 차단.
+- 토큰 재사용 대응: Redis에 저장된 토큰 해시와 일치하지 않는 이전 Refresh Token 사용 차단.
+- 멱등성 보장: Lua Script와 Idempotency-Key를 사용해 토큰 교체를 원자적으로 처리하고 동일 요청에는 기존 발급 결과 반환.
+- 중복 요청 방지: 동시에 발생한 재발급 요청은 하나의 Promise를 공유해 API를 한 번만 호출.
+- 네트워크 장애 복구: 지수 백오프 방식으로 재시도하고 동일한 Idempotency-Key를 유지해 발급 결과 복구.
+- 복구 결과 관리: 재발급 응답을 받지 못한 경우 최대 30초 동안 기존 발급 결과 복구 지원.
+- 인증 오류 처리: 401 인증 만료와 503 등 일시적인 서버 오류를 구분하고 복구 실패 시 재로그인 안내.
 
 ---
 ## 🧪 계산 공식 (Calculation Logic)Fuelly는 검증된 건강 지표 계산식을 사용합니다.
