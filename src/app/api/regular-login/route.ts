@@ -5,6 +5,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { SignJWT } from 'jose'
 import { regularLoginReqSchema } from "@/schemas/user/login/regularLoginReq";
 import { regularLoginResSchema } from "@/schemas/user/login/regularLoginRes";
+import { randomUUID } from "crypto";
+import { redis } from "@/lib/redis";
+import { redisKeys } from "@/lib/redis-keys";
+import { hashToken } from "@/lib/hashToken";
 
 
 const JWT_SECRET = new TextEncoder().encode(
@@ -36,7 +40,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ success: false, message: '아이디 또는 비밀번호를 확인해주세요' },{status: 401})
         }
 
-
+        const sessionId = randomUUID()
 
         const accessToken = await new SignJWT({
             objectId: user._id.toString(),
@@ -50,9 +54,16 @@ export async function POST(req: NextRequest) {
                 objectId: user._id.toString(),
             })
                 .setProtectedHeader({ alg: 'HS256' })
+                .setJti(sessionId)
                 .setExpirationTime('7d')
                 .setIssuedAt()
                 .sign(JWT_SECRET);
+
+        await redis.set(redisKeys.session(sessionId), {
+            userId: user._id.toString(),
+            tokenHash: hashToken(refreshToken)
+        }
+        , {ex: 60 * 60 * 24 * 7})
 
         const responseData: unknown = JSON.parse(JSON.stringify({success: true, user, accessToken}))
 

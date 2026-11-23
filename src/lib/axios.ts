@@ -1,8 +1,14 @@
 'use client'
 
+import { handleAuthExpired, refreshAccessToken } from '@/lib/auth/refresh-access-token'
 import { useUserStore } from '@/store/userStore'
-import axios from 'axios'
+import axios, { InternalAxiosRequestConfig } from 'axios'
 import { toast } from 'react-hot-toast'
+
+type RetryConfig = InternalAxiosRequestConfig & {
+  _retry?: boolean
+}
+
 
 
 export const axiosInstance = axios.create({
@@ -23,90 +29,37 @@ axiosInstance.interceptors.request.use(
     error => Promise.reject(error)
 )
 
-interface QueueItem {
-    res: (value: string | null) => void;
-    rej: (error: Error) => void;
-}
-
-let isRefreshing = false;
-let isLoggingOut = false
-let failedQueue: QueueItem[] = [];
-
-export const setLogoutInProgress = (value: boolean) => {
-    isLoggingOut = value
-}
-
-const processQueue = (error: Error | null, token: string | null = null): void => {
-    failedQueue.forEach(promise => {
-        if (error) {
-            promise.rej(error);
-        } else {
-            promise.res(token);
-        }
-    });
-    failedQueue = [];
-};
 
 axiosInstance.interceptors.response.use(
     res => res,
     async (err) => {
-        const originalRequest = err.config
+        const originalRequest = err.config as RetryConfig | undefined
 
-        if (isLoggingOut || !originalRequest || err.response?.status !== 401 || originalRequest._retry) {
+        if (!originalRequest || err.response?.status !== 401 || originalRequest._retry) {
             return Promise.reject(err)
-        }
-
-        if (isRefreshing) {
-            return new Promise((res, rej) => {
-                failedQueue.push({ res, rej })
-            }).then(token => {
-                originalRequest.headers.Authorization = `Bearer ${token}`
-                return axiosInstance(originalRequest)
-            })
-
         }
 
         originalRequest._retry = true
-        isRefreshing = true
-
-        const setUserAccessToken = useUserStore.getState().setUserAccessToken
         try {
+            const currentToken = useUserStore.getState().userAccessToken
+            //과거 api요청시 보낸 토큰
+            const sentToken = originalRequest.headers.get('Authorization')
+            const newAccessToken = currentToken && sentToken !== `Bearer ${currentToken}`
+                                    ? currentToken : await refreshAccessToken()
 
-            const res = await axios.post('/api/refresh')
-
-            if(isLoggingOut){
-                throw new Error('로그아웃 진행 중')
-            }
-
-            const newAccessToken = res.data.accessToken
-
-
-            if (newAccessToken) {
-                setUserAccessToken(newAccessToken)
-
-                originalRequest.headers.set('Authorization',`Bearer ${newAccessToken}`)
-
-                processQueue(null, newAccessToken)
-
-                return axiosInstance(originalRequest)
-            } else {
-                throw new Error('no access token received')
-            }
+            originalRequest.headers.set('Authorization', `Bearer ${newAccessToken}`)
+            return await axiosInstance(originalRequest)
         } catch (err) {
-            const error = err instanceof Error ? err : new Error('토큰 재발급 실패')
-            processQueue(error, null)
+            const status = axios.isAxiosError(err) ? err.response?.status : undefined
 
-            if(isLoggingOut){
-                return Promise.reject(err)
-            }
-            useUserStore.getState().clearUser()
-            if (typeof window !== 'undefined') {
-                toast.error('세션 만료 재로그인하세요')
-                window.location.href = '/'
-            }
+            if(status === 401){
+                handleAuthExpired()
+                toast.error('세션이 만료되었습니다. 다시 로그인 해주세요')
+            }else if((status === undefined || status >= 500) && axios.isAxiosError(err)){
+                toast.error('인증 서버에 연결 할 수 없습니다')
+            } 
+
             return Promise.reject(err)
-        } finally {
-            isRefreshing = false
         }
     }
 )

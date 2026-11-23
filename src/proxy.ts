@@ -16,7 +16,8 @@ export async function proxy(req: NextRequest) {
     pathname === '/api/regular-login' ||
     pathname === '/api/register' ||
     pathname === '/api/refresh' ||
-    pathname === '/api/Logout'
+    pathname === '/api/Logout' || 
+    pathname === '/api/clear-refresh'
   ) {
     return NextResponse.next()
   }

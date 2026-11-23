@@ -5,6 +5,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { SignJWT } from 'jose'
 import { kakaoLoginReqSchema } from "@/schemas/user/login/kakaologinReq";
 import { kakaoLoginResSchema, kakaoTokenSchema, kakaoUserResSchema } from "@/schemas/user/login/kakaologinRes";
+import { redis } from "@/lib/redis";
+import { randomUUID } from "crypto";
+import { redisKeys } from "@/lib/redis-keys";
+import { hashToken } from "@/lib/hashToken";
 
 
 
@@ -18,12 +22,12 @@ export async function POST(req: NextRequest) {
 
         const result = kakaoLoginReqSchema.safeParse(body)
 
-        if(!result.success){
-            return NextResponse.json({success: false, message: result.error.issues[0].message ?? '요청 데이터가 올바르지 않습니다.'},{status: 400})
+        if (!result.success) {
+            return NextResponse.json({ success: false, message: result.error.issues[0].message ?? '요청 데이터가 올바르지 않습니다.' }, { status: 400 })
         }
 
         const { code } = result.data
-        
+
         const params = new URLSearchParams({
             grant_type: 'authorization_code',
             client_id: process.env.KAKAO_REST_API_KEY!,
@@ -31,31 +35,31 @@ export async function POST(req: NextRequest) {
             code,
             client_secret: process.env.KAKAO_CLIENT_SECRET!
         })
-        
+
         const tokenRes = await fetch('https://kauth.kakao.com/oauth/token', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
             },
-            body:params
+            body: params
         })
-        
+
         const tokenData: unknown = await tokenRes.json()
 
-        if(!tokenRes.ok){
+        if (!tokenRes.ok) {
             console.error('Kakao token error:', tokenData)
-            return NextResponse.json({success: false, message:'failed to issue kakao token'},{status: 400})
+            return NextResponse.json({ success: false, message: 'failed to issue kakao token' }, { status: 400 })
         }
 
         const tokenResult = kakaoTokenSchema.safeParse(tokenData)
 
-        if(!tokenResult.success){
-            return NextResponse.json({success: false, message: '카카오 토큰응답이 올바르지 않습니다'}, {status: 502})
+        if (!tokenResult.success) {
+            return NextResponse.json({ success: false, message: '카카오 토큰응답이 올바르지 않습니다' }, { status: 502 })
         }
 
 
         const kakaoAccessToken = tokenResult.data.access_token
-        
+
         const kakaoUser = await axios.get('https://kapi.kakao.com/v2/user/me', {
             headers: {
                 Authorization: `Bearer ${kakaoAccessToken}`
@@ -64,18 +68,18 @@ export async function POST(req: NextRequest) {
 
         const kakaoUserRes = kakaoUserResSchema.safeParse(kakaoUser.data)
 
-        if(!kakaoUserRes.success){
-            return NextResponse.json({success: false, message: '카카오 정보 응답이 올바르지 않습니다'},{status: 502})
+        if (!kakaoUserRes.success) {
+            return NextResponse.json({ success: false, message: '카카오 정보 응답이 올바르지 않습니다' }, { status: 502 })
         }
-        
+
         const kakaoData = kakaoUserRes.data
-        
+
         const kakaoId = kakaoData.id.toString()
         const name = kakaoData.kakao_account?.profile?.nickname?.trim() || '카카오 사용자'
-        
+
         await dbConnect()
         let user = await userModel.findOne({ kakaoId })
-        
+
         if (!user) {
             user = new userModel({
                 kakaoId,
@@ -91,24 +95,33 @@ export async function POST(req: NextRequest) {
             objectId: user._id.toString(),
         })
             .setProtectedHeader({ alg: 'HS256' })
-            .setExpirationTime('5m')
+            .setExpirationTime('10s')
             .setIssuedAt()
             .sign(JWT_SECRET)
+
+        const sessionId = randomUUID()
 
         const refreshToken = await new SignJWT({
             objectId: user._id.toString(),
         })
             .setProtectedHeader({ alg: 'HS256' })
+            .setJti(sessionId)
             .setExpirationTime('7d')
             .setIssuedAt()
             .sign(JWT_SECRET);
 
-        const responseData: unknown = JSON.parse(JSON.stringify({success: true, user, accessToken, needsAgreement}))
+
+        await redis.set(redisKeys.session(sessionId), {
+            userId: user._id.toString(),
+            tokenHash: hashToken(refreshToken)
+        }, { ex: 60 * 60 * 24 * 7 })
+
+        const responseData: unknown = JSON.parse(JSON.stringify({ success: true, user, accessToken, needsAgreement }))
 
         const responseResult = kakaoLoginResSchema.safeParse(responseData)
 
-        if(!responseResult.success){
-            return NextResponse.json({success: false, message: '로그인 응답이 올바르지 않습니다'},{ status: 500})
+        if (!responseResult.success) {
+            return NextResponse.json({ success: false, message: '로그인 응답이 올바르지 않습니다' }, { status: 500 })
         }
 
         const res = NextResponse.json(responseResult.data)
