@@ -2,11 +2,11 @@
 
 
 import { useUserStore } from '@/store/userStore'
-import { setLogoutInProgress } from '@/lib/axios'
 import { LogOut } from 'lucide-react'
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import axios from 'axios'
+import { setLogoutInProgress } from '@/lib/auth/refresh-access-token'
 
 
 export default function LogoutComponent() {

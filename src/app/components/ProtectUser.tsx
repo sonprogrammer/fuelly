@@ -1,62 +1,102 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useUserStore } from '@/store/userStore'
-import { useRouter } from 'next/navigation'
 import Loading from './Loading'
-import { useShallow } from 'zustand/react/shallow'
 import axios from 'axios'
 import { axiosInstance } from '@/lib/axios'
+import { handleAuthExpired, isRefreshRecoveryFailed, refreshAccessToken } from '@/lib/auth/refresh-access-token'
+import toast from 'react-hot-toast'
+import { retryRequest } from '@/lib/auth/retry-request'
+import { LoginError } from '@/app/components/auth/LoginError'
+
+type AuthStatus = 'checking' | 'authenticated' | 'error'
 
 
 export default function ProtectUser({ children }: { children: React.ReactNode }) {
-    const [loading, setLoading] = useState<boolean>(() => {
-        const { userAccessToken, user } = useUserStore.getState()
-        return !userAccessToken || !user
-    })
-    const router = useRouter()
-    const initialized = useRef(false)
-    const { setUser, setUserAccessToken, clearUser } = useUserStore(useShallow(state => ({
-        setUser: state.setUser,
-        setUserAccessToken: state.setUserAccessToken,
-        clearUser: state.clearUser
-    })))
+    const [status, setStatus] = useState<AuthStatus>('checking')
+    const [retryCount, setRetryCount] = useState(0)
 
 
     useEffect(() => {
-        if(initialized.current) return
-        initialized.current = true
+        let active = true
         const initToken = async () => {
-
+            if (isRefreshRecoveryFailed()) {
+                setStatus('error')
+                return
+            }
             try {
-                const { userAccessToken , user} = useUserStore.getState()
+                const { userAccessToken, user } = useUserStore.getState()
                 if (!userAccessToken) {
-                    const res = await axios.post('/api/refresh')
-                    setUserAccessToken(res.data.accessToken)
+                    await refreshAccessToken()
                 }
 
                 if (!user) {
-                    const userRes = await axiosInstance.get('/me')
-                    setUser(userRes.data.user)
+                    const userRes = await retryRequest(() => axiosInstance.get('/me'))
+                    if (!active) return
+                    useUserStore.getState().setUser(userRes.data.user)
                 }
-
+                if (active) setStatus('authenticated')
 
             } catch (err) {
-                console.log('err', err)
-                clearUser()
-                router.replace('/')
+                if (!active) return
+                const status = axios.isAxiosError(err) ? err.response?.status : undefined
 
-            } finally {
-                setLoading(false)
+                if (status === 401) {
+                    handleAuthExpired()
+                    return
+                }
+                console.error('failed to authenticate', err)
+                toast.error('서버 연결 문제 발생 ')
+                setStatus('error')
+
             }
         }
         initToken()
-    }, [setUserAccessToken, clearUser, router, setUser])
+        return () => {
+            active = false
+        }
 
-    if (loading) {
+    }, [retryCount])
+
+    useEffect(() => {
+        if (status !== 'error' || isRefreshRecoveryFailed()) return
+        let retrying = false
+
+        const retryAuth = () => {
+            if (retrying || !navigator.onLine) return
+            retrying = true
+            setStatus('checking')
+            setRetryCount(prev => prev + 1)
+        }
+
+        const handleVisibility = () => {
+            if (document.visibilityState === 'visible') {
+                retryAuth()
+            }
+        }
+        window.addEventListener('online', retryAuth)
+        document.addEventListener('visibilitychange', handleVisibility)
+        const timer = window.setTimeout(retryAuth, 10000)
+
+        return () => {
+            window.removeEventListener('online', retryAuth)
+            document.removeEventListener('visibilitychange', handleVisibility)
+            window.clearTimeout(timer)
+        }
+    }, [status])
+
+    if (status === 'checking') {
         return (
             <Loading />
         )
     }
+
+    if (status === 'error') {
+        return <LoginError requiresRelogin={isRefreshRecoveryFailed()} />
+    }
+
+
+
     return <>{children}</>
 }
